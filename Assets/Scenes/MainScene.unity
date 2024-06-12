@@ -412,6 +412,7 @@ GameObject:
   - component: {fileID: 972980148}
   - component: {fileID: 972980150}
   - component: {fileID: 972980149}
+  - component: {fileID: 972980151}
   m_Layer: 0
   m_Name: CityCenter
   m_TagString: Untagged
@@ -455,7 +456,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1875810661}
+  - {fileID: 1329717526}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -753,7 +754,21 @@ MonoBehaviour:
   outerBoundaryRadius: 450
   innerBoundaryRadius: 150
   segments: 100
---- !u!21 &1875810661
+--- !u!114 &972980151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 972980147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 857c66087d09eea4c8a76108945e8f20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numberOfDistricts: 20
+  districtCandidateLocation: {fileID: 2062742861}
+--- !u!21 &1329717526
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
