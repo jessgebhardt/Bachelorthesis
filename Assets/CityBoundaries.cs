@@ -7,7 +7,7 @@ public class CityBoundaries : MonoBehaviour
 {
     [SerializeField] private float outerBoundaryRadius = 100f;
     [SerializeField] private float innerBoundaryRadius;
-    [SerializeField] private int segments = 100;
+    [SerializeField] private int segments = 500;
 
     private LineRenderer lineRenderer;
 
@@ -30,7 +30,7 @@ public class CityBoundaries : MonoBehaviour
     void InitializeLineRenderer(LineRenderer lineRenderer, Color color)
     {
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        lineRenderer.widthMultiplier = 0.1f;
+        lineRenderer.widthMultiplier = 2f;
         lineRenderer.positionCount = (segments + 1) * 2;
         lineRenderer.startColor = color;
         lineRenderer.endColor = color;
