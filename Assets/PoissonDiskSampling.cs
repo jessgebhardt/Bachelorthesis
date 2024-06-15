@@ -23,8 +23,6 @@ public class PoissonDiskSampling : MonoBehaviour
             {
                 float angle = Random.value * Mathf.PI*2;
                 Vector3 dir = new Vector3(Mathf.Sin(angle), 1, Mathf.Cos(angle));
-                // Vector3 candidate = spawnCentre + dir * Random.Range(radius, 2 * radius);
-                // Debug.Log(candidate);
                 float rand = Random.Range(radius, 2 * radius);
                 Vector3 candidate = new Vector3(spawnCentre.x + dir.x * rand, 1 , spawnCentre.z + dir.z * rand);
                 if (IsValid(candidate, sampleRegionSize, cellSize, radius, points, grid))

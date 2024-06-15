@@ -52,4 +52,21 @@ public class CityBoundaries : MonoBehaviour
             lineRenderer.SetPosition(i + segments + 1, new Vector3(innerX, 0, innerZ) + centerPosition);
         }
     }
+
+    public List<Vector3> CheckPointsPosition(List<Vector3> points)
+    {
+        List<Vector3> pointsInRadius = new List<Vector3>();
+        Vector3 center = transform.position;
+
+        foreach (Vector3 point in points)
+        {
+            float distance = Vector3.Distance(point, center);
+            if (distance < outerBoundaryRadius)
+            {
+                pointsInRadius.Add(point);
+            }
+        }
+
+        return pointsInRadius;
+    }
 }

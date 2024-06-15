@@ -2,19 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class test : MonoBehaviour
+public class DistrictGen : MonoBehaviour
 {
     public float radius = 100;
     public Vector3 regionSize = new Vector3(1000, 1, 1000);
     public int rejectionSamples = 30;
     public float displayRadius = 10;
 
-    List<Vector3> points;
+    private List<Vector3> points;
+    private CityBoundaries cityBoundaries;
 
     private void OnValidate()
     {
-        points = PoissonDiskSampling.GenerateCandiatePoints(radius, regionSize, rejectionSamples);
-        Debug.Log(points.Count);
+        List<Vector3> allPoints = PoissonDiskSampling.GenerateCandiatePoints(radius, regionSize, rejectionSamples);
+        cityBoundaries = gameObject.GetComponent<CityBoundaries>();
+        points = cityBoundaries.CheckPointsPosition(allPoints);
     }
 
     private void OnDrawGizmos()
