@@ -6663,7 +6663,7 @@ GameObject:
   - component: {fileID: 578785880}
   - component: {fileID: 578785879}
   m_Layer: 5
-  m_Name: ResetButton
+  m_Name: ResetAllButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14600,7 +14600,7 @@ GameObject:
   - component: {fileID: 1338231792}
   - component: {fileID: 1338231791}
   m_Layer: 5
-  m_Name: GenButton
+  m_Name: GenAllButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
