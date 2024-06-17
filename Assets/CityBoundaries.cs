@@ -5,7 +5,7 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class CityBoundaries : MonoBehaviour
 {
-    [SerializeField] private float outerBoundaryRadius = 450f;
+    [SerializeField] public float outerBoundaryRadius = 450f;
     [SerializeField] private float innerBoundaryRadius;
     [SerializeField] private int segments = 500;
 

@@ -8,8 +8,8 @@ public class DistrictGen : MonoBehaviour
     [SerializeField] private District[] generatedDistricts;
     [SerializeField] private int numberOfDistricts;
 
-    [SerializeField] private float districtRadius = 100;
-    [SerializeField] private Vector3 regionSize = new Vector3(1000, 1, 1000);
+    //[SerializeField] private float districtRadius = 100;
+    [SerializeField] private Vector3 sampleRegionSize = new Vector3(900, 1, 900);
     [SerializeField] private int rejectionSamples = 30;
     [SerializeField] private float displayRadius = 10;
 
@@ -19,9 +19,10 @@ public class DistrictGen : MonoBehaviour
     private void OnValidate()
     {
         cityBoundaries = gameObject.GetComponent<CityBoundaries>();
-        List<Vector3> allPoints = PoissonDiskSampling.GenerateCandiatePoints(districtRadius, regionSize, rejectionSamples);
-
-        candiadatePoints = cityBoundaries.CheckPointsPosition(allPoints);
+        List<Vector3> allPoints = PoissonDiskSampling.GenerateDistrictPoints(sampleRegionSize, numberOfDistricts, cityBoundaries.outerBoundaryRadius, cityBoundaries.transform.position, rejectionSamples);
+        Debug.Log(allPoints.Count);
+        candiadatePoints = allPoints;
+        //candiadatePoints = cityBoundaries.CheckPointsPosition(allPoints);
     }
 
     private void OnDrawGizmos()
