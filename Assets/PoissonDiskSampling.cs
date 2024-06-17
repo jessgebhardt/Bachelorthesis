@@ -13,7 +13,7 @@ public class PoissonDiskSampling : MonoBehaviour
         List<Vector3> spawnPoints = new List<Vector3>();
 
         spawnPoints.Add(new Vector3(sampleRegionSize.x/2, 1, sampleRegionSize.z / 2));
-        while (spawnPoints.Count > 0 && points.Count < numberOfDistricts)
+        while (spawnPoints.Count > 0 /*&& points.Count < numberOfDistricts*/) // vorerst removed, bis bessere Methode gefunden, um Punkteanzahl zu kontrollieren
         {
             int spawnIndex = Random.Range(0, spawnPoints.Count);
             Vector3 spawnCentre = spawnPoints[spawnIndex];
