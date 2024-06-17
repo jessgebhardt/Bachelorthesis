@@ -9979,7 +9979,7 @@ GameObject:
   - component: {fileID: 972980149}
   - component: {fileID: 972980151}
   m_Layer: 0
-  m_Name: CityCenter
+  m_Name: CityGenerator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
