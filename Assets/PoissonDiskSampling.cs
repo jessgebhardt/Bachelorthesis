@@ -79,7 +79,7 @@ public class PoissonDiskSampling : MonoBehaviour
     static float CalculateDistrictRadius(int numberOfDistricts, float cityRadius)
     {
         float cityArea = Mathf.PI * cityRadius * cityRadius;
-        float areaPerDistrict = cityArea / numberOfDistricts;
+        float areaPerDistrict = cityArea / numberOfDistricts*2;
         float adjustedDistrictRadius = Mathf.Sqrt(areaPerDistrict / Mathf.PI);
         Debug.Log(adjustedDistrictRadius);
         return adjustedDistrictRadius;
