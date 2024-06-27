@@ -13,7 +13,7 @@ public class DistrictGen : MonoBehaviour
     [SerializeField] private List<District> generatedDistricts = new List<District>();
     [SerializeField] private int numberOfDistricts;
 
-    [SerializeField] private Vector3 sampleRegionSize = new Vector3(900, 1, 900); // Muss nicht vom User eingestellt werden, später noch ändern
+    [SerializeField] private Vector3 sampleRegionSize = new Vector3(1000, 1, 1000); // Muss nicht vom User eingestellt werden, später noch ändern
     [SerializeField] private int rejectionSamples = 30;
     [SerializeField] private float displayRadius = 10;
 
@@ -179,9 +179,18 @@ public class DistrictGen : MonoBehaviour
 
     float CalculateSuitabilityBasedOnArea(DistrictType type, Vector3 location)
     {
-        float distanceFromCenter = Vector3.Distance(location, cityBoundaries.transform.position); // auf zahl zwischen 0 und 10 skalieren
-        float Sa = GetSuitability(distanceFromCenter, type.distanceFromCenter);
+        float distanceFromCenter = Vector3.Distance(location, cityBoundaries.transform.position);
+        float scaledDistance = ScaleDistance(distanceFromCenter);
+        float Sa = GetSuitability(scaledDistance, type.distanceFromCenter);
         return Sa;
+    }
+
+    float ScaleDistance(float value)
+    {
+        float originalMax = Mathf.Sqrt(Mathf.Pow(sampleRegionSize.x / 2, 2) + Mathf.Pow(sampleRegionSize.z / 2, 2));
+        float normalizedVal = (value - 0) / (originalMax - 0);
+        float scaledVal = normalizedVal * (10 - 0) + 0;
+        return scaledVal;
     }
 
     float CalculateSuitabilityBasedOnPrimaryStreets(DistrictType type, Vector3 location)
@@ -190,10 +199,11 @@ public class DistrictGen : MonoBehaviour
         //float closestDistance = float.MaxValue;
         //foreach (var primaryStreet in primaryStreets)
         //{
-        //    float distance = Vector3.Distance(location, primaryStreet); // auf zahl zwischen 0 und 10 skalieren
-        //    if (distance < closestDistance)
+        //    float distance = Vector3.Distance(location, primaryStreet);
+        //    float scaledDistance = ScaleDistance(distance);
+        //    if (scaledDistance < closestDistance)
         //    {
-        //        closestDistance = distance;
+        //        closestDistance = scaledDistance;
         //    }
         //}
         float Sh = GetSuitability(closestDistance, type.distanceToPrimaryStreets);
@@ -273,8 +283,8 @@ struct DistrictType
     public Color color;
     [Range(0, 10)] public float distanceFromCenter;
     [Range(0, 10)] public float distanceToPrimaryStreets;
-    [Min(1)] public int minNumberOfPlacements;
-    [Min(1)] public int maxNumberOfPlacements;
+    [Min(1)] public int minNumberOfPlacements; // Nächster Schritt, miteinbeziehen
+    [Min(1)] public int maxNumberOfPlacements; // Nächster Schritt, miteinbeziehen
     public bool innerBoundaries;
     public bool outerBoundaries;
     // public Dictionary<string, float> attractionValues;

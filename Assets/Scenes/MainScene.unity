@@ -8175,46 +8175,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!21 &833058887
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Sprites/Default
-  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _AlphaTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - PixelSnap: 0
-    - _EnableExternalAlpha: 0
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Flip: {r: 1, g: 1, b: 1, a: 1}
-    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
 --- !u!1 &839707285
 GameObject:
   m_ObjectHideFlags: 0
@@ -10021,7 +9981,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 833058887}
+  - {fileID: 1740117830}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10043,107 +10003,107 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Positions:
-  - {x: 500, y: 1, z: 990}
-  - {x: 530.76733, y: 1, z: 989.0331}
-  - {x: 561.41327, y: 1, z: 986.1362}
-  - {x: 591.81683, y: 1, z: 981.32074}
-  - {x: 621.85803, y: 1, z: 974.6057}
-  - {x: 651.41833, y: 1, z: 966.0177}
-  - {x: 680.38104, y: 1, z: 955.59045}
-  - {x: 708.63184, y: 1, z: 943.36523}
-  - {x: 736.0593, y: 1, z: 929.39026}
-  - {x: 762.5552, y: 1, z: 913.7207}
-  - {x: 788.0148, y: 1, z: 896.41833}
-  - {x: 812.33777, y: 1, z: 877.5515}
-  - {x: 835.4281, y: 1, z: 857.1946}
-  - {x: 857.19464, y: 1, z: 835.4281}
-  - {x: 877.5515, y: 1, z: 812.33777}
-  - {x: 896.41833, y: 1, z: 788.0148}
-  - {x: 913.7207, y: 1, z: 762.5551}
-  - {x: 929.39026, y: 1, z: 736.05927}
-  - {x: 943.3653, y: 1, z: 708.63184}
-  - {x: 955.59045, y: 1, z: 680.38104}
-  - {x: 966.0177, y: 1, z: 651.41833}
-  - {x: 974.6057, y: 1, z: 621.85803}
-  - {x: 981.3208, y: 1, z: 591.8168}
-  - {x: 986.1362, y: 1, z: 561.4132}
-  - {x: 989.0331, y: 1, z: 530.7673}
-  - {x: 990, y: 1, z: 499.99997}
-  - {x: 989.0331, y: 1, z: 469.2326}
-  - {x: 986.1362, y: 1, z: 438.58667}
-  - {x: 981.32074, y: 1, z: 408.1831}
-  - {x: 974.6057, y: 1, z: 378.1419}
-  - {x: 966.0177, y: 1, z: 348.58167}
-  - {x: 955.59045, y: 1, z: 319.61893}
-  - {x: 943.36523, y: 1, z: 291.3681}
-  - {x: 929.39026, y: 1, z: 263.94064}
-  - {x: 913.72064, y: 1, z: 237.4448}
-  - {x: 896.4183, y: 1, z: 211.98514}
-  - {x: 877.5514, y: 1, z: 187.66217}
-  - {x: 857.1946, y: 1, z: 164.57184}
-  - {x: 835.4281, y: 1, z: 142.80539}
-  - {x: 812.33777, y: 1, z: 122.44849}
-  - {x: 788.0148, y: 1, z: 103.581635}
-  - {x: 762.5551, y: 1, z: 86.2793}
-  - {x: 736.05927, y: 1, z: 70.60971}
-  - {x: 708.6318, y: 1, z: 56.634705}
-  - {x: 680.381, y: 1, z: 44.409485}
-  - {x: 651.4182, y: 1, z: 33.98227}
-  - {x: 621.8579, y: 1, z: 25.394226}
-  - {x: 591.8167, y: 1, z: 18.67923}
-  - {x: 561.41315, y: 1, z: 13.8638}
-  - {x: 530.76733, y: 1, z: 10.966888}
-  - {x: 499.99997, y: 1, z: 10}
-  - {x: 469.2326, y: 1, z: 10.966888}
-  - {x: 438.58664, y: 1, z: 13.8638}
-  - {x: 408.18307, y: 1, z: 18.67926}
-  - {x: 378.14188, y: 1, z: 25.394287}
-  - {x: 348.58157, y: 1, z: 33.98236}
-  - {x: 319.61884, y: 1, z: 44.409576}
-  - {x: 291.36804, y: 1, z: 56.634796}
-  - {x: 263.94058, y: 1, z: 70.6098}
-  - {x: 237.44482, y: 1, z: 86.27936}
-  - {x: 211.98517, y: 1, z: 103.581696}
-  - {x: 187.66217, y: 1, z: 122.44855}
-  - {x: 164.57184, y: 1, z: 142.80542}
-  - {x: 142.80533, y: 1, z: 164.57199}
-  - {x: 122.448456, y: 1, z: 187.66232}
-  - {x: 103.581604, y: 1, z: 211.98532}
-  - {x: 86.27927, y: 1, z: 237.44498}
-  - {x: 70.60965, y: 1, z: 263.9408}
-  - {x: 56.634674, y: 1, z: 291.3683}
-  - {x: 44.409454, y: 1, z: 319.61914}
-  - {x: 33.98227, y: 1, z: 348.58185}
-  - {x: 25.394196, y: 1, z: 378.14215}
-  - {x: 18.6792, y: 1, z: 408.18335}
-  - {x: 13.86377, y: 1, z: 438.5869}
-  - {x: 10.966888, y: 1, z: 469.23288}
-  - {x: 10, y: 1, z: 500}
-  - {x: 10.966888, y: 1, z: 530.7674}
-  - {x: 13.8638, y: 1, z: 561.4133}
-  - {x: 18.67926, y: 1, z: 591.8169}
-  - {x: 25.394287, y: 1, z: 621.8581}
-  - {x: 33.98233, y: 1, z: 651.4184}
-  - {x: 44.409546, y: 1, z: 680.3811}
-  - {x: 56.634766, y: 1, z: 708.63196}
-  - {x: 70.60977, y: 1, z: 736.0594}
-  - {x: 86.27939, y: 1, z: 762.5552}
-  - {x: 103.58176, y: 1, z: 788.0149}
-  - {x: 122.44861, y: 1, z: 812.3379}
-  - {x: 142.80548, y: 1, z: 835.4282}
-  - {x: 164.57205, y: 1, z: 857.1947}
-  - {x: 187.66238, y: 1, z: 877.55164}
-  - {x: 211.98538, y: 1, z: 896.41846}
-  - {x: 237.44504, y: 1, z: 913.7208}
-  - {x: 263.9409, y: 1, z: 929.3904}
-  - {x: 291.36835, y: 1, z: 943.36536}
-  - {x: 319.6192, y: 1, z: 955.5906}
-  - {x: 348.5819, y: 1, z: 966.01776}
-  - {x: 378.1422, y: 1, z: 974.60583}
-  - {x: 408.1832, y: 1, z: 981.3208}
-  - {x: 438.58676, y: 1, z: 986.1362}
-  - {x: 469.23273, y: 1, z: 989.0331}
-  - {x: 500.0001, y: 1, z: 990}
+  - {x: 500, y: 1, z: 913}
+  - {x: 525.9325, y: 1, z: 912.18506}
+  - {x: 551.76263, y: 1, z: 909.7434}
+  - {x: 577.3885, y: 1, z: 905.68463}
+  - {x: 602.7089, y: 1, z: 900.02484}
+  - {x: 627.624, y: 1, z: 892.7864}
+  - {x: 652.03546, y: 1, z: 883.9977}
+  - {x: 675.84686, y: 1, z: 873.6936}
+  - {x: 698.9643, y: 1, z: 861.9147}
+  - {x: 721.2965, y: 1, z: 848.7074}
+  - {x: 742.7553, y: 1, z: 834.124}
+  - {x: 763.2561, y: 1, z: 818.2219}
+  - {x: 782.71796, y: 1, z: 801.064}
+  - {x: 801.0641, y: 1, z: 782.7179}
+  - {x: 818.222, y: 1, z: 763.2561}
+  - {x: 834.124, y: 1, z: 742.7553}
+  - {x: 848.7074, y: 1, z: 721.29645}
+  - {x: 861.9147, y: 1, z: 698.96423}
+  - {x: 873.6936, y: 1, z: 675.8468}
+  - {x: 883.9977, y: 1, z: 652.0354}
+  - {x: 892.7864, y: 1, z: 627.624}
+  - {x: 900.02484, y: 1, z: 602.7089}
+  - {x: 905.6847, y: 1, z: 577.3884}
+  - {x: 909.7434, y: 1, z: 551.7626}
+  - {x: 912.18506, y: 1, z: 525.93243}
+  - {x: 913, y: 1, z: 499.99997}
+  - {x: 912.18506, y: 1, z: 474.06747}
+  - {x: 909.74335, y: 1, z: 448.23734}
+  - {x: 905.68463, y: 1, z: 422.61145}
+  - {x: 900.0248, y: 1, z: 397.29102}
+  - {x: 892.7863, y: 1, z: 372.37598}
+  - {x: 883.9977, y: 1, z: 347.96454}
+  - {x: 873.69354, y: 1, z: 324.15314}
+  - {x: 861.9146, y: 1, z: 301.03568}
+  - {x: 848.7074, y: 1, z: 278.7035}
+  - {x: 834.12396, y: 1, z: 257.24463}
+  - {x: 818.2219, y: 1, z: 236.7438}
+  - {x: 801.06396, y: 1, z: 217.28198}
+  - {x: 782.7179, y: 1, z: 198.93597}
+  - {x: 763.2561, y: 1, z: 181.77802}
+  - {x: 742.75525, y: 1, z: 165.87595}
+  - {x: 721.29645, y: 1, z: 151.29254}
+  - {x: 698.96423, y: 1, z: 138.08533}
+  - {x: 675.8468, y: 1, z: 126.3064}
+  - {x: 652.0354, y: 1, z: 116.00229}
+  - {x: 627.62396, y: 1, z: 107.21362}
+  - {x: 602.70886, y: 1, z: 99.97513}
+  - {x: 577.38837, y: 1, z: 94.31534}
+  - {x: 551.7625, y: 1, z: 90.25662}
+  - {x: 525.93243, y: 1, z: 87.81497}
+  - {x: 499.99997, y: 1, z: 87}
+  - {x: 474.06747, y: 1, z: 87.81497}
+  - {x: 448.2373, y: 1, z: 90.25665}
+  - {x: 422.61145, y: 1, z: 94.31537}
+  - {x: 397.29102, y: 1, z: 99.97519}
+  - {x: 372.3759, y: 1, z: 107.213684}
+  - {x: 347.96448, y: 1, z: 116.00235}
+  - {x: 324.15308, y: 1, z: 126.30649}
+  - {x: 301.03564, y: 1, z: 138.08539}
+  - {x: 278.7035, y: 1, z: 151.2926}
+  - {x: 257.24463, y: 1, z: 165.876}
+  - {x: 236.74384, y: 1, z: 181.77805}
+  - {x: 217.28198, y: 1, z: 198.936}
+  - {x: 198.93591, y: 1, z: 217.2821}
+  - {x: 181.77798, y: 1, z: 236.74396}
+  - {x: 165.87592, y: 1, z: 257.24475}
+  - {x: 151.29251, y: 1, z: 278.7036}
+  - {x: 138.08527, y: 1, z: 301.03583}
+  - {x: 126.306366, y: 1, z: 324.15326}
+  - {x: 116.00226, y: 1, z: 347.9647}
+  - {x: 107.21362, y: 1, z: 372.37613}
+  - {x: 99.9751, y: 1, z: 397.29123}
+  - {x: 94.31534, y: 1, z: 422.6117}
+  - {x: 90.25659, y: 1, z: 448.23755}
+  - {x: 87.81497, y: 1, z: 474.06772}
+  - {x: 87, y: 1, z: 500}
+  - {x: 87.81497, y: 1, z: 525.9325}
+  - {x: 90.25662, y: 1, z: 551.76263}
+  - {x: 94.31537, y: 1, z: 577.38855}
+  - {x: 99.97519, y: 1, z: 602.709}
+  - {x: 107.213684, y: 1, z: 627.6241}
+  - {x: 116.00232, y: 1, z: 652.0355}
+  - {x: 126.30646, y: 1, z: 675.8469}
+  - {x: 138.08539, y: 1, z: 698.96436}
+  - {x: 151.2926, y: 1, z: 721.2965}
+  - {x: 165.87604, y: 1, z: 742.7554}
+  - {x: 181.7781, y: 1, z: 763.2562}
+  - {x: 198.93607, y: 1, z: 782.718}
+  - {x: 217.28217, y: 1, z: 801.06415}
+  - {x: 236.74402, y: 1, z: 818.22205}
+  - {x: 257.2448, y: 1, z: 834.12415}
+  - {x: 278.70367, y: 1, z: 848.7075}
+  - {x: 301.0359, y: 1, z: 861.91473}
+  - {x: 324.15332, y: 1, z: 873.6936}
+  - {x: 347.96475, y: 1, z: 883.9978}
+  - {x: 372.3762, y: 1, z: 892.7864}
+  - {x: 397.2913, y: 1, z: 900.0249}
+  - {x: 422.61157, y: 1, z: 905.6847}
+  - {x: 448.23743, y: 1, z: 909.7434}
+  - {x: 474.06757, y: 1, z: 912.18506}
+  - {x: 500.00006, y: 1, z: 913}
   - {x: 500, y: 1, z: 663.3333}
   - {x: 510.2558, y: 1, z: 663.01105}
   - {x: 520.47107, y: 1, z: 662.0454}
@@ -10316,7 +10276,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284a4fc0e9c3ae64d8b105935511ce94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outerBoundaryRadius: 490
+  outerBoundaryRadius: 413
   innerBoundaryRadius: 163.33333
   segments: 100
 --- !u!114 &972980151
@@ -10331,9 +10291,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bb2c50fc1c471e4296a8c795a92c5f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  importanceOfNeighbours: 0.583
-  importanceOfCityCenterDistance: 0.3
-  importanceOfPrimaryStreetDistance: 0.2
+  importanceOfNeighbours: 0.462
+  importanceOfCityCenterDistance: 0.319
+  importanceOfPrimaryStreetDistance: 0.108
   districtTypes:
   - name: Kernbezirke
     color: {r: 0.8679245, g: 0.20797431, b: 0.8018116, a: 1}
@@ -10353,8 +10313,8 @@ MonoBehaviour:
     outerBoundaries: 1
   - name: Industrie
     color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-    distanceFromCenter: 8
-    distanceToPrimaryStreets: 7
+    distanceFromCenter: 9
+    distanceToPrimaryStreets: 3
     minNumberOfPlacements: 2
     maxNumberOfPlacements: 2
     innerBoundaries: 0
@@ -10362,252 +10322,582 @@ MonoBehaviour:
   - name: Gewerbe
     color: {r: 0.28014964, g: 0.8962264, b: 0.25703093, a: 1}
     distanceFromCenter: 2
-    distanceToPrimaryStreets: 1
+    distanceToPrimaryStreets: 2
     minNumberOfPlacements: 2
     maxNumberOfPlacements: 2
     innerBoundaries: 1
     outerBoundaries: 1
   - name: Verkehrsknotenpunkte
     color: {r: 1, g: 0.9524385, b: 0, a: 1}
-    distanceFromCenter: 4
+    distanceFromCenter: 5
     distanceToPrimaryStreets: 2
     minNumberOfPlacements: 3
     maxNumberOfPlacements: 3
     innerBoundaries: 0
     outerBoundaries: 1
   generatedDistricts:
-  - name: Kernbezirke
-    position: {x: 586.4094, y: 1, z: 551.2736}
+  - name: Wohngebiet
+    position: {x: 465.30295, y: 1, z: 356.03143}
     type:
-      name: Kernbezirke
-      color: {r: 0.8679245, g: 0.20797431, b: 0.8018116, a: 1}
-      distanceFromCenter: 0
-      distanceToPrimaryStreets: 1
-      minNumberOfPlacements: 1
-      maxNumberOfPlacements: 1
+      name: Wohngebiet
+      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
+      distanceFromCenter: 5
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
       innerBoundaries: 1
-      outerBoundaries: 0
-  - name: Kernbezirke
-    position: {x: 436.5799, y: 1, z: 617.9587}
+      outerBoundaries: 1
+  - name: Wohngebiet
+    position: {x: 390.1108, y: 1, z: 409.7871}
     type:
-      name: Kernbezirke
-      color: {r: 0.8679245, g: 0.20797431, b: 0.8018116, a: 1}
-      distanceFromCenter: 0
-      distanceToPrimaryStreets: 1
-      minNumberOfPlacements: 1
-      maxNumberOfPlacements: 1
+      name: Wohngebiet
+      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
+      distanceFromCenter: 5
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
       innerBoundaries: 1
-      outerBoundaries: 0
-  - name: Kernbezirke
-    position: {x: 436.6659, y: 1, z: 444.50113}
+      outerBoundaries: 1
+  - name: Wohngebiet
+    position: {x: 344.61456, y: 1, z: 495.88205}
     type:
-      name: Kernbezirke
-      color: {r: 0.8679245, g: 0.20797431, b: 0.8018116, a: 1}
-      distanceFromCenter: 0
-      distanceToPrimaryStreets: 1
-      minNumberOfPlacements: 1
-      maxNumberOfPlacements: 1
+      name: Wohngebiet
+      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
+      distanceFromCenter: 5
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
       innerBoundaries: 1
-      outerBoundaries: 0
+      outerBoundaries: 1
   - name: Gewerbe
-    position: {x: 152.81612, y: 1, z: 382.66644}
+    position: {x: 529.2669, y: 1, z: 491.0417}
     type:
       name: Gewerbe
       color: {r: 0.28014964, g: 0.8962264, b: 0.25703093, a: 1}
       distanceFromCenter: 2
-      distanceToPrimaryStreets: 1
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 1
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 614.79803, y: 1, z: 307.46243}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 8
-      distanceToPrimaryStreets: 7
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Wohngebiet
-    position: {x: 756.22235, y: 1, z: 744.51117}
-    type:
-      name: Wohngebiet
-      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
-      distanceFromCenter: 5
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
-      innerBoundaries: 1
-      outerBoundaries: 1
-  - name: Wohngebiet
-    position: {x: 433.27618, y: 1, z: 280.2683}
-    type:
-      name: Wohngebiet
-      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
-      distanceFromCenter: 5
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
-      innerBoundaries: 1
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 845.0116, y: 1, z: 517.01245}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 8
-      distanceToPrimaryStreets: 7
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 257.9497, y: 1, z: 683.69183}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 8
-      distanceToPrimaryStreets: 7
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Wohngebiet
-    position: {x: 886.8431, y: 1, z: 300.2683}
-    type:
-      name: Wohngebiet
-      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
-      distanceFromCenter: 5
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
-      innerBoundaries: 1
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 175.24562, y: 1, z: 142.27899}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 8
-      distanceToPrimaryStreets: 7
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Verkehrsknotenpunkte
-    position: {x: 726.8874, y: 1, z: 103.26981}
-    type:
-      name: Verkehrsknotenpunkte
-      color: {r: 1, g: 0.9524385, b: 0, a: 1}
-      distanceFromCenter: 4
       distanceToPrimaryStreets: 2
-      minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Verkehrsknotenpunkte
-    position: {x: 415.54984, y: 1, z: 817.4948}
-    type:
-      name: Verkehrsknotenpunkte
-      color: {r: 1, g: 0.9524385, b: 0, a: 1}
-      distanceFromCenter: 4
-      distanceToPrimaryStreets: 2
-      minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 274.28238, y: 1, z: 485.4721}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 8
-      distanceToPrimaryStreets: 7
       minNumberOfPlacements: 2
       maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Wohngebiet
-    position: {x: 370.86987, y: 1, z: 78.69237}
-    type:
-      name: Wohngebiet
-      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
-      distanceFromCenter: 5
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
       innerBoundaries: 1
-      outerBoundaries: 1
-  - name: Verkehrsknotenpunkte
-    position: {x: 613.13385, y: 1, z: 895.77594}
-    type:
-      name: Verkehrsknotenpunkte
-      color: {r: 1, g: 0.9524385, b: 0, a: 1}
-      distanceFromCenter: 4
-      distanceToPrimaryStreets: 2
-      minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Wohngebiet
-    position: {x: 519.3063, y: 1, z: 146.72804}
-    type:
-      name: Wohngebiet
-      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
-      distanceFromCenter: 5
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
-      innerBoundaries: 1
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 579.02136, y: 1, z: 713.1688}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 8
-      distanceToPrimaryStreets: 7
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
       outerBoundaries: 1
   - name: Gewerbe
-    position: {x: 66.84608, y: 1, z: 612.0646}
+    position: {x: 607.11035, y: 1, z: 437.8894}
     type:
       name: Gewerbe
       color: {r: 0.28014964, g: 0.8962264, b: 0.25703093, a: 1}
       distanceFromCenter: 2
-      distanceToPrimaryStreets: 1
+      distanceToPrimaryStreets: 2
       minNumberOfPlacements: 2
       maxNumberOfPlacements: 2
       innerBoundaries: 1
       outerBoundaries: 1
+  - name: Wohngebiet
+    position: {x: 393.9708, y: 1, z: 594.1427}
+    type:
+      name: Wohngebiet
+      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
+      distanceFromCenter: 5
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
+      innerBoundaries: 1
+      outerBoundaries: 1
+  - name: Wohngebiet
+    position: {x: 434.8969, y: 1, z: 497.10315}
+    type:
+      name: Wohngebiet
+      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
+      distanceFromCenter: 5
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
+      innerBoundaries: 1
+      outerBoundaries: 1
+  - name: Gewerbe
+    position: {x: 532.68396, y: 1, z: 585.3267}
+    type:
+      name: Gewerbe
+      color: {r: 0.28014964, g: 0.8962264, b: 0.25703093, a: 1}
+      distanceFromCenter: 2
+      distanceToPrimaryStreets: 2
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 1
+      outerBoundaries: 1
+  - name: Wohngebiet
+    position: {x: 646.45233, y: 1, z: 356.95746}
+    type:
+      name: Wohngebiet
+      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
+      distanceFromCenter: 5
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
+      innerBoundaries: 1
+      outerBoundaries: 1
   - name: Industrie
-    position: {x: 107.097275, y: 1, z: 763.35516}
+    position: {x: 326.06934, y: 1, z: 259.72424}
     type:
       name: Industrie
       color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 8
-      distanceToPrimaryStreets: 7
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
       minNumberOfPlacements: 2
       maxNumberOfPlacements: 2
       innerBoundaries: 0
       outerBoundaries: 1
   - name: Industrie
-    position: {x: 226.44139, y: 1, z: 863.60345}
+    position: {x: 469.66214, y: 1, z: 178.40034}
     type:
       name: Industrie
       color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 8
-      distanceToPrimaryStreets: 7
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
       minNumberOfPlacements: 2
       maxNumberOfPlacements: 2
       innerBoundaries: 0
       outerBoundaries: 1
-  numberOfDistricts: 20
+  - name: Industrie
+    position: {x: 168.05058, y: 1, z: 515.7538}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 181.84836, y: 1, z: 302.49722}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 202.5804, y: 1, z: 213.80794}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 593.3167, y: 1, z: 243.52672}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 362.4656, y: 1, z: 132.00546}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 277.16104, y: 1, z: 367.57297}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 610.95703, y: 1, z: 153.99806}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 126.43387, y: 1, z: 403.4982}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 424.60828, y: 1, z: 271.44467}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 519.99023, y: 1, z: 96.01248}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 786.0751, y: 1, z: 395.07758}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 684.44305, y: 1, z: 241.14017}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 191.91483, y: 1, z: 616.8613}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 309.65436, y: 1, z: 626.5438}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Wohngebiet
+    position: {x: 677.50934, y: 1, z: 497.35757}
+    type:
+      name: Wohngebiet
+      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
+      distanceFromCenter: 5
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
+      innerBoundaries: 1
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 234.57347, y: 1, z: 726.1981}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 557.1944, y: 1, z: 345.47818}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 134.24483, y: 1, z: 689.8961}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 372.34985, y: 1, z: 822.2266}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 875.9844, y: 1, z: 513.2981}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 439.0735, y: 1, z: 686.8874}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 789.3942, y: 1, z: 300.79703}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 762.7688, y: 1, z: 610.1892}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 497.68945, y: 1, z: 851.8419}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 898.58307, y: 1, z: 402.17734}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Wohngebiet
+    position: {x: 539.96094, y: 1, z: 749.24316}
+    type:
+      name: Wohngebiet
+      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
+      distanceFromCenter: 5
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
+      innerBoundaries: 1
+      outerBoundaries: 1
+  - name: Verkehrsknotenpunkte
+    position: {x: 335.12753, y: 1, z: 738.72485}
+    type:
+      name: Verkehrsknotenpunkte
+      color: {r: 1, g: 0.9524385, b: 0, a: 1}
+      distanceFromCenter: 5
+      distanceToPrimaryStreets: 2
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 702.2929, y: 1, z: 150.23677}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Wohngebiet
+    position: {x: 773.6879, y: 1, z: 520.32623}
+    type:
+      name: Wohngebiet
+      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
+      distanceFromCenter: 5
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
+      innerBoundaries: 1
+      outerBoundaries: 1
+  - name: Verkehrsknotenpunkte
+    position: {x: 657.9382, y: 1, z: 733.99835}
+    type:
+      name: Verkehrsknotenpunkte
+      color: {r: 1, g: 0.9524385, b: 0, a: 1}
+      distanceFromCenter: 5
+      distanceToPrimaryStreets: 2
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 255.91426, y: 1, z: 821.75073}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Verkehrsknotenpunkte
+    position: {x: 264.53592, y: 1, z: 546.64404}
+    type:
+      name: Verkehrsknotenpunkte
+      color: {r: 1, g: 0.9524385, b: 0, a: 1}
+      distanceFromCenter: 5
+      distanceToPrimaryStreets: 2
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 591.6497, y: 1, z: 849.9465}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 680.64307, y: 1, z: 861.07294}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 867.28204, y: 1, z: 652.5568}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 669.1142, y: 1, z: 630.28046}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 784.66376, y: 1, z: 203.50302}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 734.17883, y: 1, z: 789.7033}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 819.10486, y: 1, z: 734.37854}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Wohngebiet
+    position: {x: 579.0819, y: 1, z: 663.69836}
+    type:
+      name: Wohngebiet
+      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
+      distanceFromCenter: 5
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
+      innerBoundaries: 1
+      outerBoundaries: 1
+  numberOfDistricts: 43
   sampleRegionSize: {x: 900, y: 1, z: 900}
   rejectionSamples: 30
   displayRadius: 10
@@ -19265,6 +19555,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1735475675}
   m_CullTransparentMesh: 1
+--- !u!21 &1740117830
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &1792528532
 GameObject:
   m_ObjectHideFlags: 0
