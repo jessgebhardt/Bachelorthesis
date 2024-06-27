@@ -179,7 +179,7 @@ public class DistrictGen : MonoBehaviour
 
     float CalculateSuitabilityBasedOnArea(DistrictType type, Vector3 location)
     {
-        float distanceFromCenter = Vector3.Distance(location, cityBoundaries.transform.position);
+        float distanceFromCenter = Vector3.Distance(location, cityBoundaries.transform.position); // auf zahl zwischen 0 und 10 skalieren
         float Sa = GetSuitability(distanceFromCenter, type.distanceFromCenter);
         return Sa;
     }
@@ -190,7 +190,7 @@ public class DistrictGen : MonoBehaviour
         //float closestDistance = float.MaxValue;
         //foreach (var primaryStreet in primaryStreets)
         //{
-        //    float distance = Vector3.Distance(location, primaryStreet);
+        //    float distance = Vector3.Distance(location, primaryStreet); // auf zahl zwischen 0 und 10 skalieren
         //    if (distance < closestDistance)
         //    {
         //        closestDistance = distance;
