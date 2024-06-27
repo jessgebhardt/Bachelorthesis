@@ -8175,6 +8175,46 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!21 &833058887
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
 --- !u!1 &839707285
 GameObject:
   m_ObjectHideFlags: 0
@@ -9662,46 +9702,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 948422183}
   m_CullTransparentMesh: 1
---- !u!21 &956104118
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Sprites/Default
-  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _AlphaTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - PixelSnap: 0
-    - _EnableExternalAlpha: 0
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Flip: {r: 1, g: 1, b: 1, a: 1}
-    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
 --- !u!1 &956554556
 GameObject:
   m_ObjectHideFlags: 0
@@ -10021,7 +10021,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 956104118}
+  - {fileID: 833058887}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10043,208 +10043,208 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Positions:
-  - {x: 500, y: 1, z: 950}
-  - {x: 528.25574, y: 1, z: 949.11206}
-  - {x: 556.39996, y: 1, z: 946.45166}
-  - {x: 584.3216, y: 1, z: 942.0293}
-  - {x: 611.91046, y: 1, z: 935.8624}
-  - {x: 639.0576, y: 1, z: 927.97546}
-  - {x: 665.65607, y: 1, z: 918.3994}
-  - {x: 691.6007, y: 1, z: 907.1722}
-  - {x: 716.7892, y: 1, z: 894.338}
-  - {x: 741.1221, y: 1, z: 879.9476}
-  - {x: 764.50336, y: 1, z: 864.0576}
-  - {x: 786.8408, y: 1, z: 846.73096}
-  - {x: 808.0462, y: 1, z: 828.0359}
-  - {x: 828.0359, y: 1, z: 808.04614}
-  - {x: 846.73096, y: 1, z: 786.84076}
-  - {x: 864.0576, y: 1, z: 764.50336}
-  - {x: 879.9476, y: 1, z: 741.1221}
-  - {x: 894.338, y: 1, z: 716.7891}
-  - {x: 907.17224, y: 1, z: 691.60065}
-  - {x: 918.3994, y: 1, z: 665.65607}
-  - {x: 927.97546, y: 1, z: 639.0576}
-  - {x: 935.8624, y: 1, z: 611.9104}
-  - {x: 942.0293, y: 1, z: 584.32153}
-  - {x: 946.45166, y: 1, z: 556.3999}
-  - {x: 949.11206, y: 1, z: 528.2557}
-  - {x: 950, y: 1, z: 499.99997}
-  - {x: 949.11206, y: 1, z: 471.74423}
-  - {x: 946.4516, y: 1, z: 443.6}
-  - {x: 942.0293, y: 1, z: 415.67834}
-  - {x: 935.8624, y: 1, z: 388.08948}
-  - {x: 927.9754, y: 1, z: 360.94232}
-  - {x: 918.3994, y: 1, z: 334.34393}
-  - {x: 907.1721, y: 1, z: 308.3993}
-  - {x: 894.338, y: 1, z: 283.2108}
-  - {x: 879.9475, y: 1, z: 258.87787}
-  - {x: 864.0576, y: 1, z: 235.49655}
-  - {x: 846.7309, y: 1, z: 213.15912}
-  - {x: 828.03577, y: 1, z: 191.95374}
-  - {x: 808.04614, y: 1, z: 171.96411}
-  - {x: 786.84076, y: 1, z: 153.26901}
-  - {x: 764.5033, y: 1, z: 135.94232}
-  - {x: 741.1221, y: 1, z: 120.0524}
-  - {x: 716.7891, y: 1, z: 105.66199}
-  - {x: 691.6006, y: 1, z: 92.82779}
-  - {x: 665.656, y: 1, z: 81.600555}
-  - {x: 639.05756, y: 1, z: 72.024536}
-  - {x: 611.91034, y: 1, z: 64.13754}
-  - {x: 584.3215, y: 1, z: 57.970734}
-  - {x: 556.39984, y: 1, z: 53.54837}
-  - {x: 528.25574, y: 1, z: 50.88797}
-  - {x: 499.99997, y: 1, z: 50}
-  - {x: 471.7442, y: 1, z: 50.88797}
-  - {x: 443.59998, y: 1, z: 53.5484}
-  - {x: 415.67834, y: 1, z: 57.970734}
-  - {x: 388.08948, y: 1, z: 64.1376}
-  - {x: 360.94226, y: 1, z: 72.0246}
-  - {x: 334.34384, y: 1, z: 81.60065}
-  - {x: 308.39923, y: 1, z: 92.82788}
-  - {x: 283.21075, y: 1, z: 105.66205}
-  - {x: 258.87793, y: 1, z: 120.05246}
-  - {x: 235.49658, y: 1, z: 135.94238}
-  - {x: 213.15915, y: 1, z: 153.26907}
-  - {x: 191.95374, y: 1, z: 171.96417}
-  - {x: 171.96408, y: 1, z: 191.95389}
-  - {x: 153.26898, y: 1, z: 213.15927}
-  - {x: 135.94229, y: 1, z: 235.49673}
-  - {x: 120.05237, y: 1, z: 258.87805}
-  - {x: 105.66193, y: 1, z: 283.21094}
-  - {x: 92.82776, y: 1, z: 308.39944}
-  - {x: 81.600525, y: 1, z: 334.3441}
-  - {x: 72.024536, y: 1, z: 360.9425}
-  - {x: 64.13751, y: 1, z: 388.08972}
-  - {x: 57.970703, y: 1, z: 415.6786}
-  - {x: 53.54834, y: 1, z: 443.60025}
-  - {x: 50.88797, y: 1, z: 471.74448}
-  - {x: 50, y: 1, z: 500}
-  - {x: 50.88797, y: 1, z: 528.25574}
-  - {x: 53.54837, y: 1, z: 556.39996}
-  - {x: 57.970734, y: 1, z: 584.32166}
-  - {x: 64.1376, y: 1, z: 611.9105}
-  - {x: 72.0246, y: 1, z: 639.05774}
-  - {x: 81.60062, y: 1, z: 665.6561}
-  - {x: 92.82785, y: 1, z: 691.60077}
-  - {x: 105.66202, y: 1, z: 716.78925}
-  - {x: 120.05249, y: 1, z: 741.12213}
-  - {x: 135.94244, y: 1, z: 764.5035}
-  - {x: 153.26913, y: 1, z: 786.84094}
-  - {x: 171.96423, y: 1, z: 808.0463}
-  - {x: 191.95392, y: 1, z: 828.036}
-  - {x: 213.15933, y: 1, z: 846.7311}
-  - {x: 235.49677, y: 1, z: 864.05774}
-  - {x: 258.8781, y: 1, z: 879.94763}
-  - {x: 283.211, y: 1, z: 894.33813}
-  - {x: 308.3995, y: 1, z: 907.17224}
-  - {x: 334.34418, y: 1, z: 918.39954}
-  - {x: 360.94257, y: 1, z: 927.97546}
-  - {x: 388.08978, y: 1, z: 935.8625}
-  - {x: 415.67847, y: 1, z: 942.0293}
-  - {x: 443.6001, y: 1, z: 946.45166}
-  - {x: 471.74432, y: 1, z: 949.11206}
-  - {x: 500.0001, y: 1, z: 950}
-  - {x: 500, y: 1, z: 650}
-  - {x: 509.41858, y: 1, z: 649.704}
-  - {x: 518.8, y: 1, z: 648.8172}
-  - {x: 528.1072, y: 1, z: 647.3431}
-  - {x: 537.30347, y: 1, z: 645.2875}
-  - {x: 546.35254, y: 1, z: 642.65845}
-  - {x: 555.2187, y: 1, z: 639.4665}
-  - {x: 563.8669, y: 1, z: 635.72406}
-  - {x: 572.26306, y: 1, z: 631.446}
-  - {x: 580.374, y: 1, z: 626.6492}
-  - {x: 588.1678, y: 1, z: 621.35254}
-  - {x: 595.6136, y: 1, z: 615.57697}
-  - {x: 602.68207, y: 1, z: 609.3453}
-  - {x: 609.3453, y: 1, z: 602.68207}
-  - {x: 615.577, y: 1, z: 595.6136}
-  - {x: 621.35254, y: 1, z: 588.1678}
-  - {x: 626.6492, y: 1, z: 580.374}
-  - {x: 631.44604, y: 1, z: 572.26306}
-  - {x: 635.72406, y: 1, z: 563.8669}
-  - {x: 639.4665, y: 1, z: 555.2187}
-  - {x: 642.65845, y: 1, z: 546.35254}
-  - {x: 645.2875, y: 1, z: 537.30347}
-  - {x: 647.3431, y: 1, z: 528.1072}
-  - {x: 648.8172, y: 1, z: 518.8}
-  - {x: 649.704, y: 1, z: 509.41855}
-  - {x: 650, y: 1, z: 500}
-  - {x: 649.704, y: 1, z: 490.58142}
-  - {x: 648.8172, y: 1, z: 481.2}
-  - {x: 647.3431, y: 1, z: 471.8928}
-  - {x: 645.2875, y: 1, z: 462.6965}
-  - {x: 642.65845, y: 1, z: 453.64746}
-  - {x: 639.46643, y: 1, z: 444.7813}
-  - {x: 635.72406, y: 1, z: 436.1331}
-  - {x: 631.446, y: 1, z: 427.73694}
-  - {x: 626.6492, y: 1, z: 419.62598}
-  - {x: 621.35254, y: 1, z: 411.83218}
-  - {x: 615.57697, y: 1, z: 404.38638}
-  - {x: 609.3453, y: 1, z: 397.31793}
-  - {x: 602.68207, y: 1, z: 390.65472}
-  - {x: 595.6136, y: 1, z: 384.423}
-  - {x: 588.1678, y: 1, z: 378.64743}
-  - {x: 580.374, y: 1, z: 373.3508}
-  - {x: 572.26306, y: 1, z: 368.554}
-  - {x: 563.8669, y: 1, z: 364.27594}
-  - {x: 555.2186, y: 1, z: 360.5335}
-  - {x: 546.35254, y: 1, z: 357.3415}
-  - {x: 537.30347, y: 1, z: 354.71252}
-  - {x: 528.1072, y: 1, z: 352.65692}
-  - {x: 518.7999, y: 1, z: 351.1828}
-  - {x: 509.41858, y: 1, z: 350.296}
-  - {x: 500, y: 1, z: 350}
-  - {x: 490.58142, y: 1, z: 350.296}
-  - {x: 481.19998, y: 1, z: 351.1828}
-  - {x: 471.8928, y: 1, z: 352.65692}
-  - {x: 462.6965, y: 1, z: 354.71252}
-  - {x: 453.64743, y: 1, z: 357.34155}
-  - {x: 444.78128, y: 1, z: 360.53354}
-  - {x: 436.13306, y: 1, z: 364.27594}
-  - {x: 427.7369, y: 1, z: 368.55402}
-  - {x: 419.62598, y: 1, z: 373.35083}
-  - {x: 411.8322, y: 1, z: 378.64746}
-  - {x: 404.38638, y: 1, z: 384.42303}
-  - {x: 397.31793, y: 1, z: 390.65472}
-  - {x: 390.6547, y: 1, z: 397.31796}
-  - {x: 384.423, y: 1, z: 404.3864}
-  - {x: 378.64743, y: 1, z: 411.83224}
-  - {x: 373.3508, y: 1, z: 419.626}
-  - {x: 368.55396, y: 1, z: 427.737}
-  - {x: 364.27594, y: 1, z: 436.13315}
-  - {x: 360.5335, y: 1, z: 444.78137}
-  - {x: 357.3415, y: 1, z: 453.6475}
-  - {x: 354.71252, y: 1, z: 462.69656}
-  - {x: 352.6569, y: 1, z: 471.89285}
-  - {x: 351.1828, y: 1, z: 481.20007}
-  - {x: 350.296, y: 1, z: 490.58148}
-  - {x: 350, y: 1, z: 500}
-  - {x: 350.296, y: 1, z: 509.41858}
-  - {x: 351.1828, y: 1, z: 518.8}
-  - {x: 352.65692, y: 1, z: 528.10724}
-  - {x: 354.71252, y: 1, z: 537.30347}
-  - {x: 357.34152, y: 1, z: 546.35254}
-  - {x: 360.53354, y: 1, z: 555.2187}
-  - {x: 364.27594, y: 1, z: 563.86694}
-  - {x: 368.55402, y: 1, z: 572.26306}
-  - {x: 373.35083, y: 1, z: 580.374}
-  - {x: 378.64746, y: 1, z: 588.16785}
-  - {x: 384.42303, y: 1, z: 595.61365}
-  - {x: 390.65472, y: 1, z: 602.6821}
-  - {x: 397.318, y: 1, z: 609.34534}
-  - {x: 404.38644, y: 1, z: 615.577}
-  - {x: 411.83228, y: 1, z: 621.3526}
-  - {x: 419.62604, y: 1, z: 626.64923}
-  - {x: 427.737, y: 1, z: 631.44604}
-  - {x: 436.13318, y: 1, z: 635.7241}
-  - {x: 444.78137, y: 1, z: 639.4665}
-  - {x: 453.64752, y: 1, z: 642.6585}
-  - {x: 462.6966, y: 1, z: 645.2875}
-  - {x: 471.89282, y: 1, z: 647.3431}
-  - {x: 481.20004, y: 1, z: 648.8172}
-  - {x: 490.58145, y: 1, z: 649.704}
-  - {x: 500.00003, y: 1, z: 650}
+  - {x: 500, y: 1, z: 990}
+  - {x: 530.76733, y: 1, z: 989.0331}
+  - {x: 561.41327, y: 1, z: 986.1362}
+  - {x: 591.81683, y: 1, z: 981.32074}
+  - {x: 621.85803, y: 1, z: 974.6057}
+  - {x: 651.41833, y: 1, z: 966.0177}
+  - {x: 680.38104, y: 1, z: 955.59045}
+  - {x: 708.63184, y: 1, z: 943.36523}
+  - {x: 736.0593, y: 1, z: 929.39026}
+  - {x: 762.5552, y: 1, z: 913.7207}
+  - {x: 788.0148, y: 1, z: 896.41833}
+  - {x: 812.33777, y: 1, z: 877.5515}
+  - {x: 835.4281, y: 1, z: 857.1946}
+  - {x: 857.19464, y: 1, z: 835.4281}
+  - {x: 877.5515, y: 1, z: 812.33777}
+  - {x: 896.41833, y: 1, z: 788.0148}
+  - {x: 913.7207, y: 1, z: 762.5551}
+  - {x: 929.39026, y: 1, z: 736.05927}
+  - {x: 943.3653, y: 1, z: 708.63184}
+  - {x: 955.59045, y: 1, z: 680.38104}
+  - {x: 966.0177, y: 1, z: 651.41833}
+  - {x: 974.6057, y: 1, z: 621.85803}
+  - {x: 981.3208, y: 1, z: 591.8168}
+  - {x: 986.1362, y: 1, z: 561.4132}
+  - {x: 989.0331, y: 1, z: 530.7673}
+  - {x: 990, y: 1, z: 499.99997}
+  - {x: 989.0331, y: 1, z: 469.2326}
+  - {x: 986.1362, y: 1, z: 438.58667}
+  - {x: 981.32074, y: 1, z: 408.1831}
+  - {x: 974.6057, y: 1, z: 378.1419}
+  - {x: 966.0177, y: 1, z: 348.58167}
+  - {x: 955.59045, y: 1, z: 319.61893}
+  - {x: 943.36523, y: 1, z: 291.3681}
+  - {x: 929.39026, y: 1, z: 263.94064}
+  - {x: 913.72064, y: 1, z: 237.4448}
+  - {x: 896.4183, y: 1, z: 211.98514}
+  - {x: 877.5514, y: 1, z: 187.66217}
+  - {x: 857.1946, y: 1, z: 164.57184}
+  - {x: 835.4281, y: 1, z: 142.80539}
+  - {x: 812.33777, y: 1, z: 122.44849}
+  - {x: 788.0148, y: 1, z: 103.581635}
+  - {x: 762.5551, y: 1, z: 86.2793}
+  - {x: 736.05927, y: 1, z: 70.60971}
+  - {x: 708.6318, y: 1, z: 56.634705}
+  - {x: 680.381, y: 1, z: 44.409485}
+  - {x: 651.4182, y: 1, z: 33.98227}
+  - {x: 621.8579, y: 1, z: 25.394226}
+  - {x: 591.8167, y: 1, z: 18.67923}
+  - {x: 561.41315, y: 1, z: 13.8638}
+  - {x: 530.76733, y: 1, z: 10.966888}
+  - {x: 499.99997, y: 1, z: 10}
+  - {x: 469.2326, y: 1, z: 10.966888}
+  - {x: 438.58664, y: 1, z: 13.8638}
+  - {x: 408.18307, y: 1, z: 18.67926}
+  - {x: 378.14188, y: 1, z: 25.394287}
+  - {x: 348.58157, y: 1, z: 33.98236}
+  - {x: 319.61884, y: 1, z: 44.409576}
+  - {x: 291.36804, y: 1, z: 56.634796}
+  - {x: 263.94058, y: 1, z: 70.6098}
+  - {x: 237.44482, y: 1, z: 86.27936}
+  - {x: 211.98517, y: 1, z: 103.581696}
+  - {x: 187.66217, y: 1, z: 122.44855}
+  - {x: 164.57184, y: 1, z: 142.80542}
+  - {x: 142.80533, y: 1, z: 164.57199}
+  - {x: 122.448456, y: 1, z: 187.66232}
+  - {x: 103.581604, y: 1, z: 211.98532}
+  - {x: 86.27927, y: 1, z: 237.44498}
+  - {x: 70.60965, y: 1, z: 263.9408}
+  - {x: 56.634674, y: 1, z: 291.3683}
+  - {x: 44.409454, y: 1, z: 319.61914}
+  - {x: 33.98227, y: 1, z: 348.58185}
+  - {x: 25.394196, y: 1, z: 378.14215}
+  - {x: 18.6792, y: 1, z: 408.18335}
+  - {x: 13.86377, y: 1, z: 438.5869}
+  - {x: 10.966888, y: 1, z: 469.23288}
+  - {x: 10, y: 1, z: 500}
+  - {x: 10.966888, y: 1, z: 530.7674}
+  - {x: 13.8638, y: 1, z: 561.4133}
+  - {x: 18.67926, y: 1, z: 591.8169}
+  - {x: 25.394287, y: 1, z: 621.8581}
+  - {x: 33.98233, y: 1, z: 651.4184}
+  - {x: 44.409546, y: 1, z: 680.3811}
+  - {x: 56.634766, y: 1, z: 708.63196}
+  - {x: 70.60977, y: 1, z: 736.0594}
+  - {x: 86.27939, y: 1, z: 762.5552}
+  - {x: 103.58176, y: 1, z: 788.0149}
+  - {x: 122.44861, y: 1, z: 812.3379}
+  - {x: 142.80548, y: 1, z: 835.4282}
+  - {x: 164.57205, y: 1, z: 857.1947}
+  - {x: 187.66238, y: 1, z: 877.55164}
+  - {x: 211.98538, y: 1, z: 896.41846}
+  - {x: 237.44504, y: 1, z: 913.7208}
+  - {x: 263.9409, y: 1, z: 929.3904}
+  - {x: 291.36835, y: 1, z: 943.36536}
+  - {x: 319.6192, y: 1, z: 955.5906}
+  - {x: 348.5819, y: 1, z: 966.01776}
+  - {x: 378.1422, y: 1, z: 974.60583}
+  - {x: 408.1832, y: 1, z: 981.3208}
+  - {x: 438.58676, y: 1, z: 986.1362}
+  - {x: 469.23273, y: 1, z: 989.0331}
+  - {x: 500.0001, y: 1, z: 990}
+  - {x: 500, y: 1, z: 663.3333}
+  - {x: 510.2558, y: 1, z: 663.01105}
+  - {x: 520.47107, y: 1, z: 662.0454}
+  - {x: 530.6056, y: 1, z: 660.44025}
+  - {x: 540.6193, y: 1, z: 658.2019}
+  - {x: 550.4728, y: 1, z: 655.33923}
+  - {x: 560.127, y: 1, z: 651.8635}
+  - {x: 569.54395, y: 1, z: 647.78845}
+  - {x: 578.68646, y: 1, z: 643.13007}
+  - {x: 587.5184, y: 1, z: 637.90686}
+  - {x: 596.00494, y: 1, z: 632.1394}
+  - {x: 604.1126, y: 1, z: 625.85046}
+  - {x: 611.8093, y: 1, z: 619.0649}
+  - {x: 619.0649, y: 1, z: 611.8093}
+  - {x: 625.8505, y: 1, z: 604.11255}
+  - {x: 632.1394, y: 1, z: 596.00494}
+  - {x: 637.90686, y: 1, z: 587.5184}
+  - {x: 643.1301, y: 1, z: 578.6864}
+  - {x: 647.78845, y: 1, z: 569.54395}
+  - {x: 651.8635, y: 1, z: 560.127}
+  - {x: 655.33923, y: 1, z: 550.4728}
+  - {x: 658.2019, y: 1, z: 540.6193}
+  - {x: 660.44025, y: 1, z: 530.6056}
+  - {x: 662.0454, y: 1, z: 520.47107}
+  - {x: 663.01105, y: 1, z: 510.25577}
+  - {x: 663.3333, y: 1, z: 500}
+  - {x: 663.01105, y: 1, z: 489.7442}
+  - {x: 662.0454, y: 1, z: 479.5289}
+  - {x: 660.44025, y: 1, z: 469.39438}
+  - {x: 658.2019, y: 1, z: 459.3806}
+  - {x: 655.33923, y: 1, z: 449.52722}
+  - {x: 651.86346, y: 1, z: 439.873}
+  - {x: 647.7884, y: 1, z: 430.45605}
+  - {x: 643.13007, y: 1, z: 421.31354}
+  - {x: 637.90686, y: 1, z: 412.4816}
+  - {x: 632.1394, y: 1, z: 403.99506}
+  - {x: 625.85046, y: 1, z: 395.8874}
+  - {x: 619.0648, y: 1, z: 388.1906}
+  - {x: 611.8093, y: 1, z: 380.93512}
+  - {x: 604.11255, y: 1, z: 374.1495}
+  - {x: 596.0049, y: 1, z: 367.86053}
+  - {x: 587.5184, y: 1, z: 362.09308}
+  - {x: 578.6864, y: 1, z: 356.8699}
+  - {x: 569.54395, y: 1, z: 352.21158}
+  - {x: 560.12695, y: 1, z: 348.1365}
+  - {x: 550.4727, y: 1, z: 344.66077}
+  - {x: 540.6193, y: 1, z: 341.7981}
+  - {x: 530.6056, y: 1, z: 339.55975}
+  - {x: 520.47107, y: 1, z: 337.9546}
+  - {x: 510.25577, y: 1, z: 336.98895}
+  - {x: 500, y: 1, z: 336.6667}
+  - {x: 489.7442, y: 1, z: 336.98895}
+  - {x: 479.52887, y: 1, z: 337.9546}
+  - {x: 469.39435, y: 1, z: 339.55975}
+  - {x: 459.3806, y: 1, z: 341.7981}
+  - {x: 449.5272, y: 1, z: 344.66077}
+  - {x: 439.87296, y: 1, z: 348.13654}
+  - {x: 430.45602, y: 1, z: 352.2116}
+  - {x: 421.31354, y: 1, z: 356.86993}
+  - {x: 412.48163, y: 1, z: 362.09314}
+  - {x: 403.99506, y: 1, z: 367.86057}
+  - {x: 395.8874, y: 1, z: 374.14954}
+  - {x: 388.1906, y: 1, z: 380.93515}
+  - {x: 380.93512, y: 1, z: 388.19067}
+  - {x: 374.14948, y: 1, z: 395.88745}
+  - {x: 367.86053, y: 1, z: 403.99512}
+  - {x: 362.09308, y: 1, z: 412.48166}
+  - {x: 356.86987, y: 1, z: 421.3136}
+  - {x: 352.21155, y: 1, z: 430.4561}
+  - {x: 348.13647, y: 1, z: 439.87305}
+  - {x: 344.66077, y: 1, z: 449.52728}
+  - {x: 341.79807, y: 1, z: 459.3807}
+  - {x: 339.55975, y: 1, z: 469.39444}
+  - {x: 337.9546, y: 1, z: 479.529}
+  - {x: 336.98895, y: 1, z: 489.7443}
+  - {x: 336.6667, y: 1, z: 500}
+  - {x: 336.98895, y: 1, z: 510.2558}
+  - {x: 337.9546, y: 1, z: 520.4711}
+  - {x: 339.55975, y: 1, z: 530.60565}
+  - {x: 341.7981, y: 1, z: 540.6194}
+  - {x: 344.66077, y: 1, z: 550.4728}
+  - {x: 348.13654, y: 1, z: 560.127}
+  - {x: 352.2116, y: 1, z: 569.54395}
+  - {x: 356.86993, y: 1, z: 578.68646}
+  - {x: 362.09314, y: 1, z: 587.51843}
+  - {x: 367.8606, y: 1, z: 596.00494}
+  - {x: 374.14954, y: 1, z: 604.1126}
+  - {x: 380.93518, y: 1, z: 611.8094}
+  - {x: 388.19067, y: 1, z: 619.06494}
+  - {x: 395.88745, y: 1, z: 625.8505}
+  - {x: 403.99512, y: 1, z: 632.13947}
+  - {x: 412.4817, y: 1, z: 637.9069}
+  - {x: 421.31363, y: 1, z: 643.1301}
+  - {x: 430.45612, y: 1, z: 647.78845}
+  - {x: 439.87308, y: 1, z: 651.8635}
+  - {x: 449.5273, y: 1, z: 655.33923}
+  - {x: 459.38074, y: 1, z: 658.2019}
+  - {x: 469.3944, y: 1, z: 660.44025}
+  - {x: 479.52893, y: 1, z: 662.0454}
+  - {x: 489.74423, y: 1, z: 663.01105}
+  - {x: 500.00003, y: 1, z: 663.3333}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 2
@@ -10316,8 +10316,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284a4fc0e9c3ae64d8b105935511ce94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outerBoundaryRadius: 450
-  innerBoundaryRadius: 150
+  outerBoundaryRadius: 490
+  innerBoundaryRadius: 163.33333
   segments: 100
 --- !u!114 &972980151
 MonoBehaviour:
@@ -10331,8 +10331,282 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bb2c50fc1c471e4296a8c795a92c5f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  districtTypes: []
-  generatedDistricts: []
+  importanceOfNeighbours: 0.583
+  importanceOfCityCenterDistance: 0.3
+  importanceOfPrimaryStreetDistance: 0.2
+  districtTypes:
+  - name: Kernbezirke
+    color: {r: 0.8679245, g: 0.20797431, b: 0.8018116, a: 1}
+    distanceFromCenter: 0
+    distanceToPrimaryStreets: 1
+    minNumberOfPlacements: 1
+    maxNumberOfPlacements: 1
+    innerBoundaries: 1
+    outerBoundaries: 0
+  - name: Wohngebiet
+    color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
+    distanceFromCenter: 5
+    distanceToPrimaryStreets: 3
+    minNumberOfPlacements: 3
+    maxNumberOfPlacements: 3
+    innerBoundaries: 1
+    outerBoundaries: 1
+  - name: Industrie
+    color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+    distanceFromCenter: 8
+    distanceToPrimaryStreets: 7
+    minNumberOfPlacements: 2
+    maxNumberOfPlacements: 2
+    innerBoundaries: 0
+    outerBoundaries: 1
+  - name: Gewerbe
+    color: {r: 0.28014964, g: 0.8962264, b: 0.25703093, a: 1}
+    distanceFromCenter: 2
+    distanceToPrimaryStreets: 1
+    minNumberOfPlacements: 2
+    maxNumberOfPlacements: 2
+    innerBoundaries: 1
+    outerBoundaries: 1
+  - name: Verkehrsknotenpunkte
+    color: {r: 1, g: 0.9524385, b: 0, a: 1}
+    distanceFromCenter: 4
+    distanceToPrimaryStreets: 2
+    minNumberOfPlacements: 3
+    maxNumberOfPlacements: 3
+    innerBoundaries: 0
+    outerBoundaries: 1
+  generatedDistricts:
+  - name: Kernbezirke
+    position: {x: 586.4094, y: 1, z: 551.2736}
+    type:
+      name: Kernbezirke
+      color: {r: 0.8679245, g: 0.20797431, b: 0.8018116, a: 1}
+      distanceFromCenter: 0
+      distanceToPrimaryStreets: 1
+      minNumberOfPlacements: 1
+      maxNumberOfPlacements: 1
+      innerBoundaries: 1
+      outerBoundaries: 0
+  - name: Kernbezirke
+    position: {x: 436.5799, y: 1, z: 617.9587}
+    type:
+      name: Kernbezirke
+      color: {r: 0.8679245, g: 0.20797431, b: 0.8018116, a: 1}
+      distanceFromCenter: 0
+      distanceToPrimaryStreets: 1
+      minNumberOfPlacements: 1
+      maxNumberOfPlacements: 1
+      innerBoundaries: 1
+      outerBoundaries: 0
+  - name: Kernbezirke
+    position: {x: 436.6659, y: 1, z: 444.50113}
+    type:
+      name: Kernbezirke
+      color: {r: 0.8679245, g: 0.20797431, b: 0.8018116, a: 1}
+      distanceFromCenter: 0
+      distanceToPrimaryStreets: 1
+      minNumberOfPlacements: 1
+      maxNumberOfPlacements: 1
+      innerBoundaries: 1
+      outerBoundaries: 0
+  - name: Gewerbe
+    position: {x: 152.81612, y: 1, z: 382.66644}
+    type:
+      name: Gewerbe
+      color: {r: 0.28014964, g: 0.8962264, b: 0.25703093, a: 1}
+      distanceFromCenter: 2
+      distanceToPrimaryStreets: 1
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 1
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 614.79803, y: 1, z: 307.46243}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 8
+      distanceToPrimaryStreets: 7
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Wohngebiet
+    position: {x: 756.22235, y: 1, z: 744.51117}
+    type:
+      name: Wohngebiet
+      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
+      distanceFromCenter: 5
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
+      innerBoundaries: 1
+      outerBoundaries: 1
+  - name: Wohngebiet
+    position: {x: 433.27618, y: 1, z: 280.2683}
+    type:
+      name: Wohngebiet
+      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
+      distanceFromCenter: 5
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
+      innerBoundaries: 1
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 845.0116, y: 1, z: 517.01245}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 8
+      distanceToPrimaryStreets: 7
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 257.9497, y: 1, z: 683.69183}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 8
+      distanceToPrimaryStreets: 7
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Wohngebiet
+    position: {x: 886.8431, y: 1, z: 300.2683}
+    type:
+      name: Wohngebiet
+      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
+      distanceFromCenter: 5
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
+      innerBoundaries: 1
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 175.24562, y: 1, z: 142.27899}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 8
+      distanceToPrimaryStreets: 7
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Verkehrsknotenpunkte
+    position: {x: 726.8874, y: 1, z: 103.26981}
+    type:
+      name: Verkehrsknotenpunkte
+      color: {r: 1, g: 0.9524385, b: 0, a: 1}
+      distanceFromCenter: 4
+      distanceToPrimaryStreets: 2
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Verkehrsknotenpunkte
+    position: {x: 415.54984, y: 1, z: 817.4948}
+    type:
+      name: Verkehrsknotenpunkte
+      color: {r: 1, g: 0.9524385, b: 0, a: 1}
+      distanceFromCenter: 4
+      distanceToPrimaryStreets: 2
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 274.28238, y: 1, z: 485.4721}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 8
+      distanceToPrimaryStreets: 7
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Wohngebiet
+    position: {x: 370.86987, y: 1, z: 78.69237}
+    type:
+      name: Wohngebiet
+      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
+      distanceFromCenter: 5
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
+      innerBoundaries: 1
+      outerBoundaries: 1
+  - name: Verkehrsknotenpunkte
+    position: {x: 613.13385, y: 1, z: 895.77594}
+    type:
+      name: Verkehrsknotenpunkte
+      color: {r: 1, g: 0.9524385, b: 0, a: 1}
+      distanceFromCenter: 4
+      distanceToPrimaryStreets: 2
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Wohngebiet
+    position: {x: 519.3063, y: 1, z: 146.72804}
+    type:
+      name: Wohngebiet
+      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
+      distanceFromCenter: 5
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 3
+      innerBoundaries: 1
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 579.02136, y: 1, z: 713.1688}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 8
+      distanceToPrimaryStreets: 7
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Gewerbe
+    position: {x: 66.84608, y: 1, z: 612.0646}
+    type:
+      name: Gewerbe
+      color: {r: 0.28014964, g: 0.8962264, b: 0.25703093, a: 1}
+      distanceFromCenter: 2
+      distanceToPrimaryStreets: 1
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 1
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 107.097275, y: 1, z: 763.35516}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 8
+      distanceToPrimaryStreets: 7
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 226.44139, y: 1, z: 863.60345}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 8
+      distanceToPrimaryStreets: 7
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 2
+      innerBoundaries: 0
+      outerBoundaries: 1
   numberOfDistricts: 20
   sampleRegionSize: {x: 900, y: 1, z: 900}
   rejectionSamples: 30

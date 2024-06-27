@@ -5,8 +5,8 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class CityBoundaries : MonoBehaviour
 {
-    [SerializeField] public float outerBoundaryRadius = 450f;
-    [SerializeField] private float innerBoundaryRadius;
+    [Range(10, 490)] public float outerBoundaryRadius = 450f;
+    [SerializeField, Range(3, 480)] private float innerBoundaryRadius;
     [SerializeField] private int segments = 500;
 
     private LineRenderer lineRenderer;
@@ -53,17 +53,35 @@ public class CityBoundaries : MonoBehaviour
         }
     }
 
-    public List<Vector3> CheckPointsPosition(List<Vector3> points)
+    // 
+    public List<Vector3> CheckWithinBoundaries(List<Vector3> points, string radiusType)
     {
         List<Vector3> pointsInRadius = new List<Vector3>();
         Vector3 center = transform.position;
+        float radius = 0f;
 
-        foreach (Vector3 point in points)
+        switch (radiusType)
         {
-            float distance = Vector3.Distance(point, center);
-            if (distance < outerBoundaryRadius)
+            case "inner":
+                radius = innerBoundaryRadius;
+                break;
+            case "outer":
+                radius = outerBoundaryRadius;
+                break;
+            default:
+                Debug.Log("radiusType is not inner or outer");
+                break;
+        }
+
+        if (radius != 0f)
+        {
+            foreach (Vector3 point in points)
             {
-                pointsInRadius.Add(point);
+                float distance = Vector3.Distance(point, center);
+                if (distance < radius)
+                {
+                    pointsInRadius.Add(point);
+                }
             }
         }
 
