@@ -10300,7 +10300,7 @@ MonoBehaviour:
     distanceFromCenter: 0
     distanceToPrimaryStreets: 1
     minNumberOfPlacements: 1
-    maxNumberOfPlacements: 1
+    maxNumberOfPlacements: 2
     innerBoundaries: 1
     outerBoundaries: 0
   - name: Wohngebiet
@@ -10308,7 +10308,7 @@ MonoBehaviour:
     distanceFromCenter: 5
     distanceToPrimaryStreets: 3
     minNumberOfPlacements: 3
-    maxNumberOfPlacements: 3
+    maxNumberOfPlacements: 5
     innerBoundaries: 1
     outerBoundaries: 1
   - name: Industrie
@@ -10316,7 +10316,7 @@ MonoBehaviour:
     distanceFromCenter: 9
     distanceToPrimaryStreets: 3
     minNumberOfPlacements: 2
-    maxNumberOfPlacements: 2
+    maxNumberOfPlacements: 4
     innerBoundaries: 0
     outerBoundaries: 1
   - name: Gewerbe
@@ -10324,7 +10324,7 @@ MonoBehaviour:
     distanceFromCenter: 2
     distanceToPrimaryStreets: 2
     minNumberOfPlacements: 2
-    maxNumberOfPlacements: 2
+    maxNumberOfPlacements: 4
     innerBoundaries: 1
     outerBoundaries: 1
   - name: Verkehrsknotenpunkte
@@ -10332,572 +10332,253 @@ MonoBehaviour:
     distanceFromCenter: 5
     distanceToPrimaryStreets: 2
     minNumberOfPlacements: 3
-    maxNumberOfPlacements: 3
+    maxNumberOfPlacements: 4
     innerBoundaries: 0
     outerBoundaries: 1
   generatedDistricts:
   - name: Wohngebiet
-    position: {x: 465.30295, y: 1, z: 356.03143}
+    position: {x: 591.6566, y: 1, z: 528.6193}
     type:
       name: Wohngebiet
       color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
       distanceFromCenter: 5
       distanceToPrimaryStreets: 3
       minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
+      maxNumberOfPlacements: 5
       innerBoundaries: 1
       outerBoundaries: 1
   - name: Wohngebiet
-    position: {x: 390.1108, y: 1, z: 409.7871}
+    position: {x: 457.36105, y: 1, z: 621.2942}
     type:
       name: Wohngebiet
       color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
       distanceFromCenter: 5
       distanceToPrimaryStreets: 3
       minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
+      maxNumberOfPlacements: 5
       innerBoundaries: 1
       outerBoundaries: 1
   - name: Wohngebiet
-    position: {x: 344.61456, y: 1, z: 495.88205}
+    position: {x: 433.014, y: 1, z: 487.2852}
     type:
       name: Wohngebiet
       color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
       distanceFromCenter: 5
       distanceToPrimaryStreets: 3
       minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
-      innerBoundaries: 1
-      outerBoundaries: 1
-  - name: Gewerbe
-    position: {x: 529.2669, y: 1, z: 491.0417}
-    type:
-      name: Gewerbe
-      color: {r: 0.28014964, g: 0.8962264, b: 0.25703093, a: 1}
-      distanceFromCenter: 2
-      distanceToPrimaryStreets: 2
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 1
-      outerBoundaries: 1
-  - name: Gewerbe
-    position: {x: 607.11035, y: 1, z: 437.8894}
-    type:
-      name: Gewerbe
-      color: {r: 0.28014964, g: 0.8962264, b: 0.25703093, a: 1}
-      distanceFromCenter: 2
-      distanceToPrimaryStreets: 2
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
+      maxNumberOfPlacements: 5
       innerBoundaries: 1
       outerBoundaries: 1
   - name: Wohngebiet
-    position: {x: 393.9708, y: 1, z: 594.1427}
+    position: {x: 434.3302, y: 1, z: 310.42892}
     type:
       name: Wohngebiet
       color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
       distanceFromCenter: 5
       distanceToPrimaryStreets: 3
       minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
-      innerBoundaries: 1
-      outerBoundaries: 1
-  - name: Wohngebiet
-    position: {x: 434.8969, y: 1, z: 497.10315}
-    type:
-      name: Wohngebiet
-      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
-      distanceFromCenter: 5
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
-      innerBoundaries: 1
-      outerBoundaries: 1
-  - name: Gewerbe
-    position: {x: 532.68396, y: 1, z: 585.3267}
-    type:
-      name: Gewerbe
-      color: {r: 0.28014964, g: 0.8962264, b: 0.25703093, a: 1}
-      distanceFromCenter: 2
-      distanceToPrimaryStreets: 2
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 1
-      outerBoundaries: 1
-  - name: Wohngebiet
-    position: {x: 646.45233, y: 1, z: 356.95746}
-    type:
-      name: Wohngebiet
-      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
-      distanceFromCenter: 5
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
-      innerBoundaries: 1
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 326.06934, y: 1, z: 259.72424}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 469.66214, y: 1, z: 178.40034}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 168.05058, y: 1, z: 515.7538}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 181.84836, y: 1, z: 302.49722}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 202.5804, y: 1, z: 213.80794}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 593.3167, y: 1, z: 243.52672}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 362.4656, y: 1, z: 132.00546}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 277.16104, y: 1, z: 367.57297}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 610.95703, y: 1, z: 153.99806}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 126.43387, y: 1, z: 403.4982}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 424.60828, y: 1, z: 271.44467}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 519.99023, y: 1, z: 96.01248}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 786.0751, y: 1, z: 395.07758}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 684.44305, y: 1, z: 241.14017}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 191.91483, y: 1, z: 616.8613}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 309.65436, y: 1, z: 626.5438}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Wohngebiet
-    position: {x: 677.50934, y: 1, z: 497.35757}
-    type:
-      name: Wohngebiet
-      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
-      distanceFromCenter: 5
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
-      innerBoundaries: 1
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 234.57347, y: 1, z: 726.1981}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 557.1944, y: 1, z: 345.47818}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 134.24483, y: 1, z: 689.8961}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 372.34985, y: 1, z: 822.2266}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 875.9844, y: 1, z: 513.2981}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 439.0735, y: 1, z: 686.8874}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 789.3942, y: 1, z: 300.79703}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 762.7688, y: 1, z: 610.1892}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 497.68945, y: 1, z: 851.8419}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 898.58307, y: 1, z: 402.17734}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Wohngebiet
-    position: {x: 539.96094, y: 1, z: 749.24316}
-    type:
-      name: Wohngebiet
-      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
-      distanceFromCenter: 5
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
+      maxNumberOfPlacements: 5
       innerBoundaries: 1
       outerBoundaries: 1
   - name: Verkehrsknotenpunkte
-    position: {x: 335.12753, y: 1, z: 738.72485}
+    position: {x: 309.39246, y: 1, z: 648.5338}
     type:
       name: Verkehrsknotenpunkte
       color: {r: 1, g: 0.9524385, b: 0, a: 1}
       distanceFromCenter: 5
       distanceToPrimaryStreets: 2
       minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 702.2929, y: 1, z: 150.23677}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
+      maxNumberOfPlacements: 4
       innerBoundaries: 0
       outerBoundaries: 1
   - name: Wohngebiet
-    position: {x: 773.6879, y: 1, z: 520.32623}
+    position: {x: 763.63916, y: 1, z: 536.0376}
     type:
       name: Wohngebiet
       color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
       distanceFromCenter: 5
       distanceToPrimaryStreets: 3
       minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
+      maxNumberOfPlacements: 5
       innerBoundaries: 1
       outerBoundaries: 1
-  - name: Verkehrsknotenpunkte
-    position: {x: 657.9382, y: 1, z: 733.99835}
-    type:
-      name: Verkehrsknotenpunkte
-      color: {r: 1, g: 0.9524385, b: 0, a: 1}
-      distanceFromCenter: 5
-      distanceToPrimaryStreets: 2
-      minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 255.91426, y: 1, z: 821.75073}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Verkehrsknotenpunkte
-    position: {x: 264.53592, y: 1, z: 546.64404}
-    type:
-      name: Verkehrsknotenpunkte
-      color: {r: 1, g: 0.9524385, b: 0, a: 1}
-      distanceFromCenter: 5
-      distanceToPrimaryStreets: 2
-      minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 591.6497, y: 1, z: 849.9465}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 680.64307, y: 1, z: 861.07294}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 867.28204, y: 1, z: 652.5568}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 669.1142, y: 1, z: 630.28046}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 784.66376, y: 1, z: 203.50302}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 734.17883, y: 1, z: 789.7033}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
-  - name: Industrie
-    position: {x: 819.10486, y: 1, z: 734.37854}
-    type:
-      name: Industrie
-      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
-      distanceFromCenter: 9
-      distanceToPrimaryStreets: 3
-      minNumberOfPlacements: 2
-      maxNumberOfPlacements: 2
-      innerBoundaries: 0
-      outerBoundaries: 1
   - name: Wohngebiet
-    position: {x: 579.0819, y: 1, z: 663.69836}
+    position: {x: 289.2106, y: 1, z: 446.96243}
     type:
       name: Wohngebiet
       color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
       distanceFromCenter: 5
       distanceToPrimaryStreets: 3
       minNumberOfPlacements: 3
-      maxNumberOfPlacements: 3
+      maxNumberOfPlacements: 5
       innerBoundaries: 1
       outerBoundaries: 1
-  numberOfDistricts: 43
+  - name: Industrie
+    position: {x: 267.11182, y: 1, z: 258.1639}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 4
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 404.31628, y: 1, z: 788.751}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 4
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 867.75867, y: 1, z: 353.3686}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 4
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 593.212, y: 1, z: 279.1743}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 4
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 760.8899, y: 1, z: 202.28732}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 4
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 725.20905, y: 1, z: 368.9991}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 4
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Wohngebiet
+    position: {x: 570.6769, y: 1, z: 754.06384}
+    type:
+      name: Wohngebiet
+      color: {r: 0.312626, g: 0.7987677, b: 0.866, a: 1}
+      distanceFromCenter: 5
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 3
+      maxNumberOfPlacements: 5
+      innerBoundaries: 1
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 576.27234, y: 1, z: 134.08061}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 4
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 404.33328, y: 1, z: 108.21475}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 4
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 172.51512, y: 1, z: 364.33655}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 4
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 695.87805, y: 1, z: 824.15985}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 4
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 799.6793, y: 1, z: 674.2647}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 4
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 233.77858, y: 1, z: 786.23645}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 4
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 536.3005, y: 1, z: 898.4213}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 4
+      innerBoundaries: 0
+      outerBoundaries: 1
+  - name: Industrie
+    position: {x: 194.50124, y: 1, z: 575.256}
+    type:
+      name: Industrie
+      color: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+      distanceFromCenter: 9
+      distanceToPrimaryStreets: 3
+      minNumberOfPlacements: 2
+      maxNumberOfPlacements: 4
+      innerBoundaries: 0
+      outerBoundaries: 1
+  numberOfDistricts: 19
   sampleRegionSize: {x: 900, y: 1, z: 900}
   rejectionSamples: 30
   displayRadius: 10

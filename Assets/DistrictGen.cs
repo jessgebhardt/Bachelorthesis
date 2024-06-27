@@ -11,7 +11,11 @@ public class DistrictGen : MonoBehaviour
 
     [SerializeField] private DistrictType[] districtTypes;
     [SerializeField] private List<District> generatedDistricts = new List<District>();
-    [SerializeField] private int numberOfDistricts;
+    [SerializeField, Min(0)] private int numberOfDistricts;
+    private int minNumberOfDistricts;
+    private int maxNumberOfDistricts;
+    // private List<Vector3> coreDistrictLocations; // generate Core and Outer seperately?? -> damit man die Bezirke einfacher verteilen kan aufgrund von der min und max anzahl, don't forget!!!
+    // private List<Vector3> outerDistrictLocations;
 
     [SerializeField] private Vector3 sampleRegionSize = new Vector3(1000, 1, 1000); // Muss nicht vom User eingestellt werden, später noch ändern
     [SerializeField] private int rejectionSamples = 30;
@@ -23,14 +27,26 @@ public class DistrictGen : MonoBehaviour
     private void OnValidate()
     {
         cityBoundaries = gameObject.GetComponent<CityBoundaries>();
+        CalculateMinAndMaxDistricts();
         GenerateCandidatePositions();
         SelectDistrictPositions();
     }
 
+    private void CalculateMinAndMaxDistricts()
+    {
+        minNumberOfDistricts = 0;
+        maxNumberOfDistricts = 0;
+        foreach (DistrictType districtType in districtTypes)
+        {
+            minNumberOfDistricts += districtType.minNumberOfPlacements;
+            maxNumberOfDistricts += districtType.maxNumberOfPlacements;
+        }
+    }
+
     private void GenerateCandidatePositions()
     {
-        List<Vector3> allPoints = PoissonDiskSampling.GenerateDistrictPoints(sampleRegionSize, numberOfDistricts, cityBoundaries.outerBoundaryRadius, cityBoundaries.transform.position, rejectionSamples);
-        Debug.Log(allPoints.Count);
+        List<Vector3> allPoints = PoissonDiskSampling.GenerateDistrictPoints(sampleRegionSize, numberOfDistricts, minNumberOfDistricts, maxNumberOfDistricts, cityBoundaries.outerBoundaryRadius, cityBoundaries.transform.position, rejectionSamples);
+        numberOfDistricts = PoissonDiskSampling.ValidateNumberOfDistricts(numberOfDistricts, minNumberOfDistricts, maxNumberOfDistricts, false);
         candidatePoints = allPoints;
     }
 
@@ -43,7 +59,7 @@ public class DistrictGen : MonoBehaviour
         }
         generatedDistricts.Clear();
 
-        // Anfang mit Kernbezirken, da nur in den inneren Grenzen
+        // Maybe generate Points for core and outer seperately?
         List<Vector3> coreDistrictLocations = cityBoundaries.CheckWithinBoundaries(candidatePoints, "inner");
         foreach (Vector3 coreLocation in coreDistrictLocations)
         {

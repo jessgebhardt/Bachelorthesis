@@ -3,9 +3,13 @@ using UnityEngine;
 
 public class PoissonDiskSampling : MonoBehaviour
 {
-    public static List<Vector3> GenerateDistrictPoints(Vector3 sampleRegionSize, int numberOfDistricts, float cityRadius, Vector3 cityCenter, int numSampleBeforeRejection = 30)
+    public static List<Vector3> GenerateDistrictPoints(Vector3 sampleRegionSize, int numberOfDistricts, int minNumberOfDistricts, int maxNumberOfDistricts, float cityRadius, Vector3 cityCenter, int numSampleBeforeRejection = 30)
     {
-        float districtRadius = CalculateDistrictRadius(numberOfDistricts, cityRadius);
+        // Fix numberOfDistricts!!!!!!!!!!
+
+        int districts = ValidateNumberOfDistricts(numberOfDistricts, minNumberOfDistricts, maxNumberOfDistricts, true);
+
+        float districtRadius = CalculateDistrictRadius(districts, cityRadius);
 
         float cellSize = districtRadius / Mathf.Sqrt(2);
         int[,] grid = new int[Mathf.CeilToInt(sampleRegionSize.x / cellSize), Mathf.CeilToInt(sampleRegionSize.z / cellSize)];
@@ -13,7 +17,7 @@ public class PoissonDiskSampling : MonoBehaviour
         List<Vector3> spawnPoints = new List<Vector3>();
 
         spawnPoints.Add(new Vector3(sampleRegionSize.x/2, 1, sampleRegionSize.z / 2));
-        while (spawnPoints.Count > 0 /*&& points.Count < numberOfDistricts*/) // vorerst removed, bis bessere Methode gefunden, um Punkteanzahl zu kontrollieren
+        while (spawnPoints.Count > 0 /*&& points.Count < districts*/) // vorerst removed, bis bessere Methode gefunden, um Punkteanzahl zu kontrollieren
         {
             int spawnIndex = Random.Range(0, spawnPoints.Count);
             Vector3 spawnCentre = spawnPoints[spawnIndex];
@@ -81,7 +85,22 @@ public class PoissonDiskSampling : MonoBehaviour
         float cityArea = Mathf.PI * cityRadius * cityRadius;
         float areaPerDistrict = cityArea / numberOfDistricts*2;
         float adjustedDistrictRadius = Mathf.Sqrt(areaPerDistrict / Mathf.PI);
-        Debug.Log(adjustedDistrictRadius);
         return adjustedDistrictRadius;
+    }
+
+    public static int ValidateNumberOfDistricts(int setNumber, int minNumber, int maxNumber, bool warning)
+    {
+        int districts = setNumber;
+        if (setNumber < minNumber)
+        {
+            districts = minNumber;
+            if (warning) Debug.LogWarning("numberOfDistricts was too low and has been set to the minimum number of provided districts");
+        }
+        else if (setNumber > maxNumber)
+        {
+            districts = maxNumber;
+            if (warning) Debug.LogWarning("numberOfDistricts was too high and has been set to the maximum number of provided districts");
+        }
+        return districts;
     }
 }
