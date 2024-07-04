@@ -24,12 +24,17 @@ public class DistrictGen : MonoBehaviour
     private List<Vector3> candidatePoints;
     private CityBoundaries cityBoundaries;
 
+    [SerializeField] private GameObject voronoiDiagram;
+    private VoronoiDiagram voronoiScript;
+
     private void OnValidate()
     {
         cityBoundaries = gameObject.GetComponent<CityBoundaries>();
         CalculateMinAndMaxDistricts();
         GenerateCandidatePositions();
         SelectDistrictPositions();
+        voronoiScript = voronoiDiagram.GetComponent<VoronoiDiagram>();
+        voronoiScript.GenerateVoronoiDiagram(generatedDistricts, new Vector2(sampleRegionSize.x+100, sampleRegionSize.z+100)); // Why 100??? and why did i have to rotate the plane?? so many questions
     }
 
     private void CalculateMinAndMaxDistricts()
@@ -293,7 +298,7 @@ public class DistrictGen : MonoBehaviour
 }
 
 [System.Serializable]
-struct DistrictType
+public struct DistrictType
 {
     public string name;
     public Color color;
@@ -308,16 +313,16 @@ struct DistrictType
 }
 
 [System.Serializable]
-struct District
+public struct District
 {
     public string name;
     public Vector3 position;
     public DistrictType type;
 }
 
-[System.Serializable]
-public struct AttractionRepulsion
-{
-    public string districtName;
-    public float value;
-}
+//[System.Serializable]
+//public struct AttractionRepulsion
+//{
+//    public string districtName;
+//    public float value;
+//}
