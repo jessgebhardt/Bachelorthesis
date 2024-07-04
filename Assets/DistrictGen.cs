@@ -34,7 +34,7 @@ public class DistrictGen : MonoBehaviour
         GenerateCandidatePositions();
         SelectDistrictPositions();
         voronoiScript = voronoiDiagram.GetComponent<VoronoiDiagram>();
-        voronoiScript.GenerateVoronoiDiagram(generatedDistricts, new Vector2(sampleRegionSize.x+100, sampleRegionSize.z+100)); // Why 100??? and why did i have to rotate the plane?? so many questions
+        voronoiScript.GenerateVoronoiDiagram(generatedDistricts, (int)sampleRegionSize.x+100); // Why 100??? and why did i have to rotate the plane?? so many questions
     }
 
     private void CalculateMinAndMaxDistricts()

@@ -6,38 +6,7 @@ using UnityEngine;
 
 public class VoronoiDiagram : MonoBehaviour
 {
-    // Not fully functional
-    public void GenerateVoronoiDiagram(List<District> districts, Vector2 size)
-    {
-        CreateVoronoiDiagram(districts, (int)size.x);
-        //int width = Mathf.RoundToInt(size.x);
-        //int height = Mathf.RoundToInt(size.y);
-
-        //Texture2D texture = new Texture2D(width, height);
-
-        //for (int x = 0; x < width; x++)
-        //{
-        //    for (int z = 0; z < height; z++)
-        //    {
-        //        var lowestDelta = new { pointId = 0, delta = float.MaxValue };
-        //        for (int i = 0; i < districts.Count; i++)
-        //        {
-        //            float delta = Vector2.Distance(new Vector2(x, z), new Vector2(districts[i].position.x, districts[i].position.z));
-        //            if (delta < lowestDelta.delta)
-        //            {
-        //                lowestDelta = new { pointId = i, delta = delta };
-        //            }
-        //        }
-
-        //        District activePoint = districts[lowestDelta.pointId];
-        //        texture.SetPixel(x, z, activePoint.type.color);
-        //    }
-        //}
-        //texture.Apply();
-        //quad.GetComponent<Renderer>().material.mainTexture = texture;
-    }
-
-    public void CreateVoronoiDiagram(List<District> districts, int size)
+    public void GenerateVoronoiDiagram(List<District> districts, int size)
     {
         int regionAmount = districts.Count;
 
