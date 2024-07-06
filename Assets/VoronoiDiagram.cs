@@ -1,4 +1,3 @@
-using Palmmedia.ReportGenerator.Core;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -6,7 +5,7 @@ using UnityEngine;
 
 public class VoronoiDiagram : MonoBehaviour
 {
-    public void GenerateVoronoiDiagram(List<District> districts, int size)
+    public void GenerateVoronoiDiagram(List<District> districts, int size, LineRenderer lineRenderer)
     {
         int regionAmount = districts.Count;
 
@@ -43,13 +42,20 @@ public class VoronoiDiagram : MonoBehaviour
             }
         }
 
+        int[] closestRegionIndices = new int[size * size];
+
         Parallel.For(0, size * size, index =>
         {
+            // Position des aktuellen Pixels
             Vector2 pixelPosition = pixelPositions[index];
+
+            // Kleinste gefundene Distanz zum nächsten Bezirkpunkt
             float minDistance = float.MaxValue;
+
+            // Index des nächsten Bezirkpunkts
             int closestRegionIndex = 0;
 
-            // Find closest region
+            // Berechnung der Distanz zu jedem Punkt & Zuweisung
             for (int i = 0; i < regionAmount; i++)
             {
                 float distance = Vector2.Distance(pixelPosition, points[i]);
@@ -60,10 +66,55 @@ public class VoronoiDiagram : MonoBehaviour
                 }
             }
 
-            // Assign color
+            // Zuweisung des nächsten Bezirks für Bezirksgrenzen
+            closestRegionIndices[index] = closestRegionIndex;
+
+            // Zuweisung der Farbe des Bezirks
             pixelColors[index] = regionColors[closestRegionIndex];
+        });
+
+        // Generierung der Bezirksgrenzen
+        Parallel.For(0, size * size, index =>
+        {
+            int x = index % size;
+            int y = index / size;
+
+            int currentRegionIndex = closestRegionIndices[index];
+
+            // Überprüfung der Nachbarpixel
+            bool isBorder = false;
+
+            // Links
+            if (x > 0 && closestRegionIndices[index - 1] != currentRegionIndex)
+            {
+                isBorder = true;
+            }
+
+            // Rechts
+            if (x < size - 1 && closestRegionIndices[index + 1] != currentRegionIndex)
+            {
+                isBorder = true;
+            }
+
+            // Oben
+            if (y > 0 && closestRegionIndices[index - size] != currentRegionIndex)
+            {
+                isBorder = true;
+            }
+
+            // Unten
+            if (y < size - 1 && closestRegionIndices[index + size] != currentRegionIndex)
+            {
+                isBorder = true;
+            }
+
+            if (isBorder)
+            {
+                pixelColors[index] = Color.black;
+            }
         });
 
         return pixelColors;
     }
+
 }
