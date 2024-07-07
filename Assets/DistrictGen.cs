@@ -26,6 +26,7 @@ public class DistrictGen : MonoBehaviour
 
     // SerializeField] private Material primaryRoadMaterial;
     [SerializeField] private GameObject voronoiDiagram;
+    [SerializeField] private int distictCellDistortion;
     private VoronoiDiagram voronoiScript;
 
     private void OnValidate()
@@ -35,7 +36,7 @@ public class DistrictGen : MonoBehaviour
         GenerateCandidatePositions();
         SelectDistrictPositions();
         voronoiScript = voronoiDiagram.GetComponent<VoronoiDiagram>();
-        voronoiScript.GenerateVoronoiDiagram(generatedDistricts, (int)sampleRegionSize.x+100, gameObject.GetComponent<LineRenderer>()); // Why 100??? and why did i have to rotate the plane?? so many questions
+        voronoiScript.GenerateVoronoiDiagram(generatedDistricts, (int)sampleRegionSize.x+100, distictCellDistortion); // Why 100??? and why did i have to rotate the plane?? so many questions
     }
 
     private void CalculateMinAndMaxDistricts()

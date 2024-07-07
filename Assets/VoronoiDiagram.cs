@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using static UnityEngine.UI.GridLayoutGroup;
 
 public class VoronoiDiagram : MonoBehaviour
 {
     private Dictionary<int, List<Vector2>> regionCorners = new Dictionary<int, List<Vector2>>();
     private List<Vector2> sortedVectors = new List<Vector2>();
+    private Vector2[] randomPoints;
+    private Color[] randomPointColors;
 
-    public void GenerateVoronoiDiagram(List<District> districts, int size, LineRenderer lineRenderer)
+    public void GenerateVoronoiDiagram(List<District> districts, int size, int cellDistortion)
     {
         int regionAmount = districts.Count;
 
@@ -21,7 +24,7 @@ public class VoronoiDiagram : MonoBehaviour
             regionColors[i] = districts[i].type.color;
         }
 
-        Color[] pixelColors = GenerateVoronoi(size, regionAmount, points, regionColors);
+        Color[] pixelColors = GenerateDistortedVoronoi(size, regionAmount, points, regionColors, cellDistortion);
 
         Texture2D myTexture = new Texture2D(size, size)
         {
@@ -33,7 +36,42 @@ public class VoronoiDiagram : MonoBehaviour
         GetComponent<Renderer>().material.mainTexture = myTexture;
     }
 
-    public Color[] GenerateVoronoi(int size, int regionAmount, Vector2[] points, Color[] regionColors)
+    public Color[] GenerateDistortedVoronoi(int size, int regionAmount, Vector2[] points, Color[] regionColors, int randomPointCount)
+    {
+        // Initiales Voronoi-Diagramm berechnen (nur Bezirkspositionen)
+        Color[] initialVoronoi = GenerateVoronoi(size, regionAmount, points, regionColors, false);
+
+        // Zufälliges Verformen von den Bezirken/Voronoizellen
+        if (randomPointCount > 0)
+        {
+            randomPoints = new Vector2[randomPointCount+regionAmount];
+            randomPointColors = new Color[randomPointCount+regionAmount];
+
+            System.Random rand = new System.Random();
+
+            for (int i = 0; i < randomPointCount + regionAmount; i++)
+            {
+                randomPoints[i] = new Vector2(rand.Next(size), rand.Next(size));
+                int pixelIndex = (int)randomPoints[i].x + (int)randomPoints[i].y * size;
+                randomPointColors[i] = initialVoronoi[pixelIndex];
+            }
+
+            // Ursprüngliche Punkte und Farben hinzufügen
+            for (int i = 0; i < regionAmount; i++)
+            {
+                randomPoints[randomPointCount + i] = points[i];
+                randomPointColors[randomPointCount + i] = regionColors[i];
+            }
+
+            // Neues Voronoi-Diagramm basierend auf neuen und alten Punkten berechnen
+            Color[] distortedVoronoi = GenerateVoronoi(size, randomPointCount + regionAmount, randomPoints, randomPointColors, false);
+
+            return distortedVoronoi;
+        }
+        return initialVoronoi;
+    }
+
+    public Color[] GenerateVoronoi(int size, int regionAmount, Vector2[] points, Color[] regionColors, bool borders)
     {
         Color[] pixelColors = new Color[size * size];
         Vector2[] pixelPositions = new Vector2[size * size];
@@ -77,13 +115,18 @@ public class VoronoiDiagram : MonoBehaviour
             pixelColors[index] = regionColors[closestRegionIndex];
         });
 
-        //
-        regionCorners.Clear();
-        for (int i = 0; i < regionAmount; i++)
+        sortedVectors.Clear();
+        if (borders)
         {
-            regionCorners[i] = new List<Vector2>();
+            pixelColors = GenerateBorders(size, closestRegionIndices, pixelColors);
+            pixelColors = GenerateCorners(size, regionAmount, closestRegionIndices, pixelColors, pixelPositions);
         }
 
+        return pixelColors;
+    }
+
+    public static Color[] GenerateBorders(int size, int[] closestRegionIndices, Color[] pixelColors)
+    {
         // Generierung der Bezirksgrenzen
         Parallel.For(0, size * size, index =>
         {
@@ -125,8 +168,20 @@ public class VoronoiDiagram : MonoBehaviour
             }
         });
 
+        return pixelColors;
+    }
+
+    public Color[] GenerateCorners(int size, int regionAmount, int[] closestRegionIndices, Color[] pixelColors, Vector2[] pixelPositions)
+    {
+        //
+        regionCorners.Clear();
+        for (int i = 0; i < regionAmount; i++)
+        {
+            regionCorners[i] = new List<Vector2>();
+        }
+
         // Find Corners
-        Parallel.For(0, size * size, index => 
+        Parallel.For(0, size * size, index =>
         {
             int x = index % size;
             int y = index / size;
@@ -239,6 +294,17 @@ public class VoronoiDiagram : MonoBehaviour
                 Gizmos.DrawSphere(new Vector3(corner.x, 1, corner.y), 10f);
             }
             //Debug.Log(allCorners);
+        }
+
+        if (randomPoints != null)
+        {
+            Gizmos.color = Color.white;
+
+            for (int i = 0; i < randomPoints.Length; i++)
+            {
+                Gizmos.color = randomPointColors[i];
+                Gizmos.DrawSphere(new Vector3(randomPoints[i].x, 1, randomPoints[i].y), 5f);
+            }
         }
     }
 }
