@@ -11,10 +11,15 @@ public class VoronoiDiagram : MonoBehaviour
     private List<Vector2> sortedVectors = new List<Vector2>();
     private Vector2[] allPoints;
     private Color[] allPointColors;
+    private Vector2 cityCenter = new Vector2(0, 0);
+    private float cityRadius = 1;
 
-    public void GenerateVoronoiDiagram(IDictionary<int, District> districts, int size, int cellDistortion)
+    public void GenerateVoronoiDiagram(IDictionary<int, District> districts, int size, int cellDistortion, Vector2 center, float radius)
     {
         int regionAmount = districts.Keys.Max() + 1;
+
+        cityCenter = center;
+        cityRadius = radius;
 
         int[] ids = new int[regionAmount];
         districtPoints = new Vector2[regionAmount];
@@ -66,11 +71,9 @@ public class VoronoiDiagram : MonoBehaviour
             allIds[id] = id;
         }
 
-        System.Random rand = new System.Random();
-
         for (int i = 0; i < randomPointCount; i++) 
         {
-            Vector2 randomPosition = new Vector2(rand.Next(size), rand.Next(size));
+            Vector2 randomPosition = cityCenter + UnityEngine.Random.insideUnitCircle * cityRadius;
 
             int pixelIndex = (int)randomPosition.x + (int)randomPosition.y * size;
 
@@ -83,12 +86,12 @@ public class VoronoiDiagram : MonoBehaviour
             allIds[i + regionAmount] = ids[closestOriginalId];
         }
 
-        int indexid = 0;
-        foreach (int id in allIds)
-        {
-            Debug.Log(indexid+". ID:"+id);
-            indexid++;
-        }
+        //int indexid = 0;
+        //foreach (int id in allIds)
+        //{
+        //    Debug.Log(indexid+". ID:"+id);
+        //    indexid++;
+        //}
 
         // Neues Voronoi-Diagramm basierend auf neuen und alten Punkten berechnen
         Color[] distortedVoronoi = GenerateVoronoi(size, randomPointCount + regionAmount, allPoints, allPointColors, allIds, true);
