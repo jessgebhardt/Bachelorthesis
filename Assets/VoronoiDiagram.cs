@@ -214,98 +214,98 @@ public class VoronoiDiagram : MonoBehaviour
         return pixelColors;
     }
 
-    public Color[] GenerateCorners(int size, int regionAmount, int[] closestRegionIds, Color[] pixelColors, Vector2[] pixelPositions)
-    {
-        //
-        regionCorners.Clear();
-        for (int i = 0; i < regionAmount; i++)
-        {
-            regionCorners[i] = new List<Vector2>();
-        }
+    //public Color[] GenerateCorners(int size, int regionAmount, int[] closestRegionIds, Color[] pixelColors, Vector2[] pixelPositions)
+    //{
+    //    //
+    //    regionCorners.Clear();
+    //    for (int i = 0; i < regionAmount; i++)
+    //    {
+    //        regionCorners[i] = new List<Vector2>();
+    //    }
 
-        // Find Corners
-        Parallel.For(0, size * size, index =>
-        {
-            int x = index % size;
-            int y = index / size;
+    //    // Find Corners
+    //    Parallel.For(0, size * size, index =>
+    //    {
+    //        int x = index % size;
+    //        int y = index / size;
 
-            int currentRegionId = closestRegionIds[index];
+    //        int currentRegionId = closestRegionIds[index];
 
-            if (pixelColors[index] == Color.black)
-            {
-                int borderCount = 0;
-                if (x > 0 && pixelColors[index - 1] == Color.black) borderCount++; // left neighbor
-                if (x < size - 1 && pixelColors[index + 1] == Color.black) borderCount++; // right neighbor
-                if (y > 0 && pixelColors[index - size] == Color.black) borderCount++; // upper neighbor
-                if (y < size - 1 && pixelColors[index + size] == Color.black) borderCount++; // lower neighbor
+    //        if (pixelColors[index] == Color.black)
+    //        {
+    //            int borderCount = 0;
+    //            if (x > 0 && pixelColors[index - 1] == Color.black) borderCount++; // left neighbor
+    //            if (x < size - 1 && pixelColors[index + 1] == Color.black) borderCount++; // right neighbor
+    //            if (y > 0 && pixelColors[index - size] == Color.black) borderCount++; // upper neighbor
+    //            if (y < size - 1 && pixelColors[index + size] == Color.black) borderCount++; // lower neighbor
 
-                // Check diagonal neighbors
-                if (x > 0 && y > 0 && pixelColors[index - 1 - size] == Color.black) borderCount++; // upper-left neighbor
-                if (x < size - 1 && y > 0 && pixelColors[index + 1 - size] == Color.black) borderCount++; // upper-right neighbor
-                if (x > 0 && y < size - 1 && pixelColors[index - 1 + size] == Color.black) borderCount++; // lower-left neighbor
-                if (x < size - 1 && y < size - 1 && pixelColors[index + 1 + size] == Color.black) borderCount++; // lower-right neighbor
+    //            // Check diagonal neighbors
+    //            if (x > 0 && y > 0 && pixelColors[index - 1 - size] == Color.black) borderCount++; // upper-left neighbor
+    //            if (x < size - 1 && y > 0 && pixelColors[index + 1 - size] == Color.black) borderCount++; // upper-right neighbor
+    //            if (x > 0 && y < size - 1 && pixelColors[index - 1 + size] == Color.black) borderCount++; // lower-left neighbor
+    //            if (x < size - 1 && y < size - 1 && pixelColors[index + 1 + size] == Color.black) borderCount++; // lower-right neighbor
 
-                if (borderCount >= 6)
-                {
-                    lock (regionCorners)
-                    {
-                        if (!regionCorners[currentRegionId].Contains(pixelPositions[index]))
-                        {
-                            regionCorners[currentRegionId].Add(pixelPositions[index]);
-                        }
-                    }
-                }
-            }
-        });
+    //            if (borderCount >= 6)
+    //            {
+    //                lock (regionCorners)
+    //                {
+    //                    if (!regionCorners[currentRegionId].Contains(pixelPositions[index]))
+    //                    {
+    //                        regionCorners[currentRegionId].Add(pixelPositions[index]);
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    });
 
-        sortedVectors.Clear();
-        sortedVectors = GetSortedVectorList(regionCorners, 5f);
+    //    sortedVectors.Clear();
+    //    sortedVectors = GetSortedVectorList(regionCorners, 5f);
 
-        return pixelColors;
-    }
+    //    return pixelColors;
+    //}
 
-    static List<Vector2> GetSortedVectorList(Dictionary<int, List<Vector2>> regionCorners, float similarityThreshold)
-    {
-        // Alle Werte in einem HashSet, um Duplikate zu vermeiden
-        HashSet<Vector2> uniqueVectors = new HashSet<Vector2>();
-        foreach (var entry in regionCorners)
-        {
-            foreach (var vector in entry.Value)
-            {
-                uniqueVectors.Add(vector);
-            }
-        }
+    //static List<Vector2> GetSortedVectorList(Dictionary<int, List<Vector2>> regionCorners, float similarityThreshold)
+    //{
+    //    // Alle Werte in einem HashSet, um Duplikate zu vermeiden
+    //    HashSet<Vector2> uniqueVectors = new HashSet<Vector2>();
+    //    foreach (var entry in regionCorners)
+    //    {
+    //        foreach (var vector in entry.Value)
+    //        {
+    //            uniqueVectors.Add(vector);
+    //        }
+    //    }
 
-        // Konvertiere das HashSet in eine Liste und sortiere die Werte
-        List<Vector2> sortedVectors = uniqueVectors.ToList();
-        sortedVectors.Sort((v1, v2) =>
-        {
-            int compareX = v1.x.CompareTo(v2.x);
-            return compareX != 0 ? compareX : v1.y.CompareTo(v2.y);
-        });
+    //    // Konvertiere das HashSet in eine Liste und sortiere die Werte
+    //    List<Vector2> sortedVectors = uniqueVectors.ToList();
+    //    sortedVectors.Sort((v1, v2) =>
+    //    {
+    //        int compareX = v1.x.CompareTo(v2.x);
+    //        return compareX != 0 ? compareX : v1.y.CompareTo(v2.y);
+    //    });
 
-        // Liste ohne ähnliche Werte
-        List<Vector2> result = new List<Vector2>();
-        for (int i = 0; i < sortedVectors.Count; i++)
-        {
-            bool isSimilar = false;
-            for (int j = 0; j < result.Count; j++)
-            {
-                if (Vector2.Distance(result[j], sortedVectors[i]) < similarityThreshold)
-                {
-                    isSimilar = true;
-                    break;
-                }
-            }
+    //    // Liste ohne ähnliche Werte
+    //    List<Vector2> result = new List<Vector2>();
+    //    for (int i = 0; i < sortedVectors.Count; i++)
+    //    {
+    //        bool isSimilar = false;
+    //        for (int j = 0; j < result.Count; j++)
+    //        {
+    //            if (Vector2.Distance(result[j], sortedVectors[i]) < similarityThreshold)
+    //            {
+    //                isSimilar = true;
+    //                break;
+    //            }
+    //        }
 
-            if (!isSimilar)
-            {
-                result.Add(sortedVectors[i]);
-            }
-        }
+    //        if (!isSimilar)
+    //        {
+    //            result.Add(sortedVectors[i]);
+    //        }
+    //    }
 
-        return result;
-    }
+    //    return result;
+    //}
 
     private void OnDrawGizmos()
     {
