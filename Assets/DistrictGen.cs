@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,9 @@ public class DistrictGen : MonoBehaviour
     // private List<Vector3> coreDistrictLocations; // generate Core and Outer seperately?? -> damit man die Bezirke einfacher verteilen kan aufgrund von der min und max anzahl, don't forget!!!
     // private List<Vector3> outerDistrictLocations;
 
+    private IDictionary<int, District> districtsDictionatry;
+    private static int counter = -1;
+
     [SerializeField] private Vector3 sampleRegionSize = new Vector3(1000, 1, 1000); // Muss nicht vom User eingestellt werden, später noch ändern
     [SerializeField] private int rejectionSamples = 30;
     [SerializeField] private float displayRadius = 10;
@@ -31,12 +35,13 @@ public class DistrictGen : MonoBehaviour
 
     private void OnValidate()
     {
+        counter = -1;
         cityBoundaries = gameObject.GetComponent<CityBoundaries>();
         CalculateMinAndMaxDistricts();
         GenerateCandidatePositions();
         SelectDistrictPositions();
         voronoiScript = voronoiDiagram.GetComponent<VoronoiDiagram>();
-        voronoiScript.GenerateVoronoiDiagram(generatedDistricts, (int)sampleRegionSize.x+100, distictCellDistortion); // Why 100??? and why did i have to rotate the plane?? so many questions
+        voronoiScript.GenerateVoronoiDiagram(districtsDictionatry, (int)sampleRegionSize.x+100, distictCellDistortion); // Why 100??? and why did i have to rotate the plane?? so many questions
     }
 
     private void CalculateMinAndMaxDistricts()
@@ -65,6 +70,7 @@ public class DistrictGen : MonoBehaviour
             return;
         }
         generatedDistricts.Clear();
+        districtsDictionatry = new Dictionary<int, District>();
 
         // Maybe generate Points for core and outer seperately?
         List<Vector3> coreDistrictLocations = cityBoundaries.CheckWithinBoundaries(candidatePoints, "inner");
@@ -78,6 +84,7 @@ public class DistrictGen : MonoBehaviour
                 type = bestDistrictType
             };
             generatedDistricts.Add(newDistrict);
+            districtsDictionatry.Add(GenerateUniqueID(), newDistrict);
             candidatePoints.Remove(coreLocation);
         }
 
@@ -94,6 +101,7 @@ public class DistrictGen : MonoBehaviour
                 type = bestDistrictType
             };
             generatedDistricts.Add(newDistrict);
+            districtsDictionatry.Add(GenerateUniqueID(), newDistrict);
             candidatePoints.Remove(outerLocation);
         }
     //    List<KeyValuePair<Vector3, float>> evaluatedPoints = new List<KeyValuePair<Vector3, float>>();
@@ -218,7 +226,7 @@ public class DistrictGen : MonoBehaviour
 
     float CalculateSuitabilityBasedOnPrimaryStreets(DistrictType type, Vector3 location)
     {
-        float closestDistance = Random.Range(0, 10);
+        float closestDistance = UnityEngine.Random.Range(0, 10);
         //float closestDistance = float.MaxValue;
         //foreach (var primaryStreet in primaryStreets)
         //{
@@ -241,7 +249,7 @@ public class DistrictGen : MonoBehaviour
         //    return attractionDict[neighborType.name];
         //}
         //return 0; // Standardwert, wenn kein spezifischer Koeffizient definiert ist
-        return Random.Range(0, 10);
+        return UnityEngine.Random.Range(0, 10);
     }
 
     float GetRepulsion(DistrictType districtType, DistrictType neighborType)
@@ -252,7 +260,7 @@ public class DistrictGen : MonoBehaviour
         //    return repulsionDict[neighborType.name];
         //}
         //return 0; // Standardwert, wenn kein spezifischer Koeffizient definiert ist
-        return Random.Range(0, 10);
+        return UnityEngine.Random.Range(0, 10);
     }
 
     float GetSuitability(float calculatedValue, float specifiedValue)
@@ -275,6 +283,11 @@ public class DistrictGen : MonoBehaviour
         }
     }
 
+    private int GenerateUniqueID()
+    {
+        return ++counter;
+    }
+
 
     private void OnDrawGizmos()
     {
@@ -286,7 +299,7 @@ public class DistrictGen : MonoBehaviour
                 Gizmos.DrawSphere(point, displayRadius);
             }
         }
-        Debug.Log(generatedDistricts.Count);
+        Debug.Log("Districtamount: "+generatedDistricts.Count);
         if (generatedDistricts != null)
         {
             Gizmos.color = Color.white;
