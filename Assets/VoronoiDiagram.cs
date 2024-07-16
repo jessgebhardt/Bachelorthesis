@@ -14,7 +14,7 @@ public class VoronoiDiagram : MonoBehaviour
     private Vector2 cityCenter = new Vector2(0, 0);
     private float cityRadius = 1;
 
-    public void GenerateVoronoiDiagram(IDictionary<int, District> districts, int size, int cellDistortion, Vector2 center, float radius)
+    public Texture2D GenerateVoronoiDiagram(IDictionary<int, District> districts, int size, int cellDistortion, Vector2 center, float radius)
     {
         int regionAmount = districts.Keys.Max() + 1;
 
@@ -37,14 +37,15 @@ public class VoronoiDiagram : MonoBehaviour
 
         Color[] pixelColors = GenerateDistortedVoronoi(size, regionAmount, regionColors, ids, cellDistortion);
 
-        Texture2D myTexture = new Texture2D(size, size)
+        Texture2D voronoiTexture = new Texture2D(size, size)
         {
             filterMode = FilterMode.Point
         };
-        myTexture.SetPixels(pixelColors);
-        myTexture.Apply();
+        voronoiTexture.SetPixels(pixelColors);
+        voronoiTexture.Apply();
 
-        GetComponent<Renderer>().material.mainTexture = myTexture;
+        GetComponent<Renderer>().material.mainTexture = voronoiTexture;
+        return voronoiTexture;
     }
 
     public Color[] GenerateDistortedVoronoi(int size, int regionAmount, Color[] regionColors, int[] ids, int randomPointCount)
@@ -182,25 +183,25 @@ public class VoronoiDiagram : MonoBehaviour
             bool isBorder = false;
 
             // Links
-            if (x > 0 && closestRegionIds[index - 1] != currentRegionIndex)
+            if (index - 1 >= 0 && index - 1 < pixelColors.Length && pixelColors[index - 1] != Color.black && x > 0 && closestRegionIds[index - 1] != currentRegionIndex)
             {
                 isBorder = true;
             }
 
             // Rechts
-            if (x < size - 1 && closestRegionIds[index + 1] != currentRegionIndex)
+            if (index + 1 >= 0 && index + 1 < pixelColors.Length && pixelColors[index + 1] != null && pixelColors[index + 1] != Color.black && x < size - 1 && closestRegionIds[index + 1] != currentRegionIndex)
             {
                 isBorder = true;
             }
 
             // Oben
-            if (y > 0 && closestRegionIds[index - size] != currentRegionIndex)
+            if (index - size >= 0 && index - size < pixelColors.Length && pixelColors[index - size] != Color.black && y > 0 && closestRegionIds[index - size] != currentRegionIndex)
             {
                 isBorder = true;
             }
 
             // Unten
-            if (y < size - 1 && closestRegionIds[index + size] != currentRegionIndex)
+            if (index + size >= 0 && index + size < pixelColors.Length && pixelColors[index + size] != Color.black && y < size - 1 && closestRegionIds[index + size] != currentRegionIndex)
             {
                 isBorder = true;
             }

@@ -32,6 +32,9 @@ public class DistrictGen : MonoBehaviour
     [SerializeField] private GameObject voronoiDiagram;
     [SerializeField] private int distictCellDistortion;
     private VoronoiDiagram voronoiScript;
+    private Texture2D voronoiTexture;
+    [SerializeField] GameObject roadGen;
+    private RoadGen roadGenScript;
 
     private void OnValidate()
     {
@@ -41,7 +44,9 @@ public class DistrictGen : MonoBehaviour
         GenerateCandidatePositions();
         SelectDistrictPositions();
         voronoiScript = voronoiDiagram.GetComponent<VoronoiDiagram>();
-        voronoiScript.GenerateVoronoiDiagram(districtsDictionatry, (int)sampleRegionSize.x+100, distictCellDistortion, new Vector2(cityBoundaries.transform.position.x, cityBoundaries.transform.position.z), cityBoundaries.outerBoundaryRadius); // Why 100??? and why did i have to rotate the plane?? so many questions
+        voronoiTexture = voronoiScript.GenerateVoronoiDiagram(districtsDictionatry, (int)sampleRegionSize.x+100, distictCellDistortion, new Vector2(cityBoundaries.transform.position.x, cityBoundaries.transform.position.z), cityBoundaries.outerBoundaryRadius); // Why 100??? and why did i have to rotate the plane?? so many questions
+        roadGenScript = roadGen.GetComponent<RoadGen>();
+        roadGenScript.GenerateRoad(voronoiTexture, 100f);
     }
 
     private void CalculateMinAndMaxDistricts()
