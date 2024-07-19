@@ -46,7 +46,7 @@ public class DistrictGen : MonoBehaviour
         voronoiScript = voronoiDiagram.GetComponent<VoronoiDiagram>();
         voronoiTexture = voronoiScript.GenerateVoronoiDiagram(districtsDictionatry, (int)sampleRegionSize.x+100, distictCellDistortion, new Vector2(cityBoundaries.transform.position.x, cityBoundaries.transform.position.z), cityBoundaries.outerBoundaryRadius); // Why 100??? and why did i have to rotate the plane?? so many questions
         roadGenScript = roadGen.GetComponent<RoadGen>();
-        roadGenScript.GenerateRoad(voronoiTexture, 100f);
+        roadGenScript.GenerateRoad(voronoiTexture, cityBoundaries.outerBoundaryRadius, cityBoundaries.transform.position, 100f);
     }
 
     private void CalculateMinAndMaxDistricts()

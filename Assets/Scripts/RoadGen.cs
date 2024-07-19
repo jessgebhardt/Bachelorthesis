@@ -8,21 +8,18 @@ public class RoadGen : MonoBehaviour
     private List<Vector2> roadSegmentPoints = new List<Vector2>();
     private List<Vector2Int> splitMarks = new List<Vector2Int>();
     private Vector2Int startPoint;
-    private List<Vector2Int> example4 = new List<Vector2Int>();
-    private List<Vector2Int> example3 = new List<Vector2Int>();
-    private List<Vector2Int> example2 = new List<Vector2Int>();
 
     private HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
+    private List<Vector2Int> boundaryPoints = new List<Vector2Int>();
 
-    public void GenerateRoad(Texture2D texture, float segmentLength)
+    public void GenerateRoad(Texture2D texture, float outerBoundaryRadius, Vector3 cityCenter ,float segmentLength)
     {
-        example4.Clear();
-        example3.Clear();
-        example2.Clear();
-
-
-
         voronoiTexture = texture;
+
+        
+        GetBoundaryPoints(outerBoundaryRadius, cityCenter);
+        Debug.Log("BOUNDARYPOINTS: "+ boundaryPoints.Count);
+
         startPoint = FindStartPoint();
         splitMarks.Clear();
         visited.Clear();
@@ -30,8 +27,30 @@ public class RoadGen : MonoBehaviour
         splitMarks.AddRange(MarkSegments(startPoint, segmentLength));
         Debug.Log("SplitmarkANZAHL: " + splitMarks.Count);
 
-        
         // AddRoad();
+    }
+
+    private void GetBoundaryPoints(float radius, Vector3 center)
+    {
+        boundaryPoints.Clear();
+        List<Vector2Int> points = new List<Vector2Int>();
+        Vector2Int centerInt = new Vector2Int(Mathf.RoundToInt(center.x), Mathf.RoundToInt(center.z));
+
+        for (int y = 0; y < voronoiTexture.height; y++)
+        {
+            for (int x = 0; x < voronoiTexture.width; x++)
+            {
+                Vector2Int point = new Vector2Int(x, y);
+                float distance = Vector2Int.Distance(point, centerInt);
+
+                if (Mathf.Abs(distance - radius) <= 0.5f && IsBlackPixel(point))
+                {
+                    points.Add(point);
+                }
+            }
+        }
+
+        boundaryPoints = points;
     }
 
 
@@ -515,30 +534,12 @@ public class RoadGen : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (example4 != null)
-        {
-            Gizmos.color = Color.red;
-            foreach (Vector2Int split in example4)
-            {
-                Gizmos.DrawSphere(new Vector3(split.x + 0.5f, 1, split.y + 0.5f), 5f);
-            }
-        }
-
-        if (example3 != null)
-        {
-            Gizmos.color = Color.yellow;
-            foreach (Vector2Int split in example3)
-            {
-                Gizmos.DrawSphere(new Vector3(split.x + 0.5f, 1, split.y + 0.5f), 5f);
-            }
-        }
-
-        if (example2 != null)
+        if (boundaryPoints != null)
         {
             Gizmos.color = Color.blue;
-            foreach (Vector2Int split in example2)
+            foreach (Vector2Int point in boundaryPoints)
             {
-                Gizmos.DrawSphere(new Vector3(split.x+ 0.5f, 1, split.y + 0.5f), 5f);
+                Gizmos.DrawSphere(new Vector3(point.x+ 0.5f, 1, point.y + 0.5f), 7f);
             }
         }
 
