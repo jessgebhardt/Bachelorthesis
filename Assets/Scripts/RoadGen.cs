@@ -20,7 +20,7 @@ public class RoadGen : MonoBehaviour
         GetBoundaryPoints(outerBoundaryRadius, cityCenter);
         Debug.Log("BOUNDARYPOINTS: "+ boundaryPoints.Count);
 
-        startPoint = FindStartPoint();
+        startPoint = boundaryPoints[0];
         splitMarks.Clear();
         visited.Clear();
 
@@ -50,23 +50,32 @@ public class RoadGen : MonoBehaviour
             }
         }
 
-        boundaryPoints = points;
+        boundaryPoints = ReducePoints(points);
     }
 
-
-    public Vector2Int FindStartPoint()
+    private List<Vector2Int> ReducePoints(List<Vector2Int> points)
     {
-        for (int y = 0; y < voronoiTexture.height; y++)
+        HashSet<Vector2Int> visitedPoints = new HashSet<Vector2Int>();
+        List<Vector2Int> reducedPoints = new List<Vector2Int>();
+
+        foreach (Vector2Int point in points)
         {
-            for (int x = 0; x < voronoiTexture.width; x++)
+            if (!visitedPoints.Contains(point))
             {
-                if (voronoiTexture.GetPixel(x, y) == Color.black)
+                reducedPoints.Add(point);
+                visitedPoints.Add(point);
+
+                foreach (Vector2Int neighbor in GetNeighbors(point))
                 {
-                    return new Vector2Int(x, y);
+                    if (points.Contains(neighbor))
+                    {
+                        visitedPoints.Add(neighbor);
+                    }
                 }
             }
         }
-        return Vector2Int.zero;
+
+        return reducedPoints;
     }
 
     public List<Vector2Int> MarkSegments(Vector2Int startPoint, float segmentLength)
@@ -539,7 +548,7 @@ public class RoadGen : MonoBehaviour
             Gizmos.color = Color.blue;
             foreach (Vector2Int point in boundaryPoints)
             {
-                Gizmos.DrawSphere(new Vector3(point.x+ 0.5f, 1, point.y + 0.5f), 7f);
+                Gizmos.DrawSphere(new Vector3(point.x+ 0.5f, 1, point.y + 0.5f), 0.5f);
             }
         }
 
