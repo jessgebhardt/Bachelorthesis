@@ -80,7 +80,6 @@ public class RoadGen : MonoBehaviour
 
     public List<Vector2Int> MarkSegments(Vector2Int startPoint, float segmentLength)
     {
-        // bool noSplitMark = true;
 
         List<Border> borderList = new List<Border>();
         List<BorderToTrace> bordersToTrace = new List<BorderToTrace>();
@@ -94,61 +93,6 @@ public class RoadGen : MonoBehaviour
         List<Vector2Int> foundSplitMarks = new List<Vector2Int>(); // remove later ?
 
         nextPoints.Add(startPoint);
-
-        //while (noSplitMark && nextPoints.Count > 0)
-        //{
-        //    if (!noSplitMark || nextPoints.Count == 0)
-        //    {
-        //        break;
-        //    }
-        //    Vector2Int current = nextPoints[0];
-        //    nextPoints.RemoveAt(0);
-
-        //    if (!visited.Contains(current))
-        //    {
-        //        visited.Add(current);
-        //        List<Vector2Int> remainingNeighbors = new List<Vector2Int>();
-
-        //        foreach (Vector2Int neighbor in GetNeighbors(current))
-        //        {
-        //            if (IsBlackPixel(neighbor) && !visited.Contains(neighbor))
-        //            {
-        //                remainingNeighbors.Add(neighbor);
-        //                if (!nextPoints.Contains(neighbor))
-        //                {
-        //                    nextPoints.Add(neighbor);
-        //                }
-        //            }
-        //        }
-
-        //        if (IsBorderSplit(remainingNeighbors)) // muss herausfinden wie viele borders!!
-        //        {
-        //            // 1 save Border
-        //            Border newBorder = new Border
-        //            {
-        //                startPoint = startPoint,
-        //                endPoint = current,
-        //            };
-        //            borderList.Add(newBorder);
-
-        //            // 2 & 3
-        //            if (current.x >= 0 && current.x < voronoiTexture.width && current.y >= 0 && current.y < voronoiTexture.height)
-        //            {
-        //                // 3.1 save new BorderToTrace
-        //                BorderToTrace newBorderToTrace = new BorderToTrace
-        //                {
-        //                    startPoint = current,
-        //                    nextPoint = remainingNeighbors[0] // idk
-        //                };
-        //                bordersToTrace.Add(newBorderToTrace);
-        //            }
-
-        //            foundSplitMarks.Add(current);
-        //            noSplitMark = false;
-        //        }
-        //    }
-        //}
-
 
         Vector2Int nextPoint = Vector2Int.zero;
 
