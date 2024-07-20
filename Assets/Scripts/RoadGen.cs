@@ -6,7 +6,9 @@ using UnityEngine;
 public class RoadGen : MonoBehaviour
 {
     private Texture2D voronoiTexture;
-    private List<Vector2> roadSegmentPoints = new List<Vector2>();
+
+    private List<Vector2Int> roadSegmentPoints = new List<Vector2Int>();
+
     private List<Vector2Int> splitMarks = new List<Vector2Int>();
     private Vector2Int startPoint;
 
@@ -16,14 +18,16 @@ public class RoadGen : MonoBehaviour
     Vector2Int cityCenterInt;
     float cityRadius;
 
-    public void GenerateRoad(Texture2D texture, float outerBoundaryRadius, Vector3 cityCenter ,float segmentLength)
+    public void GenerateRoad(Texture2D texture, float outerBoundaryRadius, Vector3 cityCenter, int segmentLength)
     {
+        ClearAllLists();
+
         voronoiTexture = texture;
         cityCenterInt = new Vector2Int(Mathf.RoundToInt(cityCenter.x), Mathf.RoundToInt(cityCenter.z));
         cityRadius = outerBoundaryRadius;
 
         GetBoundaryPoints();
-        Debug.Log("BOUNDARYPOINTS: "+ boundaryPoints.Count);
+        // Debug.Log("BOUNDARYPOINTS: "+ boundaryPoints.Count);
 
         //for (int i = 0; i < boundaryPoints.Count; i++) 
         //{
@@ -31,18 +35,23 @@ public class RoadGen : MonoBehaviour
         //}
 
         startPoint = boundaryPoints[0];
-        splitMarks.Clear();
-        visited.Clear();
 
         splitMarks.AddRange(MarkSegments(startPoint, segmentLength));
-        Debug.Log("SplitmarkANZAHL: " + splitMarks.Count);
+        // Debug.Log("SplitmarkANZAHL: " + splitMarks.Count);
 
         // AddRoad();
     }
 
+    void ClearAllLists ()
+    {
+        splitMarks.Clear();
+        visited.Clear();
+        boundaryPoints.Clear();
+        roadSegmentPoints.Clear();
+    }
+
     private void GetBoundaryPoints()
     {
-        boundaryPoints.Clear();
         List<Vector2Int> points = new List<Vector2Int>();
 
         for (int y = 0; y < voronoiTexture.height; y++)
@@ -93,7 +102,7 @@ public class RoadGen : MonoBehaviour
         return points.OrderBy(point => Mathf.Atan2(point.y - cityCenterInt.y, point.x - cityCenterInt.x)).ToList();
     }
 
-    public List<Vector2Int> MarkSegments(Vector2Int startPoint, float segmentLength)
+    public List<Vector2Int> MarkSegments(Vector2Int startPoint, int segmentLength)
     {
 
         List<Border> borderList = new List<Border>();
@@ -139,15 +148,13 @@ public class RoadGen : MonoBehaviour
             BorderToTrace currentBorder = bordersToTrace[0];
             bordersToTrace.RemoveAt(0);
 
-            List<BorderToTrace> foundBordersToTrace = new List<BorderToTrace>();
-
             // 6
-            foundBordersToTrace.AddRange(TraceBorder(currentBorder));
+            (List<BorderToTrace> newBordersToTrace, List<Vector2Int> segmentPoints) = TraceBorder(currentBorder, segmentLength);
 
             // 7
-            if (foundBordersToTrace.Count > 0)
+            if (newBordersToTrace.Count > 0)
             {
-                foreach (BorderToTrace foundBorder in foundBordersToTrace)
+                foreach (BorderToTrace foundBorder in newBordersToTrace)
                 {
                     //bool isBoundaryPoint = boundaryPoints.Contains(foundBorder.startPoint);
                     //if (isBoundaryPoint) 
@@ -162,7 +169,7 @@ public class RoadGen : MonoBehaviour
 
                     if (foundBorder.nextPoint == Vector2Int.zero /*|| isBoundaryPoint*/)
                     {
-                        foundBordersToTrace.Remove(foundBorder);
+                        newBordersToTrace.Remove(foundBorder);
                     }
 
                     Debug.Log("FOUND border: " + foundBorder.startPoint + "; " + foundBorder.nextPoint);
@@ -174,11 +181,12 @@ public class RoadGen : MonoBehaviour
                     Border newBorder = new Border
                     {
                         startPoint = currentBorder.startPoint,
-                        endPoint = foundBordersToTrace[0].startPoint,
+                        segments = segmentPoints,
+                        endPoint = newBordersToTrace[0].startPoint,
                     };
                     borderList.Add(newBorder);
 
-                    bordersToTrace.AddRange(foundBordersToTrace);
+                    bordersToTrace.AddRange(newBordersToTrace);
                 //}
             }
         }
@@ -187,24 +195,27 @@ public class RoadGen : MonoBehaviour
         // TEST
         for (int i = 0; i < borderList.Count; i++)
         {
-            Debug.Log(i + ": " + borderList[i].startPoint + "; " + borderList[i].endPoint);
+            Debug.Log(i + ": " + borderList[i].startPoint + "; " + borderList[i].endPoint + "; " + borderList[i].segments.Count);
         }
-
 
         return foundSplitMarks;
     }
 
-    public List<BorderToTrace> TraceBorder(BorderToTrace borderToTrace)
+    public (List<BorderToTrace>, List<Vector2Int>) TraceBorder(BorderToTrace borderToTrace, int segmentLength)
     {
         bool noSplitMarkFound = true;
 
         List<BorderToTrace> bordersToTrace = new List<BorderToTrace>();
+
+        List<Vector2Int> segmentPoints = new List<Vector2Int>();
 
         List<Vector2Int> nextPoints = new List<Vector2Int>();
 
         Vector2Int splitMark = Vector2Int.zero;
 
         nextPoints.Add(borderToTrace.startPoint);
+
+        int segmentIndex = 0;
 
         while (noSplitMarkFound && nextPoints.Count > 0)
         {
@@ -246,6 +257,18 @@ public class RoadGen : MonoBehaviour
                     splitMark = current; // save end
                     noSplitMarkFound = false;
                 }
+
+                if (segmentIndex < segmentLength)
+                {
+                    segmentIndex++;
+
+                }
+                else if (segmentIndex == segmentLength)
+                {
+                    segmentPoints.Add(current);
+                    roadSegmentPoints.Add(current);
+                    segmentIndex = 0;
+                }
             }
         }
 
@@ -274,7 +297,7 @@ public class RoadGen : MonoBehaviour
 
         Debug.Log("FOUND borders to trace: "+ bordersToTrace.Count);
 
-        return bordersToTrace;
+        return (bordersToTrace, segmentPoints);
     }
 
     public List<Vector2Int> FindNextBorderPoints(Vector2Int startPoint)
@@ -420,10 +443,7 @@ public class RoadGen : MonoBehaviour
     {
         (bool hasExactlyOneNeighbor, List<(Vector2Int, Vector2Int)> neighborPairs) = HasExactlyOneNeighbor(remainingNeighbors);
 
-        if (remainingNeighbors.Count == 3 && FindPointWithoutNeighbor(remainingNeighbors) != null)
-        {
-            Debug.Log("EXACTLY ONE NEIGHBOR: " + hasExactlyOneNeighbor);
-        }
+
 
         if (remainingNeighbors.Count >= 4) { return true; }
         else if (remainingNeighbors.Count == 3 && FindPointWithoutNeighbor(remainingNeighbors) != null) { return true; }
@@ -543,6 +563,16 @@ public class RoadGen : MonoBehaviour
 
             }
         }
+
+        if (roadSegmentPoints != null)
+        {
+            Gizmos.color = Color.green;
+            foreach (Vector2Int segment in roadSegmentPoints)
+            {
+                Gizmos.DrawSphere(new Vector3(segment.x + 0.5f, 1, segment.y + 0.5f), 5f);
+
+            }
+        }
     }
 }
 
@@ -550,6 +580,7 @@ public class RoadGen : MonoBehaviour
 public struct Border
 {
     public Vector2Int startPoint;
+    public List<Vector2Int> segments;
     public Vector2Int endPoint;
 }
 

@@ -36,6 +36,8 @@ public class DistrictGen : MonoBehaviour
     [SerializeField] GameObject roadGen;
     private RoadGen roadGenScript;
 
+    [SerializeField] int segmentLength = 50;
+
     private void OnValidate()
     {
         counter = -1;
@@ -46,7 +48,7 @@ public class DistrictGen : MonoBehaviour
         voronoiScript = voronoiDiagram.GetComponent<VoronoiDiagram>();
         voronoiTexture = voronoiScript.GenerateVoronoiDiagram(districtsDictionatry, (int)sampleRegionSize.x+100, distictCellDistortion, new Vector2(cityBoundaries.transform.position.x, cityBoundaries.transform.position.z), cityBoundaries.outerBoundaryRadius); // Why 100??? and why did i have to rotate the plane?? so many questions
         roadGenScript = roadGen.GetComponent<RoadGen>();
-        roadGenScript.GenerateRoad(voronoiTexture, cityBoundaries.outerBoundaryRadius, cityBoundaries.transform.position, 100f);
+        roadGenScript.GenerateRoad(voronoiTexture, cityBoundaries.outerBoundaryRadius, cityBoundaries.transform.position, segmentLength);
     }
 
     private void CalculateMinAndMaxDistricts()
@@ -294,27 +296,27 @@ public class DistrictGen : MonoBehaviour
     }
 
 
-    private void OnDrawGizmos()
-    {
-        if (candidatePoints != null)
-        {
-            Gizmos.color = Color.white;
-            foreach (Vector3 point in candidatePoints)
-            {
-                Gizmos.DrawSphere(point, displayRadius);
-            }
-        }
-        Debug.Log("Districtamount: "+generatedDistricts.Count);
-        if (generatedDistricts != null)
-        {
-            Gizmos.color = Color.white;
-            foreach (District district in generatedDistricts)
-            {
-                Gizmos.color = district.type.color;
-                Gizmos.DrawSphere(district.position, displayRadius);
-            }
-        }
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    if (candidatePoints != null)
+    //    {
+    //        Gizmos.color = Color.white;
+    //        foreach (Vector3 point in candidatePoints)
+    //        {
+    //            Gizmos.DrawSphere(point, displayRadius);
+    //        }
+    //    }
+    //    Debug.Log("Districtamount: "+generatedDistricts.Count);
+    //    if (generatedDistricts != null)
+    //    {
+    //        Gizmos.color = Color.white;
+    //        foreach (District district in generatedDistricts)
+    //        {
+    //            Gizmos.color = district.type.color;
+    //            Gizmos.DrawSphere(district.position, displayRadius);
+    //        }
+    //    }
+    //}
 }
 
 [System.Serializable]

@@ -366,15 +366,15 @@ public class VoronoiDiagram : MonoBehaviour
         //    //Debug.Log(allCorners);
         //}
 
-        if (allPoints != null)
-        {
-            Gizmos.color = Color.white;
+        //if (allPoints != null)
+        //{
+        //    Gizmos.color = Color.white;
 
-            for (int i = 0; i < allPoints.Length; i++)
-            {
-                Gizmos.color = allPointColors[i];
-                Gizmos.DrawSphere(new Vector3(allPoints[i].x, 1, allPoints[i].y), 5f);
-            }
-        }
+        //    for (int i = 0; i < allPoints.Length; i++)
+        //    {
+        //        Gizmos.color = allPointColors[i];
+        //        Gizmos.DrawSphere(new Vector3(allPoints[i].x, 1, allPoints[i].y), 5f);
+        //    }
+        //}
     }
 }
