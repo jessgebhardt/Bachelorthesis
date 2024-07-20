@@ -37,6 +37,8 @@ public class VoronoiDiagram : MonoBehaviour
 
         Color[] pixelColors = GenerateDistortedVoronoi(size, regionAmount, regionColors, ids, cellDistortion);
 
+        SetMaterialToTransparent();
+
         Texture2D voronoiTexture = new Texture2D(size, size)
         {
             filterMode = FilterMode.Point
@@ -162,14 +164,14 @@ public class VoronoiDiagram : MonoBehaviour
         sortedVectors.Clear();
         if (borders)
         {
-            pixelColors = GenerateBorders(size, closestRegionIds, pixelColors);
+            pixelColors = GenerateBorders(size, closestRegionIds, pixelColors, cityCenter, cityRadius);
             // pixelColors = GenerateCorners(size, regionAmount, closestRegionIds, pixelColors, pixelPositions);
         }
 
         return pixelColors;
     }
 
-    public static Color[] GenerateBorders(int size, int[] closestRegionIds, Color[] pixelColors)
+    public static Color[] GenerateBorders(int size, int[] closestRegionIds, Color[] pixelColors, Vector2 cityCenter, float cityRadius)
     {
         // Generierung der Bezirksgrenzen
         Parallel.For(0, size * size, index =>
@@ -177,42 +179,66 @@ public class VoronoiDiagram : MonoBehaviour
             int x = index % size;
             int y = index / size;
 
-            int currentRegionIndex = closestRegionIds[index];
-
-            // Überprüfung der Nachbarpixel
-            bool isBorder = false;
-
-            // Links
-            if (index - 1 >= 0 && index - 1 < pixelColors.Length && pixelColors[index - 1] != Color.black && x > 0 && closestRegionIds[index - 1] != currentRegionIndex)
+            float distance = Vector2.Distance(new Vector2(x,y), cityCenter);
+            if (distance < cityRadius)
             {
-                isBorder = true;
+                int currentRegionIndex = closestRegionIds[index];
+
+                // Überprüfung der Nachbarpixel
+                bool isBorder = false;
+
+                // Links
+                if (index - 1 >= 0 && index - 1 < pixelColors.Length && pixelColors[index - 1] != Color.black && x > 0 && closestRegionIds[index - 1] != currentRegionIndex)
+                {
+                    isBorder = true;
+                }
+
+                // Rechts
+                if (index + 1 >= 0 && index + 1 < pixelColors.Length && pixelColors[index + 1] != null && pixelColors[index + 1] != Color.black && x < size - 1 && closestRegionIds[index + 1] != currentRegionIndex)
+                {
+                    isBorder = true;
+                }
+
+                // Oben
+                if (index - size >= 0 && index - size < pixelColors.Length && pixelColors[index - size] != Color.black && y > 0 && closestRegionIds[index - size] != currentRegionIndex)
+                {
+                    isBorder = true;
+                }
+
+                // Unten
+                if (index + size >= 0 && index + size < pixelColors.Length && pixelColors[index + size] != Color.black && y < size - 1 && closestRegionIds[index + size] != currentRegionIndex)
+                {
+                    isBorder = true;
+                }
+
+                if (isBorder)
+                {
+                    pixelColors[index] = Color.black;
+                }
             }
-
-            // Rechts
-            if (index + 1 >= 0 && index + 1 < pixelColors.Length && pixelColors[index + 1] != null && pixelColors[index + 1] != Color.black && x < size - 1 && closestRegionIds[index + 1] != currentRegionIndex)
+            else
             {
-                isBorder = true;
-            }
-
-            // Oben
-            if (index - size >= 0 && index - size < pixelColors.Length && pixelColors[index - size] != Color.black && y > 0 && closestRegionIds[index - size] != currentRegionIndex)
-            {
-                isBorder = true;
-            }
-
-            // Unten
-            if (index + size >= 0 && index + size < pixelColors.Length && pixelColors[index + size] != Color.black && y < size - 1 && closestRegionIds[index + size] != currentRegionIndex)
-            {
-                isBorder = true;
-            }
-
-            if (isBorder)
-            {
-                pixelColors[index] = Color.black;
+                pixelColors[index] = Color.clear;
             }
         });
 
         return pixelColors;
+    }
+
+    private void SetMaterialToTransparent()
+    {
+        Material material = GetComponent<MeshRenderer>().material;
+        if (material != null)
+        {
+            material.SetFloat("_Mode", 3); // Setze den Modus auf Transparent
+            material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            material.SetInt("_ZWrite", 0);
+            material.DisableKeyword("_ALPHATEST_ON");
+            material.EnableKeyword("_ALPHABLEND_ON");
+            material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+            material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+        }
     }
 
     //public Color[] GenerateCorners(int size, int regionAmount, int[] closestRegionIds, Color[] pixelColors, Vector2[] pixelPositions)

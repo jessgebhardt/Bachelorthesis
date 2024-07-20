@@ -12,12 +12,16 @@ public class RoadGen : MonoBehaviour
     private HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
     private List<Vector2Int> boundaryPoints = new List<Vector2Int>();
 
+    Vector2Int cityCenterInt;
+    float cityRadius;
+
     public void GenerateRoad(Texture2D texture, float outerBoundaryRadius, Vector3 cityCenter ,float segmentLength)
     {
         voronoiTexture = texture;
+        cityCenterInt = new Vector2Int(Mathf.RoundToInt(cityCenter.x), Mathf.RoundToInt(cityCenter.z));
+        cityRadius = outerBoundaryRadius;
 
-        
-        GetBoundaryPoints(outerBoundaryRadius, cityCenter);
+        GetBoundaryPoints();
         Debug.Log("BOUNDARYPOINTS: "+ boundaryPoints.Count);
 
         startPoint = boundaryPoints[0];
@@ -30,20 +34,19 @@ public class RoadGen : MonoBehaviour
         // AddRoad();
     }
 
-    private void GetBoundaryPoints(float radius, Vector3 center)
+    private void GetBoundaryPoints()
     {
         boundaryPoints.Clear();
         List<Vector2Int> points = new List<Vector2Int>();
-        Vector2Int centerInt = new Vector2Int(Mathf.RoundToInt(center.x), Mathf.RoundToInt(center.z));
 
         for (int y = 0; y < voronoiTexture.height; y++)
         {
             for (int x = 0; x < voronoiTexture.width; x++)
             {
                 Vector2Int point = new Vector2Int(x, y);
-                float distance = Vector2Int.Distance(point, centerInt);
+                float distance = Vector2Int.Distance(point, cityCenterInt);
 
-                if (Mathf.Abs(distance - radius) <= 0.5f && IsBlackPixel(point))
+                if (Mathf.Abs(distance - cityRadius) <= 1f && IsBlackPixel(point))
                 {
                     points.Add(point);
                 }
@@ -93,12 +96,15 @@ public class RoadGen : MonoBehaviour
         List<Vector2Int> foundSplitMarks = new List<Vector2Int>(); // remove later ?
 
         nextPoints.Add(startPoint);
+        float startPointDistance = Vector2Int.Distance(startPoint, cityCenterInt);
 
         Vector2Int nextPoint = Vector2Int.zero;
 
         foreach (Vector2Int neighbor in GetNeighbors(startPoint))
         {
-            if (IsBlackPixel(neighbor) && !visited.Contains(neighbor))
+            float neighborDistance = Vector2Int.Distance(neighbor, cityCenterInt);
+
+            if (IsBlackPixel(neighbor) && !visited.Contains(neighbor) && neighborDistance < startPointDistance)
             {
                 nextPoint = neighbor;
                 break;
@@ -131,24 +137,37 @@ public class RoadGen : MonoBehaviour
             {
                 foreach (BorderToTrace foundBorder in foundBordersToTrace)
                 {
-                    Debug.Log("FOUND border: " + foundBorder.startPoint + "; " + foundBorder.nextPoint);
-                    if (foundBorder.nextPoint == Vector2Int.zero)
+                    //bool isBoundaryPoint = boundaryPoints.Contains(foundBorder.startPoint);
+                    //if (isBoundaryPoint) 
+                    //{
+                    //    Border endBorder = new Border
+                    //    {
+                    //        startPoint = currentBorder.startPoint,
+                    //        endPoint = foundBorder.startPoint,
+                    //    };
+                    //    borderList.Add(endBorder);
+                    //}
+
+                    if (foundBorder.nextPoint == Vector2Int.zero /*|| isBoundaryPoint*/)
                     {
                         foundBordersToTrace.Remove(foundBorder);
                     }
+
+                    Debug.Log("FOUND border: " + foundBorder.startPoint + "; " + foundBorder.nextPoint);
                 }
 
-                // 7.1 & 8.1 & 9.1 save Border
-                Border newBorder = new Border
-                {
-                    startPoint = currentBorder.startPoint,
-                    endPoint = foundBordersToTrace[0].startPoint,
-                };
-                borderList.Add(newBorder);
+                //if (foundBordersToTrace.Count > 0)
+                //{
+                    // 7.1 & 8.1 & 9.1 save Border
+                    Border newBorder = new Border
+                    {
+                        startPoint = currentBorder.startPoint,
+                        endPoint = foundBordersToTrace[0].startPoint,
+                    };
+                    borderList.Add(newBorder);
 
-                // Debug.Log("NEUE Fertige BORDER IN LISTE HINZUGEFÜGT: " + newBorder.startPoint + "; " + newBorder.endPoint);
-
-                bordersToTrace.AddRange(foundBordersToTrace);
+                    bordersToTrace.AddRange(foundBordersToTrace);
+                //}
             }
         }
 
@@ -185,7 +204,12 @@ public class RoadGen : MonoBehaviour
             Vector2Int current = nextPoints[0];
             nextPoints.RemoveAt(0);
 
-            if (current == borderToTrace.startPoint || !visited.Contains(current))
+            if (boundaryPoints.Contains(current) && current != borderToTrace.startPoint)
+            {
+                splitMark = current; // save end
+                noSplitMarkFound = false;
+
+            } else if (current == borderToTrace.startPoint || !visited.Contains(current))
             {
                 if (!visited.Contains(current))
                 {
@@ -492,7 +516,7 @@ public class RoadGen : MonoBehaviour
             Gizmos.color = Color.blue;
             foreach (Vector2Int point in boundaryPoints)
             {
-                Gizmos.DrawSphere(new Vector3(point.x+ 0.5f, 1, point.y + 0.5f), 0.5f);
+                Gizmos.DrawSphere(new Vector3(point.x+ 0.5f, 1, point.y + 0.5f), 7f);
             }
         }
 
