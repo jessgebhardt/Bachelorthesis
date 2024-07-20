@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -23,6 +24,11 @@ public class RoadGen : MonoBehaviour
 
         GetBoundaryPoints();
         Debug.Log("BOUNDARYPOINTS: "+ boundaryPoints.Count);
+
+        //for (int i = 0; i < boundaryPoints.Count; i++) 
+        //{
+        //    Debug.Log(i+". BOUNDARYPOINT: " + boundaryPoints[i]);
+        //}
 
         startPoint = boundaryPoints[0];
         splitMarks.Clear();
@@ -53,7 +59,8 @@ public class RoadGen : MonoBehaviour
             }
         }
 
-        boundaryPoints = ReducePoints(points);
+        points = ReducePoints(points);
+        boundaryPoints = SortPoints(points);
     }
 
     private List<Vector2Int> ReducePoints(List<Vector2Int> points)
@@ -79,6 +86,11 @@ public class RoadGen : MonoBehaviour
         }
 
         return reducedPoints;
+    }
+
+    private List<Vector2Int> SortPoints(List<Vector2Int> points)
+    {
+        return points.OrderBy(point => Mathf.Atan2(point.y - cityCenterInt.y, point.x - cityCenterInt.x)).ToList();
     }
 
     public List<Vector2Int> MarkSegments(Vector2Int startPoint, float segmentLength)
