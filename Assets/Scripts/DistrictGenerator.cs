@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class DistrictGen : MonoBehaviour
+public class DistrictGenerator : MonoBehaviour
 {
     [SerializeField, Range(0, 1)] private float importanceOfNeighbours = 0.4f;
     [SerializeField, Range(0, 1)] private float importanceOfCityCenterDistance = 0.3f;
