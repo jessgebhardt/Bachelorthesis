@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class RoadGen : MonoBehaviour
+public class PrepareBorders : MonoBehaviour
 {
     private Texture2D voronoiTexture;
 
