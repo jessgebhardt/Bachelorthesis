@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Zeichnet mit Hilfe eines LineRenderer zwei Kreise, um innere und äußere Stadtgrenzen zu visualisieren, und überprüft, ob gegebene Punkte innerhalb dieser Grenzen liegen.
+// Zeichnet mit Hilfe eines LineRenderer zwei Kreise, um innere und äußere Stadtgrenzen zu visualisieren,
+// und überprüft, ob gegebene Punkte innerhalb dieser Grenzen liegen.
 [ExecuteInEditMode] // Ermöglicht die Ausführung des Skripts im Unity-Editor, ohne den Play mode zu aktivieren
 public class CityBoundaries : MonoBehaviour
 {
