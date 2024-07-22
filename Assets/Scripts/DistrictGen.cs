@@ -23,7 +23,7 @@ public class DistrictGen : MonoBehaviour
 
     [SerializeField] private Vector3 sampleRegionSize = new Vector3(1000, 1, 1000); // Muss nicht vom User eingestellt werden, später noch ändern
     [SerializeField] private int rejectionSamples = 30;
-    [SerializeField] private float displayRadius = 10;
+    // [SerializeField] private float displayRadius = 10;
 
     private List<Vector3> candidatePoints;
     private CityBoundaries cityBoundaries;

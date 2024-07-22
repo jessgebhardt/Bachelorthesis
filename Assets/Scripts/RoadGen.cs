@@ -26,18 +26,10 @@ public class RoadGen : MonoBehaviour
         cityRadius = outerBoundaryRadius;
 
         GetBoundaryPoints();
-        //Debug.Log("BOUNDARYPOINTS: " + boundaryPoints.Count);
-
-        //for (int i = 0; i < boundaryPoints.Count; i++)
-        //{
-        //    Debug.Log(i + ". BOUNDARYPOINT: " + boundaryPoints[i]);
-        //}
 
         startPoint = boundaryPoints[0];
-        Debug.Log("STARTPUNKT: "+ startPoint);
 
         splitMarks.AddRange(MarkSegments(startPoint, segmentLength));
-        // Debug.Log("SplitmarkANZAHL: " + splitMarks.Count);
 
         // AddRoad();
     }
@@ -158,31 +150,6 @@ public class RoadGen : MonoBehaviour
         return bestPoint;
     }
 
-    //private List<Vector2Int> ReducePoints(List<Vector2Int> points)
-    //{
-    //    HashSet<Vector2Int> visitedPoints = new HashSet<Vector2Int>();
-    //    List<Vector2Int> reducedPoints = new List<Vector2Int>();
-
-    //    foreach (Vector2Int point in points)
-    //    {
-    //        if (!visitedPoints.Contains(point))
-    //        {
-    //            reducedPoints.Add(point);
-    //            visitedPoints.Add(point);
-
-    //            foreach (Vector2Int neighbor in GetNeighbors(point))
-    //            {
-    //                if (points.Contains(neighbor))
-    //                {
-    //                    visitedPoints.Add(neighbor);
-    //                }
-    //            }
-    //        }
-    //    }
-
-    //    return reducedPoints;
-    //}
-
     private List<Vector2Int> SortPoints(List<Vector2Int> points)
     {
         return points.OrderBy(point => Mathf.Atan2(point.y - cityCenterInt.y, point.x - cityCenterInt.x)).ToList();
@@ -212,7 +179,6 @@ public class RoadGen : MonoBehaviour
 
             if (IsBlackPixel(neighbor) && !visited.Contains(neighbor) && neighborDistance < startPointDistance)
             {
-                // Debug.Log("neighborDistance: " + neighborDistance + " startPointDistance: "+ startPointDistance);
                 nextPoint = neighbor;
                 break;
             }
@@ -229,63 +195,33 @@ public class RoadGen : MonoBehaviour
 
         bordersToTrace.Add(newBorderToTrace);
 
-        //Debug.Log("STARTBORDER to trace: "+bordersToTrace[0].startPoint + "; " + bordersToTrace[0].nextPoint);
-        //Debug.Log("BORDERSTOTRACELENGTH: "+ bordersToTrace.Count);
-
-
         while (bordersToTrace.Count > 0)
         {
             BorderToTrace currentBorder = bordersToTrace[0];
             bordersToTrace.RemoveAt(0);
 
-            // 6
             (List<BorderToTrace> newBordersToTrace, List<Vector2Int> segmentPoints) = TraceBorder(currentBorder, segmentLength);
 
-            // 7
             if (newBordersToTrace.Count != 0)
             {
                 foreach (BorderToTrace foundBorder in newBordersToTrace)
                 {
-                    //bool isBoundaryPoint = boundaryPoints.Contains(foundBorder.startPoint);
-                    //if (isBoundaryPoint) 
-                    //{
-                    //    Border endBorder = new Border
-                    //    {
-                    //        startPoint = currentBorder.startPoint,
-                    //        endPoint = foundBorder.startPoint,
-                    //    };
-                    //    borderList.Add(endBorder);
-                    //}
-
-                    if (foundBorder.nextPoint == Vector2Int.zero /*|| isBoundaryPoint*/)
+                    if (foundBorder.nextPoint == Vector2Int.zero)
                     {
                         newBordersToTrace.Remove(foundBorder);
                     }
-
-                    Debug.Log("FOUND border: " + foundBorder.startPoint + "; " + foundBorder.nextPoint);
                 }
 
-                //if (foundBordersToTrace.Count > 0)
-                //{
-                // 7.1 & 8.1 & 9.1 save Border
                 Border newBorder = new Border
-                    {
-                        startPoint = currentBorder.startPoint,
-                        segments = segmentPoints,
-                        endPoint = newBordersToTrace[0].startPoint,
-                    };
-                    borderList.Add(newBorder);
+                {
+                    startPoint = currentBorder.startPoint,
+                    segments = segmentPoints,
+                    endPoint = newBordersToTrace[0].startPoint,
+                };
+                borderList.Add(newBorder);
 
-                    bordersToTrace.AddRange(newBordersToTrace);
-                //}
+                bordersToTrace.AddRange(newBordersToTrace);
             }
-        }
-
-
-        // TEST
-        for (int i = 0; i < borderList.Count; i++)
-        {
-            Debug.Log(i + ": " + borderList[i].startPoint + "; " + borderList[i].endPoint + "; " + borderList[i].segments.Count);
         }
 
         return foundSplitMarks;
@@ -314,7 +250,7 @@ public class RoadGen : MonoBehaviour
 
             if (boundaryPoints.Contains(current) && current != borderToTrace.startPoint)
             {
-                splitMark = current; // save end
+                splitMark = current;
                 noSplitMarkFound = false;
 
             } else if (current == borderToTrace.startPoint || !visited.Contains(current))
@@ -336,15 +272,10 @@ public class RoadGen : MonoBehaviour
                         }
                     }
                 }
-
-                if (remainingNeighbors.Count == 0) 
-                {
-                    Debug.Log("REMAININGNEIGHBORS IS NULL");
-                }
                 
                 if (current != borderToTrace.startPoint && IsBorderSplit(remainingNeighbors) || nextPoints.Count == 0)
                 {
-                    splitMark = current; // save end
+                    splitMark = current;
                     noSplitMarkFound = false;
                 }
 
@@ -359,50 +290,14 @@ public class RoadGen : MonoBehaviour
                     roadSegmentPoints.Add(current);
                     segmentIndex = 0;
                 }
-
-                // Test
-                if (nextPoints.Count == 1 && noSplitMarkFound)
-                {
-                    List<Vector2Int> nextNeighbors = new List<Vector2Int>();
-                    foreach (Vector2Int neighbor in GetNeighbors(nextPoints[0]))
-                    {
-                        if (IsBlackPixel(neighbor) && !visited.Contains(neighbor))
-                        {
-                            if (!nextPoints.Contains(neighbor))
-                            {
-                                nextNeighbors.Add(neighbor);
-                            }
-                        }
-                    }
-                    if (nextNeighbors.Count == 0)
-                    {
-                        Debug.Log("keine nextpoints??" + current);
-                    }
-                }
             }
         }
-
-        if (nextPoints.Count == 0) 
-        {
-            Debug.Log("nextPoints IS NULL?????");
-        }
-
-
-        Debug.Log("SPLITMARK: "+ splitMark);
-        Debug.Log("SPLITMARK FOUND?: " + !noSplitMarkFound);
-
 
         if (!noSplitMarkFound)
         {
             splitMarks.Add(splitMark);
-            // Überprüfen wie viele borders von dem ende weiter führen und save nextpoint for each
-            // nextpoint null machen, wenn rand
-            List<Vector2Int> nextBorderPoints = FindNextBorderPoints(splitMark);
 
-            if (nextBorderPoints.Count == 0)
-            {
-                Debug.Log("KEINE BOREDERS MEHR: "+splitMark);
-            }
+            List<Vector2Int> nextBorderPoints = FindNextBorderPoints(splitMark);
 
 
             foreach (Vector2Int nextPoint in nextBorderPoints)
@@ -416,15 +311,11 @@ public class RoadGen : MonoBehaviour
             }
         }
 
-        Debug.Log("FOUND borders to trace: "+ bordersToTrace.Count);
-
         return (bordersToTrace, segmentPoints);
     }
 
     public List<Vector2Int> FindNextBorderPoints(Vector2Int startPoint)
     {
-        Debug.Log("FindNextBorderPoints START: "+startPoint);
-
         List<Vector2Int> nextBorderPoints = new List<Vector2Int>();
         List<Vector2Int> remainingNeighbors = new List<Vector2Int>();
 
@@ -435,16 +326,10 @@ public class RoadGen : MonoBehaviour
                 remainingNeighbors.Add(neighbor);
             }
         }
-        Debug.Log("REMAINING NEIGHBORS: " + remainingNeighbors.Count);
-
-        Debug.Log("POINT WITHOUT NEIGHBOR: " + FindPointWithoutNeighbor(remainingNeighbors));
-
-        Debug.Log("ARE NOT NEIGHBORS: " + !AreNeighbors(remainingNeighbors));
 
         (bool hasExactlyOneNeighbor, List<(Vector2Int, Vector2Int)> neighborPairs) = HasExactlyOneNeighbor(remainingNeighbors);
-        if (remainingNeighbors.Count >= 4) // 3 & 4
+        if (remainingNeighbors.Count >= 4)
         {
-            Debug.Log("HAS EXACTLY ONE NEIGHBOR: " + hasExactlyOneNeighbor);
             if (hasExactlyOneNeighbor)
             {
                 foreach ((Vector2Int, Vector2Int) neighborPair in neighborPairs)
@@ -456,7 +341,7 @@ public class RoadGen : MonoBehaviour
                 nextBorderPoints.AddRange(FindPointsWithExactlyOneNeighbor(remainingNeighbors));
             }
         }
-        else if (remainingNeighbors.Count == 3 && FindPointWithoutNeighbor(remainingNeighbors) != null) // 2
+        else if (remainingNeighbors.Count == 3 && FindPointWithoutNeighbor(remainingNeighbors) != null)
         {
             Vector2Int? neighborlessPoint = FindPointWithoutNeighbor(remainingNeighbors);
             if (neighborlessPoint != null)
@@ -467,7 +352,7 @@ public class RoadGen : MonoBehaviour
             nextBorderPoints.Add(remainingNeighbors[0]);
 
         }
-        else if (remainingNeighbors.Count == 2 && !AreNeighbors(remainingNeighbors) && !HasDeadEndNeighbor(remainingNeighbors)) // 1
+        else if (remainingNeighbors.Count == 2 && !AreNeighbors(remainingNeighbors) && !HasDeadEndNeighbor(remainingNeighbors))
         { 
             nextBorderPoints.AddRange(remainingNeighbors);
         }
@@ -572,7 +457,6 @@ public class RoadGen : MonoBehaviour
     {
         (bool hasExactlyOneNeighbor, List<(Vector2Int, Vector2Int)> neighborPairs) = HasExactlyOneNeighbor(remainingNeighbors);
 
-
         if (remainingNeighbors.Count >= 4) { return true; }
         else if (remainingNeighbors.Count == 3 && FindPointWithoutNeighbor(remainingNeighbors) != null) { return true; }
         else if (remainingNeighbors.Count == 2 && !AreNeighbors(remainingNeighbors) && !HasDeadEndNeighbor(remainingNeighbors)) { return true; }
@@ -582,19 +466,6 @@ public class RoadGen : MonoBehaviour
 
     bool HasDeadEndNeighbor(List<Vector2Int> remainingNeighbors)
     {
-        // List<Vector2Int> haveUnvisitedNeighbors = new List<Vector2Int>();
-
-        //foreach (Vector2Int remaining in remainingNeighbors)
-        //{
-        //    foreach (Vector2Int neighbor in GetNeighbors(remaining))
-        //    {
-        //        if (IsBlackPixel(neighbor) && (visited.Contains(neighbor) || remainingNeighbors.Contains(neighbor)))
-        //        {
-        //            haveUnvisitedNeighbors.Add(remaining);
-        //        }
-        //    }
-        //}
-
         foreach (Vector2Int remaining in remainingNeighbors)
         {
             if(IsDeadEnd(remaining, remainingNeighbors))
@@ -602,19 +473,6 @@ public class RoadGen : MonoBehaviour
                 return true;
             }
         }
-
-        //if (haveUnvisitedNeighbors.Count != remainingNeighbors.Count)
-        //{
-        //    foreach (Vector2Int remaining in remainingNeighbors)
-        //    {
-        //        if (haveUnvisitedNeighbors.Contains(remaining))
-        //        {
-        //            Debug.LogWarning("gets added to visited: " + remaining);
-        //            visited.Add(remaining);
-        //        }
-        //    }
-        //    return false;
-        //}
 
         return false;
     }
@@ -627,7 +485,6 @@ public class RoadGen : MonoBehaviour
             {
                 if (!visited.Contains(neighbor) && !remainingNeighbors.Contains(neighbor))
                 {
-                    // visited.Add(neighbor);
                     return false;
                 }
             }
@@ -649,10 +506,6 @@ public class RoadGen : MonoBehaviour
                 point + Vector2Int.down,
                 point + Vector2Int.left,
                 point + Vector2Int.right,
-                //point + new Vector2Int(1, 1),
-                //point + new Vector2Int(1, -1),
-                //point + new Vector2Int(-1, 1),
-                //point + new Vector2Int(-1, -1)
             };
 
             foreach (Vector2Int neighbor in neighbors)
