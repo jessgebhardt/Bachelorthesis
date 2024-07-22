@@ -46,7 +46,7 @@ public class VoronoiDiagram : MonoBehaviour
         voronoiTexture.SetPixels(pixelColors);
         voronoiTexture.Apply();
 
-        GetComponent<Renderer>().material.mainTexture = voronoiTexture;
+        GetComponent<Renderer>().sharedMaterial.mainTexture = voronoiTexture;
         return voronoiTexture;
     }
 
