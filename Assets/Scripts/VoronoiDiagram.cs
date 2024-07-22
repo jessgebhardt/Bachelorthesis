@@ -46,7 +46,7 @@ public class VoronoiDiagram : MonoBehaviour
         voronoiTexture.SetPixels(pixelColors);
         voronoiTexture.Apply();
 
-        GetComponent<Renderer>().material.mainTexture = voronoiTexture;
+        GetComponent<Renderer>().sharedMaterial.mainTexture = voronoiTexture;
         return voronoiTexture;
     }
 
@@ -227,7 +227,7 @@ public class VoronoiDiagram : MonoBehaviour
 
     private void SetMaterialToTransparent()
     {
-        Material material = GetComponent<MeshRenderer>().material;
+        Material material = GetComponent<MeshRenderer>().sharedMaterial;
         if (material != null)
         {
             material.SetFloat("_Mode", 3); // Setze den Modus auf Transparent
