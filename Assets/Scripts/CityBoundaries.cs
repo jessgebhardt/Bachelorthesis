@@ -1,8 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteInEditMode]
+// Zeichnet mit Hilfe eines LineRenderer zwei Kreise, um innere und äußere Stadtgrenzen zu visualisieren, und überprüft, ob gegebene Punkte innerhalb dieser Grenzen liegen.
+[ExecuteInEditMode] // Ermöglicht die Ausführung des Skripts im Unity-Editor, ohne den Play mode zu aktivieren
 public class CityBoundaries : MonoBehaviour
 {
     [Range(10, 490)] public float outerBoundaryRadius = 450f;
@@ -11,7 +11,6 @@ public class CityBoundaries : MonoBehaviour
 
     private LineRenderer lineRenderer;
 
-    // Start is called before the first frame update
     void Start()
     {
         innerBoundaryRadius = outerBoundaryRadius / 3;
@@ -20,13 +19,12 @@ public class CityBoundaries : MonoBehaviour
         UpdateBoundaries();
     }
 
-    // Update is called once per frame
     void Update()
     {
         UpdateBoundaries();
     }
 
-    // 
+    // Initialisiert die LineRenderer-Komponente
     void InitializeLineRenderer(LineRenderer lineRenderer, Color color)
     {
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
@@ -36,7 +34,7 @@ public class CityBoundaries : MonoBehaviour
         lineRenderer.endColor = color;
     }
 
-    // 
+    // Aktualisiert die Grenzlinien
     void UpdateBoundaries()
     {
         Vector3 centerPosition = transform.position;
@@ -53,7 +51,7 @@ public class CityBoundaries : MonoBehaviour
         }
     }
 
-    // 
+    // Prüft, ob Punkte innerhalb der angegebenen Grenzen liegen (innen oder außen)
     public List<Vector3> CheckWithinBoundaries(List<Vector3> points, string radiusType)
     {
         List<Vector3> pointsInRadius = new List<Vector3>();
