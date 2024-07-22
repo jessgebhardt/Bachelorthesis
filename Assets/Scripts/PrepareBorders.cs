@@ -284,7 +284,7 @@ public class PrepareBorders : MonoBehaviour
                     segmentIndex++;
 
                 }
-                else if (segmentIndex == segmentLength)
+                else if (noSplitMarkFound && segmentIndex == segmentLength)
                 {
                     segmentPoints.Add(current);
                     roadSegmentPoints.Add(current);
@@ -579,7 +579,6 @@ public class PrepareBorders : MonoBehaviour
             foreach (Vector2Int split in splitMarks)
             {
                 Gizmos.DrawSphere(new Vector3(split.x+0.5f, 1, split.y+0.5f), 5f);
-                Gizmos.DrawSphere(new Vector3(split.x + 0.5f, 1, split.y + 0.5f), 0.5f);
             }
         }
 
@@ -589,7 +588,7 @@ public class PrepareBorders : MonoBehaviour
             Gizmos.color = Color.green;
             foreach (Vector2Int segment in roadSegmentPoints)
             {
-                Gizmos.DrawSphere(new Vector3(segment.x + 0.5f, 1, segment.y + 0.5f), 0.5f);
+                Gizmos.DrawSphere(new Vector3(segment.x + 0.5f, 1, segment.y + 0.5f), 5f);
 
             }
         }
