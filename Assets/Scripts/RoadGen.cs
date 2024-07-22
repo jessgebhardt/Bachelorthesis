@@ -337,14 +337,12 @@ public class RoadGen : MonoBehaviour
                     }
                 }
 
-
                 if (remainingNeighbors.Count == 0) 
                 {
                     Debug.Log("REMAININGNEIGHBORS IS NULL");
-
                 }
                 
-                if (current != borderToTrace.startPoint && IsBorderSplit(remainingNeighbors) || remainingNeighbors.Count == 0)
+                if (current != borderToTrace.startPoint && IsBorderSplit(remainingNeighbors) || nextPoints.Count == 0)
                 {
                     splitMark = current; // save end
                     noSplitMarkFound = false;
@@ -728,9 +726,10 @@ public class RoadGen : MonoBehaviour
             foreach (Vector2Int split in splitMarks)
             {
                 Gizmos.DrawSphere(new Vector3(split.x+0.5f, 1, split.y+0.5f), 5f);
-
+                Gizmos.DrawSphere(new Vector3(split.x + 0.5f, 1, split.y + 0.5f), 0.5f);
             }
         }
+
 
         if (roadSegmentPoints != null)
         {
