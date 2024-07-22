@@ -14,8 +14,8 @@ public class PrepareBorders : MonoBehaviour
     private HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
     private List<Vector2Int> boundaryPoints = new List<Vector2Int>();
 
-    Vector2Int cityCenterInt;
-    float cityRadius;
+    private Vector2Int cityCenterInt;
+    private float cityRadius;
 
     public void GenerateRoad(Texture2D texture, float outerBoundaryRadius, Vector3 cityCenter, int segmentLength)
     {
@@ -29,9 +29,9 @@ public class PrepareBorders : MonoBehaviour
 
         startPoint = boundaryPoints[0];
 
-        splitMarks.AddRange(MarkSegments(startPoint, segmentLength));
+        List<Border> borderList = MarkSegments(startPoint, segmentLength);
 
-        // AddRoad();
+        RoadGenerator.GenerateRoad(boundaryPoints, borderList);
     }
 
     void ClearAllLists ()
@@ -155,12 +155,11 @@ public class PrepareBorders : MonoBehaviour
         return points.OrderBy(point => Mathf.Atan2(point.y - cityCenterInt.y, point.x - cityCenterInt.x)).ToList();
     }
 
-    public List<Vector2Int> MarkSegments(Vector2Int startPoint, int segmentLength)
+    public List<Border> MarkSegments(Vector2Int startPoint, int segmentLength)
     {
 
         List<Border> borderList = new List<Border>();
         List<BorderToTrace> bordersToTrace = new List<BorderToTrace>();
-
 
         List<Vector2Int> segmentMarks = new List<Vector2Int>();
 
@@ -171,7 +170,7 @@ public class PrepareBorders : MonoBehaviour
         nextPoints.Add(startPoint);
         float startPointDistance = Vector2Int.Distance(startPoint, cityCenterInt);
 
-        Vector2Int nextPoint = Vector2Int.zero;
+        Vector2Int? nextPoint = null;
 
         foreach (Vector2Int neighbor in GetNeighbors(startPoint))
         {
@@ -204,14 +203,6 @@ public class PrepareBorders : MonoBehaviour
 
             if (newBordersToTrace.Count != 0)
             {
-                foreach (BorderToTrace foundBorder in newBordersToTrace)
-                {
-                    if (foundBorder.nextPoint == Vector2Int.zero)
-                    {
-                        newBordersToTrace.Remove(foundBorder);
-                    }
-                }
-
                 Border newBorder = new Border
                 {
                     startPoint = currentBorder.startPoint,
@@ -220,11 +211,22 @@ public class PrepareBorders : MonoBehaviour
                 };
                 borderList.Add(newBorder);
 
+                List<BorderToTrace> bordersToCheck = new List<BorderToTrace>();
+                bordersToCheck.AddRange(newBordersToTrace);
+
+                foreach (BorderToTrace border in bordersToCheck)
+                {
+                    if (border.nextPoint == null)
+                    {
+                        newBordersToTrace.Remove(border);
+                    }
+                }
+
                 bordersToTrace.AddRange(newBordersToTrace);
             }
         }
 
-        return foundSplitMarks;
+        return borderList;
     }
 
     public (List<BorderToTrace>, List<Vector2Int>) TraceBorder(BorderToTrace borderToTrace, int segmentLength)
@@ -239,7 +241,7 @@ public class PrepareBorders : MonoBehaviour
 
         Vector2Int splitMark = Vector2Int.zero;
 
-        nextPoints.Add(borderToTrace.nextPoint);
+        nextPoints.Add((Vector2Int)borderToTrace.nextPoint);
 
         int segmentIndex = 0;
 
@@ -299,15 +301,25 @@ public class PrepareBorders : MonoBehaviour
 
             List<Vector2Int> nextBorderPoints = FindNextBorderPoints(splitMark);
 
-
-            foreach (Vector2Int nextPoint in nextBorderPoints)
+            if (nextBorderPoints.Count == 0)
             {
                 BorderToTrace newBorderToTrace = new BorderToTrace
                 {
                     startPoint = splitMark,
-                    nextPoint = nextPoint
+                    nextPoint = null
                 };
                 bordersToTrace.Add(newBorderToTrace);
+            } else
+            {
+                foreach (Vector2Int nextPoint in nextBorderPoints)
+                {
+                    BorderToTrace newBorderToTrace = new BorderToTrace
+                    {
+                        startPoint = splitMark,
+                        nextPoint = nextPoint
+                    };
+                    bordersToTrace.Add(newBorderToTrace);
+                }
             }
         }
 
@@ -555,11 +567,6 @@ public class PrepareBorders : MonoBehaviour
         };
     }
 
-    public void AddRoad()
-    {
-
-    }
-
     private void OnDrawGizmos()
     {
         if (boundaryPoints != null)
@@ -607,5 +614,5 @@ public struct Border
 public struct BorderToTrace
 {
     public Vector2Int startPoint;
-    public Vector2Int nextPoint;
+    public Vector2Int? nextPoint;
 }

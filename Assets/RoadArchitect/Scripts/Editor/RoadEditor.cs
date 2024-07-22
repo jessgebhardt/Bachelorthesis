@@ -1396,6 +1396,7 @@ namespace RoadArchitect
                     {
                         if (road.isEditorMouseHittingTerrain)
                         {
+                            Debug.Log("HERE The Node gets added");
                             Event.current.Use();
                             Construction.InsertNode(road);
                             isUsed = true;
