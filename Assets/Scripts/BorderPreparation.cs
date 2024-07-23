@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
-public class PrepareBorders : MonoBehaviour
+public class BorderPreparation : MonoBehaviour
 {
     private Texture2D voronoiTexture;
 
@@ -17,7 +18,7 @@ public class PrepareBorders : MonoBehaviour
     private Vector2Int cityCenterInt;
     private float cityRadius;
 
-    public void GenerateRoad(Texture2D texture, float outerBoundaryRadius, Vector3 cityCenter, int segmentLength)
+    public void GenerateRoads(Texture2D texture, float outerBoundaryRadius, Vector3 cityCenter, int segmentLength)
     {
         ClearAllLists();
 
@@ -31,8 +32,14 @@ public class PrepareBorders : MonoBehaviour
 
         List<Border> borderList = MarkSegments(startPoint, segmentLength);
 
+        splitMarks.Add(startPoint);
+
         // Add back later
         // RoadGenerator.GenerateRoad(boundaryPoints, borderList);
+
+        List<List<Vector2Int>> extractedRegions = DistrictExtractor.ExtractDistrictsForRoads(voronoiTexture);
+        List<List<Vector2Int>> segments = PrepareSegments(extractedRegions);
+        SecondaryRoadsGenerator.GenerateSecondaryRoads(extractedRegions, segments);
     }
 
     void ClearAllLists ()
@@ -53,7 +60,7 @@ public class PrepareBorders : MonoBehaviour
             {
                 Vector2Int point = new Vector2Int(x, y);
 
-                if (IsBlackPixel(point) && directNeighborIsClear(point))
+                if (IsBlackPixel(point) && IsDirectNeighborClear(point))
                 {
                     points.Add(point);
                 }
@@ -64,17 +71,9 @@ public class PrepareBorders : MonoBehaviour
         boundaryPoints = SortPoints(reducedPoints);
     }
 
-    bool directNeighborIsClear(Vector2Int point)
+    bool IsDirectNeighborClear(Vector2Int point)
     {
-        Vector2Int[] neighbors = new Vector2Int[]
-        {
-                point + Vector2Int.up,
-                point + Vector2Int.down,
-                point + Vector2Int.left,
-                point + Vector2Int.right,
-        };
-
-        foreach (Vector2Int neighbor in neighbors) 
+        foreach (Vector2Int neighbor in GetNeighbors(point, false)) 
         {
             if (IsClearPixel(neighbor))
             {
@@ -120,7 +119,7 @@ public class PrepareBorders : MonoBehaviour
         visitedPoints.Add(point);
         neighborhood.Add(point);
 
-        foreach (Vector2Int neighbor in GetNeighbors(point))
+        foreach (Vector2Int neighbor in GetNeighbors(point, true))
         {
             if (points.Contains(neighbor) && !visitedPoints.Contains(neighbor))
             {
@@ -137,8 +136,8 @@ public class PrepareBorders : MonoBehaviour
 
         foreach (var point in neighborhood)
         {
-            int clearNeighbors = GetNeighbors(point).Count(n => voronoiTexture.GetPixel(point.x, point.y) == Color.clear);
-            int blackNeighbors = GetNeighbors(point).Count(n => voronoiTexture.GetPixel(point.x, point.y) == Color.black);
+            int clearNeighbors = GetNeighbors(point, true).Count(n => voronoiTexture.GetPixel(point.x, point.y) == Color.clear);
+            int blackNeighbors = GetNeighbors(point, true).Count(n => voronoiTexture.GetPixel(point.x, point.y) == Color.black);
 
             if (clearNeighbors > maxClearNeighbors && blackNeighbors < minBlackNeighbors)
             {
@@ -173,7 +172,7 @@ public class PrepareBorders : MonoBehaviour
 
         Vector2Int? nextPoint = null;
 
-        foreach (Vector2Int neighbor in GetNeighbors(startPoint))
+        foreach (Vector2Int neighbor in GetNeighbors(startPoint, true))
         {
             float neighborDistance = Vector2Int.Distance(neighbor, cityCenterInt);
 
@@ -264,7 +263,7 @@ public class PrepareBorders : MonoBehaviour
                 }
                 List<Vector2Int> remainingNeighbors = new List<Vector2Int>();
 
-                foreach (Vector2Int neighbor in GetNeighbors(current)) 
+                foreach (Vector2Int neighbor in GetNeighbors(current, true)) 
                 {
                     if (IsBlackPixel(neighbor) && !visited.Contains(neighbor))
                     {
@@ -332,7 +331,7 @@ public class PrepareBorders : MonoBehaviour
         List<Vector2Int> nextBorderPoints = new List<Vector2Int>();
         List<Vector2Int> remainingNeighbors = new List<Vector2Int>();
 
-        foreach (Vector2Int neighbor in GetNeighbors(startPoint))
+        foreach (Vector2Int neighbor in GetNeighbors(startPoint, true))
         {
             if (IsBlackPixel(neighbor) && !visited.Contains(neighbor))
             {
@@ -492,7 +491,7 @@ public class PrepareBorders : MonoBehaviour
 
     bool IsDeadEnd(Vector2Int remainingNeighbor, List<Vector2Int> remainingNeighbors)
     {
-        foreach (Vector2Int neighbor in GetNeighbors(remainingNeighbor))
+        foreach (Vector2Int neighbor in GetNeighbors(remainingNeighbor, true))
         {
             if (IsBlackPixel(neighbor))
             {
@@ -513,15 +512,7 @@ public class PrepareBorders : MonoBehaviour
 
         foreach (Vector2Int point in points)
         {
-            Vector2Int[] neighbors = new Vector2Int[]
-            {
-                point + Vector2Int.up,
-                point + Vector2Int.down,
-                point + Vector2Int.left,
-                point + Vector2Int.right,
-            };
-
-            foreach (Vector2Int neighbor in neighbors)
+            foreach (Vector2Int neighbor in GetNeighbors(point, false))
             {
                 if (pointSet.Contains(neighbor))
                 {
@@ -552,20 +543,52 @@ public class PrepareBorders : MonoBehaviour
         return voronoiTexture.GetPixel(point.x, point.y) == Color.clear;
     }
 
-    List<Vector2Int> GetNeighbors(Vector2Int point)
+    private List<Vector2Int> GetNeighbors(Vector2Int point, bool includeDiagonals)
     {
-        return new List<Vector2Int>
+        List<Vector2Int> neighbors = new List<Vector2Int>
         {
             new Vector2Int(point.x, point.y + 1),
             new Vector2Int(point.x + 1, point.y),
             new Vector2Int(point.x, point.y - 1),
             new Vector2Int(point.x - 1, point.y),
-
-            new Vector2Int(point.x - 1, point.y + 1),
-            new Vector2Int(point.x + 1, point.y + 1),
-            new Vector2Int(point.x + 1, point.y - 1),
-            new Vector2Int(point.x - 1, point.y - 1),
         };
+
+        if (includeDiagonals)
+        {
+            neighbors.Add(new Vector2Int(point.x - 1, point.y + 1));
+            neighbors.Add(new Vector2Int(point.x + 1, point.y + 1));
+            neighbors.Add(new Vector2Int(point.x + 1, point.y - 1));
+            neighbors.Add(new Vector2Int(point.x - 1, point.y - 1));
+        }
+
+        return neighbors;
+    }
+
+    private List<List<Vector2Int>> PrepareSegments(List<List<Vector2Int>> extractedRegions)
+    {
+        // Precompute neighbors for all segment points
+        Dictionary<Vector2Int, List<Vector2Int>> segmentPointNeighbors = roadSegmentPoints
+            .ToDictionary(point => point, point => GetNeighbors(point, false));
+
+        List<List<Vector2Int>> extractedSegments = new List<List<Vector2Int>>();
+
+        foreach (List<Vector2Int> regionPixels in extractedRegions)
+        {
+            HashSet<Vector2Int> regionSet = new HashSet<Vector2Int>(regionPixels);
+            List<Vector2Int> segmentPoints = new List<Vector2Int>();
+
+            foreach (var segmentPoint in segmentPointNeighbors)
+            {
+                if (segmentPoint.Value.Any(neighbor => regionSet.Contains(neighbor)))
+                {
+                    segmentPoints.Add(segmentPoint.Key);
+                }
+            }
+
+            extractedSegments.Add(segmentPoints);
+        }
+
+        return extractedSegments;
     }
 
     private void OnDrawGizmos()

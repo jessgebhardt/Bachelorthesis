@@ -34,7 +34,7 @@ public class DistrictGenerator : MonoBehaviour
     private VoronoiDiagram voronoiScript;
     private Texture2D voronoiTexture;
     [SerializeField] GameObject prepareBorders;
-    private PrepareBorders prepareBordersScript;
+    private BorderPreparation prepareBordersScript;
 
     [SerializeField] int segmentLength = 50;
 
@@ -51,8 +51,8 @@ public class DistrictGenerator : MonoBehaviour
 
     public void GenerateRoads() 
     {
-        prepareBordersScript = prepareBorders.GetComponent<PrepareBorders>();
-        prepareBordersScript.GenerateRoad(voronoiTexture, cityBoundaries.outerBoundaryRadius, cityBoundaries.transform.position, segmentLength);
+        prepareBordersScript = prepareBorders.GetComponent<BorderPreparation>();
+        prepareBordersScript.GenerateRoads(voronoiTexture, cityBoundaries.outerBoundaryRadius, cityBoundaries.transform.position, segmentLength);
     }
 
     private void CalculateMinAndMaxDistricts()
