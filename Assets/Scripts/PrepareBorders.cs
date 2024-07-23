@@ -31,7 +31,8 @@ public class PrepareBorders : MonoBehaviour
 
         List<Border> borderList = MarkSegments(startPoint, segmentLength);
 
-        RoadGenerator.GenerateRoad(boundaryPoints, borderList);
+        // Add back later
+        // RoadGenerator.GenerateRoad(boundaryPoints, borderList);
     }
 
     void ClearAllLists ()
@@ -569,16 +570,16 @@ public class PrepareBorders : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (boundaryPoints != null)
-        {
-            Gizmos.color = Color.blue;
-            foreach (Vector2Int point in boundaryPoints)
-            {
-                Gizmos.DrawSphere(new Vector3(point.x+ 0.5f, 1, point.y + 0.5f), 7f);
-            }
-        }
+        //if (boundaryPoints != null)
+        //{
+        //    Gizmos.color = Color.blue;
+        //    foreach (Vector2Int point in boundaryPoints)
+        //    {
+        //        Gizmos.DrawSphere(new Vector3(point.x+ 0.5f, 1, point.y + 0.5f), 7f);
+        //    }
+        //}
 
-        if(startPoint != null) { Gizmos.color = Color.magenta; Gizmos.DrawSphere(new Vector3(startPoint.x, 1, startPoint.y), 10f); }
+        //if(startPoint != null) { Gizmos.color = Color.magenta; Gizmos.DrawSphere(new Vector3(startPoint.x, 1, startPoint.y), 10f); }
 
         if (splitMarks != null)
         {
