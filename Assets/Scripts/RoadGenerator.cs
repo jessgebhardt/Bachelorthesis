@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using RoadArchitect;
 using RoadArchitect.Roads;
-using System;
 
 public class RoadGenerator : MonoBehaviour
 {
     public static void GenerateRoad(List<Vector2Int> boundaryPositions, List<Border> borderList)
     {
+        List<Road> newRoads = new List<Road>();
 
         // Delete RoadArchitectSystem
         RoadSystem oldRoadSystem = FindObjectOfType<RoadSystem>();
@@ -22,6 +22,7 @@ public class RoadGenerator : MonoBehaviour
         // Find the RoadArchitectSystem in your scene
         RoadSystem roadSystem = FindObjectOfType<RoadSystem>();
 
+        // Delete existing roads
         Road[] oldRoads = FindObjectsOfType<Road>();
         if (oldRoads != null)
         {
@@ -34,25 +35,25 @@ public class RoadGenerator : MonoBehaviour
         // Ensure road updates are disabled initially
         roadSystem.isAllowingRoadUpdates = false;
 
-        GenerateCityBorderRoad(roadSystem, boundaryPositions);
+        // Generate roads
+        newRoads.Add(GenerateCityBorderRoad(roadSystem, boundaryPositions));
+        newRoads.AddRange(GenerateDistrictBorderRoads(roadSystem, borderList));
 
-        GenerateDistrictBorderRoads(roadSystem, borderList);
+        // Not working yet because of missing vertecies..
+        //foreach (Road road in newRoads) 
+        //{
+        //    RoadAutomation.CreateIntersectionsProgrammaticallyForRoad(road);
+        //}
 
         // Enable road updates and update the road system
         roadSystem.isAllowingRoadUpdates = true;
         roadSystem.UpdateAllRoads();
-
     }
 
-    private static void GenerateCityBorderRoad(RoadSystem roadSystem, List<Vector2Int> positions)
+    private static Road GenerateCityBorderRoad(RoadSystem roadSystem, List<Vector2Int> positions)
     {
         // Convert Vector2Int positions to Vector3
-
-        List<Vector3> vector3Positions = new List<Vector3>()
-        {
-            new Vector3(positions[0].x, 0.1f, positions[0].y)
-        };
-    
+        List<Vector3> vector3Positions = new List<Vector3>();
         foreach (var pos in positions)
         {
             vector3Positions.Add(new Vector3(pos.x, 0.1f, pos.y));
@@ -63,32 +64,45 @@ public class RoadGenerator : MonoBehaviour
 
         // Connect the last node to the first to form a loop
         RoadAutomation.CreateNodeProgrammatically(road, vector3Positions[0]);
+        return road;
     }
 
-    private static void GenerateDistrictBorderRoads(RoadSystem roadSystem, List<Border> borderList)
+    private static List<Road> GenerateDistrictBorderRoads(RoadSystem roadSystem, List<Border> borderList)
     {
-        Debug.Log("Borderlist count: "+borderList.Count);
-        int index = 0;
-        foreach (var border in borderList) 
+        List<Road> newRoads = new List<Road>();
+        foreach (var border in borderList)
         {
-            index++;
-            List<Vector3> vector3Positions = new List<Vector3>()
+            List<Vector3> vector3Positions = new List<Vector3>
             {
                 new Vector3(border.startPoint.x, 0.1f, border.startPoint.y)
             };
 
-            foreach (var pos in border.segments)
+            if (border.segments.Count != 0)
             {
-                vector3Positions.Add(new Vector3(pos.x, 0.1f, pos.y));
+                foreach (var pos in border.segments)
+                {
+                    vector3Positions.Add(new Vector3(pos.x, 0.1f, pos.y));
+                }
+            } else
+            {
+                vector3Positions.Add(FindMidpoint(new Vector3(border.startPoint.x, 0.1f, border.startPoint.y), new Vector3(border.endPoint.x, 0.1f, border.endPoint.y)));
             }
 
             vector3Positions.Add(new Vector3(border.endPoint.x, 0.1f, border.endPoint.y));
 
-            Debug.Log("VECTOR3: "+ vector3Positions.Count);
-
             // Create the road programmatically
-            RoadAutomation.CreateRoadProgrammatically(roadSystem, ref vector3Positions);
+            Road road = RoadAutomation.CreateRoadProgrammatically(roadSystem, ref vector3Positions);
+            newRoads.Add(road);
         }
-        Debug.Log("index"+index);
+        return newRoads;
+    }
+
+    public static Vector3 FindMidpoint(Vector3 pointA, Vector3 pointB)
+    {
+        return new Vector3(
+            (pointA.x + pointB.x) / 2,
+            (pointA.y + pointB.y) / 2,
+            (pointA.z + pointB.z) / 2
+        );
     }
 }
