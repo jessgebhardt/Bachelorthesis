@@ -1,23 +1,20 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Reflection;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class SecondaryRoadsGenerator : MonoBehaviour
 {
-    public static void GenerateSecondaryRoads(List<List<Vector2Int>> extractedRegions, List<List<Vector2Int>> regionsSegmentMarks)
+    public static Texture2D GenerateSecondaryRoads(List<List<Vector2Int>> extractedRegions, List<List<Vector2Int>> regionsSegmentMarks, Texture2D voronoiTexture)
     {
         Debug.Log(extractedRegions.Count);
         Debug.Log(regionsSegmentMarks.Count);
 
         List<Vector2Int[]> chosenSegments = ChooseStartpoints(regionsSegmentMarks);
 
-        GenerateRoads();
+        voronoiTexture = GenerateRoads(extractedRegions, chosenSegments, voronoiTexture);
 
         Debug.Log(chosenSegments.Count);
 
+        return voronoiTexture;
     }
 
     private static (Vector2Int, Vector2Int) FindMaxDistancePoints(List<Vector2Int> points)
@@ -73,8 +70,14 @@ public class SecondaryRoadsGenerator : MonoBehaviour
         return chosenSegments;
     }
 
-    private static void GenerateRoads()
+    private static Texture2D GenerateRoads(List<List<Vector2Int>> extractedRegions, List<Vector2Int[]> chosenSegments, Texture2D voronoiTexture)
     {
+        //for (int i = 0; i < extractedRegions.Count; i++)
+        //{
+            voronoiTexture = LSystem.GenerateLSystem("A", 5, 90f, 20f, voronoiTexture, extractedRegions[0], chosenSegments[0]);
+        Debug.Log("DONE");
+        //}
 
+        return voronoiTexture;
     }
 }

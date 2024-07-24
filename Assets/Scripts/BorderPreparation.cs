@@ -18,7 +18,7 @@ public class BorderPreparation : MonoBehaviour
     private Vector2Int cityCenterInt;
     private float cityRadius;
 
-    public void GenerateRoads(Texture2D texture, float outerBoundaryRadius, Vector3 cityCenter, int segmentLength)
+    public Texture2D GenerateRoads(Texture2D texture, float outerBoundaryRadius, Vector3 cityCenter, int segmentLength)
     {
         ClearAllLists();
 
@@ -39,7 +39,9 @@ public class BorderPreparation : MonoBehaviour
 
         List<List<Vector2Int>> extractedRegions = DistrictExtractor.ExtractDistrictsForRoads(voronoiTexture);
         List<List<Vector2Int>> segments = PrepareSegments(extractedRegions);
-        SecondaryRoadsGenerator.GenerateSecondaryRoads(extractedRegions, segments);
+        voronoiTexture = SecondaryRoadsGenerator.GenerateSecondaryRoads(extractedRegions, segments, voronoiTexture);
+
+        return voronoiTexture;
     }
 
     void ClearAllLists ()
@@ -577,11 +579,14 @@ public class BorderPreparation : MonoBehaviour
             HashSet<Vector2Int> regionSet = new HashSet<Vector2Int>(regionPixels);
             List<Vector2Int> segmentPoints = new List<Vector2Int>();
 
-            foreach (var segmentPoint in segmentPointNeighbors)
+            foreach (var segmentPointNeighbor in segmentPointNeighbors)
             {
-                if (segmentPoint.Value.Any(neighbor => regionSet.Contains(neighbor)))
+                foreach (var neighbor in segmentPointNeighbor.Value)
                 {
-                    segmentPoints.Add(segmentPoint.Key);
+                    if (regionSet.Contains(neighbor))
+                    {
+                        segmentPoints.Add(neighbor);
+                    }
                 }
             }
 
@@ -590,6 +595,8 @@ public class BorderPreparation : MonoBehaviour
 
         return extractedSegments;
     }
+
+
 
     private void OnDrawGizmos()
     {

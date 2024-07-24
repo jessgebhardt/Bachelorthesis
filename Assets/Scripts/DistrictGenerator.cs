@@ -52,7 +52,8 @@ public class DistrictGenerator : MonoBehaviour
     public void GenerateRoads() 
     {
         prepareBordersScript = prepareBorders.GetComponent<BorderPreparation>();
-        prepareBordersScript.GenerateRoads(voronoiTexture, cityBoundaries.outerBoundaryRadius, cityBoundaries.transform.position, segmentLength);
+        voronoiTexture = prepareBordersScript.GenerateRoads(voronoiTexture, cityBoundaries.outerBoundaryRadius, cityBoundaries.transform.position, segmentLength);
+        ApplyTexture();
     }
 
     private void CalculateMinAndMaxDistricts()
@@ -297,6 +298,16 @@ public class DistrictGenerator : MonoBehaviour
     private int GenerateUniqueID()
     {
         return ++counter;
+    }
+
+    private void ApplyTexture()
+    {
+        voronoiTexture.Apply();
+        Renderer renderer = GetComponent<Renderer>();
+        if (renderer != null)
+        {
+            renderer.sharedMaterial.mainTexture = voronoiTexture;
+        }
     }
 
 
