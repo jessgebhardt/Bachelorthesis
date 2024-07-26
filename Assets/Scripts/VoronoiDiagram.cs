@@ -16,91 +16,114 @@ public class VoronoiDiagram : MonoBehaviour
 
     public Texture2D GenerateVoronoiDiagram(IDictionary<int, District> districts, int size, int cellDistortion, Vector2 center, float radius)
     {
-        int regionAmount = districts.Keys.Max() + 1;
-
+        // Setze die Parameter für das Stadtzentrum und den Radius
         cityCenter = center;
         cityRadius = radius;
 
-        int[] ids = new int[regionAmount];
-        districtPoints = new Vector2[regionAmount];
-        Color[] regionColors = new Color[regionAmount];
+        // Bestimme die Anzahl der Regionen
+        int regionCount = districts.Count;
+        districtPoints = new Vector2[regionCount];
+        Color[] regionColors = new Color[regionCount];
+        int[] ids = new int[regionCount];
 
+        // Initialisiere die Bezirksdaten
         int index = 0;
         foreach (KeyValuePair<int, District> kvp in districts)
         {
             District district = kvp.Value;
             districtPoints[kvp.Key] = new Vector2(district.position.x, district.position.z);
-            regionColors[kvp.Key] = district.type.color;
+            Color regionColor = district.type.color;
+            // regionColor.a = 0.5f; // Setze die Transparenz
+            regionColors[kvp.Key] = regionColor;
             ids[index] = kvp.Key;
             index++;
         }
 
-        Color[] pixelColors = GenerateDistortedVoronoi(size, regionAmount, regionColors, ids, cellDistortion);
+        // Erzeuge das verzerrte Voronoi-Diagramm
+        Color[] pixelColors = GenerateDistortedVoronoi(size, regionCount, regionColors, ids, cellDistortion);
 
+        // Setze das Material auf transparent
         SetMaterialToTransparent();
 
-        Texture2D voronoiTexture = new Texture2D(size, size)
+        // Erzeuge die Textur und wende sie auf das Material an
+        Texture2D voronoiTexture = new Texture2D(size, size, TextureFormat.RGBA32, false)
         {
             filterMode = FilterMode.Point
         };
-        voronoiTexture.SetPixels(pixelColors);
-        voronoiTexture.Apply();
 
-        GetComponent<Renderer>().sharedMaterial.mainTexture = voronoiTexture;
+        if (pixelColors.Length == size * size)
+        {
+            voronoiTexture.SetPixels(pixelColors);
+            voronoiTexture.Apply();
+
+            var renderer = GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.sharedMaterial.mainTexture = voronoiTexture;
+            }
+            else
+            {
+                Debug.LogError("Renderer component not found.");
+            }
+        }
+        else
+        {
+            Debug.LogError("Pixel color array size does not match the texture size.");
+        }
+
         return voronoiTexture;
     }
 
-    public Color[] GenerateDistortedVoronoi(int size, int regionAmount, Color[] regionColors, int[] ids, int randomPointCount)
+    public Color[] GenerateDistortedVoronoi(int size, int regionCount, Color[] regionColors, int[] ids, int randomPointCount)
     {
-        // Initiales Voronoi-Diagramm berechnen (nur Bezirkspositionen)
-        Color[] initialVoronoi = GenerateVoronoi(size, regionAmount, districtPoints, regionColors, ids, false);
+        bool borders = false;
+        if (randomPointCount <= 0)
+        {
+            borders = true;
+        }
 
-        if (randomPointCount <= 0) 
+        // Berechne das anfängliche Voronoi-Diagramm basierend auf den Bezirkspositionen
+        Color[] initialVoronoi = GenerateVoronoi(size, regionCount, districtPoints, regionColors, ids, borders);
+
+        if (randomPointCount <= 0)
         {
             allPoints = null;
             return initialVoronoi;
         }
-        // Zufälliges Verformen von den Bezirken/Voronoizellen
 
-        allPoints = new Vector2[randomPointCount+regionAmount];
-        allPointColors = new Color[randomPointCount+regionAmount];
-        int[] allIds = new int[randomPointCount + regionAmount];
+        // Initialisiere Arrays für alle Punkte, Farben und IDs
+        int totalPoints = randomPointCount + regionCount;
+        allPoints = new Vector2[totalPoints];
+        allPointColors = new Color[totalPoints];
+        int[] allIds = new int[totalPoints];
 
-        // Ursprüngliche Punkte und Farben hinzufügen
-        foreach (int id in ids)
+        // Kopiere ursprüngliche Punkte und Farben
+        for (int i = 0; i < regionCount; i++)
         {
-            allPoints[id] = districtPoints[id];
-            allPointColors[id] = regionColors[id];
-            allIds[id] = id;
+            allPoints[i] = districtPoints[ids[i]];
+            allPointColors[i] = regionColors[ids[i]];
+            allIds[i] = ids[i];
         }
 
-        for (int i = 0; i < randomPointCount; i++) 
+        // Füge zufällige Punkte hinzu
+        for (int i = 0; i < randomPointCount; i++)
         {
             Vector2 randomPosition = cityCenter + UnityEngine.Random.insideUnitCircle * cityRadius;
-
-            int pixelIndex = (int)randomPosition.x + (int)randomPosition.y * size;
-
+            int pixelIndex = Mathf.Clamp((int)randomPosition.x + (int)randomPosition.y * size, 0, initialVoronoi.Length - 1);
             Color closestColor = initialVoronoi[pixelIndex];
 
+            allPoints[i + regionCount] = randomPosition;
+            allPointColors[i + regionCount] = closestColor;
 
-            allPoints[i + regionAmount] = randomPosition;
-            allPointColors[i + regionAmount] = closestColor;
-            int closestOriginalId = Array.IndexOf(regionColors, closestColor);
-            allIds[i + regionAmount] = ids[closestOriginalId];
+            // Finde die ID des nächsten ursprünglichen Bezirks
+            int closestOriginalId = Array.FindIndex(regionColors, color => color == closestColor);
+            allIds[i + regionCount] = closestOriginalId >= 0 ? ids[closestOriginalId] : -1;
         }
 
-        //int indexid = 0;
-        //foreach (int id in allIds)
-        //{
-        //    Debug.Log(indexid+". ID:"+id);
-        //    indexid++;
-        //}
-
-        // Neues Voronoi-Diagramm basierend auf neuen und alten Punkten berechnen
-        Color[] distortedVoronoi = GenerateVoronoi(size, randomPointCount + regionAmount, allPoints, allPointColors, allIds, true);
-
-        return distortedVoronoi;
+        // Berechne das neue Voronoi-Diagramm basierend auf den neuen und alten Punkten
+        return GenerateVoronoi(size, totalPoints, allPoints, allPointColors, allIds, true);
     }
+
 
     public Color[] GenerateVoronoi(int size, int regionAmount, Vector2[] points, Color[] regionColors, int[] ids, bool borders)
     {

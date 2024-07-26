@@ -8,7 +8,6 @@ public class DistrictGenerator : MonoBehaviour
 {
     [SerializeField, Range(0, 1)] private float importanceOfNeighbours = 0.4f;
     [SerializeField, Range(0, 1)] private float importanceOfCityCenterDistance = 0.3f;
-    [SerializeField, Range(0, 1)] private float importanceOfPrimaryStreetDistance = 0.2f;
 
     [SerializeField] private DistrictType[] districtTypes;
     [SerializeField] private List<District> generatedDistricts = new List<District>();
@@ -200,9 +199,9 @@ public class DistrictGenerator : MonoBehaviour
     {
         float Sd = CalculateSuitabilityBasedOnNeighbors(type, location);
         float Sa = CalculateSuitabilityBasedOnArea(type, location);
-        float Sh = CalculateSuitabilityBasedOnPrimaryStreets(type, location);
+        // float Sh = CalculateSuitabilityBasedOnPrimaryStreets(type, location);
 
-        float S = importanceOfNeighbours * Sd + importanceOfCityCenterDistance * Sa + importanceOfPrimaryStreetDistance * Sh;
+        float S = importanceOfNeighbours * Sd + importanceOfCityCenterDistance * Sa /*+ importanceOfPrimaryStreetDistance * Sh*/;
         return S;
     }
 
@@ -236,22 +235,22 @@ public class DistrictGenerator : MonoBehaviour
         return scaledVal;
     }
 
-    float CalculateSuitabilityBasedOnPrimaryStreets(DistrictType type, Vector3 location)
-    {
-        float closestDistance = UnityEngine.Random.Range(0, 10);
-        //float closestDistance = float.MaxValue;
-        //foreach (var primaryStreet in primaryStreets)
-        //{
-        //    float distance = Vector3.Distance(location, primaryStreet);
-        //    float scaledDistance = ScaleDistance(distance);
-        //    if (scaledDistance < closestDistance)
-        //    {
-        //        closestDistance = scaledDistance;
-        //    }
-        //}
-        float Sh = GetSuitability(closestDistance, type.distanceToPrimaryStreets);
-        return Sh;
-    }
+    //float CalculateSuitabilityBasedOnPrimaryStreets(DistrictType type, Vector3 location)
+    //{
+    //    float closestDistance = UnityEngine.Random.Range(0, 10);
+    //    //float closestDistance = float.MaxValue;
+    //    //foreach (var primaryStreet in primaryStreets)
+    //    //{
+    //    //    float distance = Vector3.Distance(location, primaryStreet);
+    //    //    float scaledDistance = ScaleDistance(distance);
+    //    //    if (scaledDistance < closestDistance)
+    //    //    {
+    //    //        closestDistance = scaledDistance;
+    //    //    }
+    //    //}
+    //    float Sh = GetSuitability(closestDistance, type.distanceToPrimaryStreets);
+    //    return Sh;
+    //}
 
     float GetAttraction(DistrictType districtType, DistrictType neighborType)
     {
@@ -311,27 +310,27 @@ public class DistrictGenerator : MonoBehaviour
     }
 
 
-    //private void OnDrawGizmos()
-    //{
-    //    if (candidatePoints != null)
-    //    {
-    //        Gizmos.color = Color.white;
-    //        foreach (Vector3 point in candidatePoints)
-    //        {
-    //            Gizmos.DrawSphere(point, displayRadius);
-    //        }
-    //    }
-    //    Debug.Log("Districtamount: "+generatedDistricts.Count);
-    //    if (generatedDistricts != null)
-    //    {
-    //        Gizmos.color = Color.white;
-    //        foreach (District district in generatedDistricts)
-    //        {
-    //            Gizmos.color = district.type.color;
-    //            Gizmos.DrawSphere(district.position, displayRadius);
-    //        }
-    //    }
-    //}
+    private void OnDrawGizmos()
+    {
+        if (candidatePoints != null)
+        {
+            Gizmos.color = Color.white;
+            foreach (Vector3 point in candidatePoints)
+            {
+                Gizmos.DrawSphere(point, 10f);
+            }
+        }
+        Debug.Log("Districtamount: " + generatedDistricts.Count);
+        if (generatedDistricts != null)
+        {
+            Gizmos.color = Color.white;
+            foreach (District district in generatedDistricts)
+            {
+                Gizmos.color = district.type.color;
+                Gizmos.DrawSphere(district.position, 10f);
+            }
+        }
+    }
 }
 
 [System.Serializable]
