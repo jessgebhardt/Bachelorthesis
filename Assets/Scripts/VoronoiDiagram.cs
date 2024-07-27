@@ -14,10 +14,13 @@ public class VoronoiDiagram : MonoBehaviour
     private Vector2 cityCenter = new Vector2(0, 0);
     private float cityRadius = 1;
 
-    public Texture2D GenerateVoronoiDiagram(IDictionary<int, District> districts, int size, int cellDistortion, Vector2 center, float radius)
+    public Texture2D GenerateVoronoiDiagram(IDictionary<int, District> districts, int cellDistortion, Vector2 center, float radius)
     {
+        int size = (int)transform.localScale.x * 10;
+
         // Setze die Parameter für das Stadtzentrum und den Radius
         cityCenter = center;
+
         cityRadius = radius;
 
         // Bestimme die Anzahl der Regionen
@@ -145,43 +148,51 @@ public class VoronoiDiagram : MonoBehaviour
             // Position des aktuellen Pixels
             Vector2 pixelPosition = pixelPositions[index];
 
-            // Kleinste gefundene Distanz zum nächsten Bezirkpunkt
-            float minDistance = float.MaxValue;
-
-
-            Vector2 closestPoint = new Vector2();
-
-            // Index des nächsten Bezirkpunkts
-            int closestRegionId = 0;
-
-            // Berechnung der Distanz zu jedem Punkt & Zuweisung
-            for (int i = 0; i < points.Length; i++)
+            float centerDistance = Vector2.Distance(new Vector2(pixelPosition.x, pixelPosition.y), cityCenter);
+            if (centerDistance < cityRadius)
             {
-                float distance = Vector2.Distance(pixelPosition, points[i]);
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    closestPoint = points[i];
-                    //closestRegionId = i;
-                }
-            }
 
-            float minOriginalPointDistance = float.MaxValue;
-            for (int i = 0; i < districtPoints.Length; i++) 
+                // Kleinste gefundene Distanz zum nächsten Bezirkpunkt
+                float minDistance = float.MaxValue;
+
+
+                Vector2 closestPoint = new Vector2();
+
+                // Index des nächsten Bezirkpunkts
+                int closestRegionId = 0;
+
+                // Berechnung der Distanz zu jedem Punkt & Zuweisung
+                for (int i = 0; i < points.Length; i++)
+                {
+                    float distance = Vector2.Distance(pixelPosition, points[i]);
+                    if (distance < minDistance)
+                    {
+                        minDistance = distance;
+                        closestPoint = points[i];
+                        //closestRegionId = i;
+                    }
+                }
+
+                float minOriginalPointDistance = float.MaxValue;
+                for (int i = 0; i < districtPoints.Length; i++)
+                {
+                    float distance = Vector2.Distance(closestPoint, districtPoints[i]);
+                    if (distance < minOriginalPointDistance)
+                    {
+                        minOriginalPointDistance = distance;
+                        closestRegionId = i;
+                    }
+                }
+
+                // Zuweisung des nächsten Bezirks für Bezirksgrenzen
+                closestRegionIds[index] = ids[closestRegionId];
+
+                // Zuweisung der Farbe des Bezirks
+                pixelColors[index] = regionColors[closestRegionId];
+            } else
             {
-                float distance = Vector2.Distance(closestPoint, districtPoints[i]);
-                if (distance < minOriginalPointDistance)
-                {
-                    minOriginalPointDistance = distance;
-                    closestRegionId = i;
-                }
+                pixelColors[index] = Color.clear;
             }
-
-            // Zuweisung des nächsten Bezirks für Bezirksgrenzen
-            closestRegionIds[index] = ids[closestRegionId];
-
-            // Zuweisung der Farbe des Bezirks
-            pixelColors[index] = regionColors[closestRegionId];
         });
 
         sortedVectors.Clear();
@@ -202,9 +213,9 @@ public class VoronoiDiagram : MonoBehaviour
             int x = index % size;
             int y = index / size;
 
-            float distance = Vector2.Distance(new Vector2(x,y), cityCenter);
-            if (distance < cityRadius)
-            {
+            //float distance = Vector2.Distance(new Vector2(x,y), cityCenter);
+            //if (distance < cityRadius)
+            //{
                 int currentRegionIndex = closestRegionIds[index];
 
                 // Überprüfung der Nachbarpixel
@@ -238,11 +249,11 @@ public class VoronoiDiagram : MonoBehaviour
                 {
                     pixelColors[index] = Color.black;
                 }
-            }
-            else
-            {
-                pixelColors[index] = Color.clear;
-            }
+            //}
+            //else
+            //{
+            //    pixelColors[index] = Color.clear;
+            //}
         });
 
         return pixelColors;

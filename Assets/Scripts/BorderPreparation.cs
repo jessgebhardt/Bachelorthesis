@@ -13,7 +13,6 @@ public class BorderPreparation : MonoBehaviour
     private Vector2Int startPoint;
 
     private HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
-    private List<Vector2Int> boundaryPoints = new List<Vector2Int>();
 
     private Vector2Int cityCenterInt;
     private float cityRadius;
@@ -26,16 +25,15 @@ public class BorderPreparation : MonoBehaviour
         cityCenterInt = new Vector2Int(Mathf.RoundToInt(cityCenter.x), Mathf.RoundToInt(cityCenter.z));
         cityRadius = outerBoundaryRadius;
 
-        GetBoundaryPoints();
 
-        startPoint = boundaryPoints[0];
+        startPoint = (Vector2Int)GetStartPoint();
 
         List<Border> borderList = MarkSegments(startPoint, segmentLength);
 
         splitMarks.Add(startPoint);
 
         // Add back later
-        // RoadGenerator.GenerateRoad(boundaryPoints, borderList);
+        // RoadGenerator.GenerateRoad(borderList);
 
         List<List<Vector2Int>> extractedRegions = DistrictExtractor.ExtractDistrictsForRoads(voronoiTexture);
         List<List<Vector2Int>> segments = PrepareSegments(extractedRegions);
@@ -48,11 +46,10 @@ public class BorderPreparation : MonoBehaviour
     {
         splitMarks.Clear();
         visited.Clear();
-        boundaryPoints.Clear();
         roadSegmentPoints.Clear();
     }
 
-    private void GetBoundaryPoints()
+    private Vector2Int? GetStartPoint()
     {
         List<Vector2Int> points = new List<Vector2Int>();
 
@@ -64,13 +61,14 @@ public class BorderPreparation : MonoBehaviour
 
                 if (IsBlackPixel(point) && IsDirectNeighborClear(point))
                 {
-                    points.Add(point);
+                    return point;
                 }
             }
         }
 
-        List<Vector2Int> reducedPoints = ReducePoints(points);
-        boundaryPoints = SortPoints(reducedPoints);
+        Debug.LogError("No start point found!");
+        return null;
+
     }
 
     bool IsDirectNeighborClear(Vector2Int point)
@@ -83,34 +81,6 @@ public class BorderPreparation : MonoBehaviour
             }
         }
         return false;
-    }
-
-    private List<Vector2Int> ReducePoints(List<Vector2Int> points)
-    {
-        List<HashSet<Vector2Int>> neighborhoods = new List<HashSet<Vector2Int>>();
-        HashSet<Vector2Int> visitedPoints = new HashSet<Vector2Int>();
-
-        foreach (Vector2Int point in points)
-        {
-            if (!visitedPoints.Contains(point))
-            {
-                HashSet<Vector2Int> neighborhood = new HashSet<Vector2Int>();
-                GetNeighborhood(point, points, neighborhood, visitedPoints);
-                neighborhoods.Add(neighborhood);
-            }
-        }
-
-        List<Vector2Int> reducedPoints = new List<Vector2Int>();
-        foreach (var neighborhood in neighborhoods)
-        {
-            Vector2Int bestPoint = GetBestPoint(neighborhood);
-            if (!reducedPoints.Contains(bestPoint))
-            {
-                reducedPoints.Add(bestPoint);
-            }
-        }
-
-        return reducedPoints;
     }
 
     private void GetNeighborhood(Vector2Int point, List<Vector2Int> points, HashSet<Vector2Int> neighborhood, HashSet<Vector2Int> visitedPoints)
@@ -128,33 +98,6 @@ public class BorderPreparation : MonoBehaviour
                 GetNeighborhood(neighbor, points, neighborhood, visitedPoints);
             }
         }
-    }
-
-    private Vector2Int GetBestPoint(HashSet<Vector2Int> neighborhood)
-    {
-        Vector2Int bestPoint = neighborhood.First();
-        int maxClearNeighbors = -1;
-        int minBlackNeighbors = int.MaxValue;
-
-        foreach (var point in neighborhood)
-        {
-            int clearNeighbors = GetNeighbors(point, true).Count(n => voronoiTexture.GetPixel(point.x, point.y) == Color.clear);
-            int blackNeighbors = GetNeighbors(point, true).Count(n => voronoiTexture.GetPixel(point.x, point.y) == Color.black);
-
-            if (clearNeighbors > maxClearNeighbors && blackNeighbors < minBlackNeighbors)
-            {
-                bestPoint = point;
-                maxClearNeighbors = clearNeighbors;
-                minBlackNeighbors = blackNeighbors;
-            }
-        }
-
-        return bestPoint;
-    }
-
-    private List<Vector2Int> SortPoints(List<Vector2Int> points)
-    {
-        return points.OrderBy(point => Mathf.Atan2(point.y - cityCenterInt.y, point.x - cityCenterInt.x)).ToList();
     }
 
     public List<Border> MarkSegments(Vector2Int startPoint, int segmentLength)
@@ -252,12 +195,7 @@ public class BorderPreparation : MonoBehaviour
             Vector2Int current = nextPoints[0];
             nextPoints.RemoveAt(0);
 
-            if (boundaryPoints.Contains(current) && current != borderToTrace.startPoint)
-            {
-                splitMark = current;
-                noSplitMarkFound = false;
-
-            } else if (current == borderToTrace.startPoint || !visited.Contains(current))
+            if (current == borderToTrace.startPoint || !visited.Contains(current))
             {
                 if (!visited.Contains(current))
                 {

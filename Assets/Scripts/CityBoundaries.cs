@@ -6,8 +6,8 @@ using UnityEngine;
 [ExecuteInEditMode] // Ermöglicht die Ausführung des Skripts im Unity-Editor, ohne den Play mode zu aktivieren
 public class CityBoundaries : MonoBehaviour
 {
-    [Range(10, 490)] public float outerBoundaryRadius = 450f;
-    [SerializeField, Range(3, 480)] private float innerBoundaryRadius;
+    [Range(10, 1490)] public float outerBoundaryRadius = 450f;
+    [SerializeField, Range(3, 1480)] private float innerBoundaryRadius;
     [SerializeField] private int segments = 500;
 
     private LineRenderer lineRenderer;

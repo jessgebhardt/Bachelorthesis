@@ -20,7 +20,7 @@ public class DistrictGenerator : MonoBehaviour
     private IDictionary<int, District> districtsDictionatry;
     private static int counter = -1;
 
-    [SerializeField] private Vector3 sampleRegionSize = new Vector3(1000, 1, 1000); // Muss nicht vom User eingestellt werden, später noch ändern
+    [SerializeField] private Vector3 sampleRegionSize = new Vector3(10, 1, 10); // Muss nicht vom User eingestellt werden, später noch ändern
     [SerializeField] private int rejectionSamples = 30;
     // [SerializeField] private float displayRadius = 10;
 
@@ -45,7 +45,7 @@ public class DistrictGenerator : MonoBehaviour
         GenerateCandidatePositions();
         SelectDistrictPositions();
         voronoiScript = voronoiDiagram.GetComponent<VoronoiDiagram>();
-        voronoiTexture = voronoiScript.GenerateVoronoiDiagram(districtsDictionatry, (int)sampleRegionSize.x + 100, distictCellDistortion, new Vector2(cityBoundaries.transform.position.x, cityBoundaries.transform.position.z), cityBoundaries.outerBoundaryRadius); // Why 100??? and why did i have to rotate the plane?? so many questions
+        voronoiTexture = voronoiScript.GenerateVoronoiDiagram(districtsDictionatry, distictCellDistortion, new Vector2(cityBoundaries.transform.position.x, cityBoundaries.transform.position.z), cityBoundaries.outerBoundaryRadius); // Why 100??? and why did i have to rotate the plane?? so many questions
     }
 
     public void GenerateRoads() 
@@ -68,7 +68,7 @@ public class DistrictGenerator : MonoBehaviour
 
     private void GenerateCandidatePositions()
     {
-        List<Vector3> allPoints = PoissonDiskSampling.GenerateDistrictPoints(sampleRegionSize, numberOfDistricts, minNumberOfDistricts, maxNumberOfDistricts, cityBoundaries.outerBoundaryRadius, cityBoundaries.transform.position, rejectionSamples);
+        List<Vector3> allPoints = PoissonDiskSampling.GenerateDistrictPoints(numberOfDistricts, minNumberOfDistricts, maxNumberOfDistricts, cityBoundaries.outerBoundaryRadius, cityBoundaries.transform.position, rejectionSamples);
         numberOfDistricts = PoissonDiskSampling.ValidateNumberOfDistricts(numberOfDistricts, minNumberOfDistricts, maxNumberOfDistricts, false);
         candidatePoints = allPoints;
     }

@@ -5,7 +5,7 @@ using RoadArchitect.Roads;
 
 public class RoadGenerator : MonoBehaviour
 {
-    public static void GenerateRoad(List<Vector2Int> boundaryPositions, List<Border> borderList)
+    public static void GenerateRoad(List<Border> borderList)
     {
         List<Road> newRoads = new List<Road>();
 
@@ -36,7 +36,6 @@ public class RoadGenerator : MonoBehaviour
         roadSystem.isAllowingRoadUpdates = false;
 
         // Generate roads
-        newRoads.Add(GenerateCityBorderRoad(roadSystem, boundaryPositions));
         newRoads.AddRange(GenerateDistrictBorderRoads(roadSystem, borderList));
 
         // Not working yet because of missing vertecies..
@@ -48,23 +47,6 @@ public class RoadGenerator : MonoBehaviour
         // Enable road updates and update the road system
         roadSystem.isAllowingRoadUpdates = true;
         roadSystem.UpdateAllRoads();
-    }
-
-    private static Road GenerateCityBorderRoad(RoadSystem roadSystem, List<Vector2Int> positions)
-    {
-        // Convert Vector2Int positions to Vector3
-        List<Vector3> vector3Positions = new List<Vector3>();
-        foreach (var pos in positions)
-        {
-            vector3Positions.Add(new Vector3(pos.x, 0.1f, pos.y));
-        }
-
-        // Create the road programmatically
-        Road road = RoadAutomation.CreateRoadProgrammatically(roadSystem, ref vector3Positions);
-
-        // Connect the last node to the first to form a loop
-        RoadAutomation.CreateNodeProgrammatically(road, vector3Positions[0]);
-        return road;
     }
 
     private static List<Road> GenerateDistrictBorderRoads(RoadSystem roadSystem, List<Border> borderList)

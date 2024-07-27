@@ -4,14 +4,18 @@ using UnityEngine;
 
 public class LSystem : MonoBehaviour
 {
-    public static Texture2D GenerateLSystem(string axiom, float angle, float segmentLength, Texture2D texture, List<Vector2Int> region, Vector2Int startPosition)
+    public static List<Vector2Int> GenerateLSystem(string axiom, float angle, float segmentLength, List<Vector2Int> region, Vector2Int startPosition)
     {
-        Texture2D resultTexture = texture;
         HashSet<Vector2Int> regionSet = new HashSet<Vector2Int>(region);
 
         string currentLSystem = axiom;
-
         int iterations = CalculateIterations(axiom, regionSet.Count, segmentLength);
+
+        Dictionary<char, string> ruleCache = new Dictionary<char, string>
+        {
+            { 'A', "A+B++B-A--AA-B+" },
+            { 'B', "-A+BB++B+A--A-B" }
+        };
 
         for (int i = 0; i < iterations; i++)
         {
@@ -19,16 +23,20 @@ public class LSystem : MonoBehaviour
 
             foreach (char c in currentLSystem)
             {
-                newLSystem.Append(ApplyRules(c));
+                if (ruleCache.TryGetValue(c, out string rule))
+                {
+                    newLSystem.Append(rule);
+                }
+                else
+                {
+                    newLSystem.Append(c);
+                }
             }
 
             currentLSystem = newLSystem.ToString();
         }
 
-        DrawRoads(currentLSystem, resultTexture, segmentLength, angle, regionSet, startPosition);
-
-        resultTexture.Apply();
-        return resultTexture;
+        return DrawRoads(currentLSystem, segmentLength, angle, regionSet, startPosition);
     }
 
     private static int CalculateIterations(string axiom, int regionSize, float segmentLength)
@@ -42,23 +50,16 @@ public class LSystem : MonoBehaviour
             currentLength *= 4;
         }
 
-        return iterations;
+        return iterations+2;
     }
 
-    private static string ApplyRules(char c)
-    {
-        switch (c)
-        {
-            case 'A': return "A+B++B-A--AA-B+";
-            case 'B': return "-A+BB++B+A--A-B";
-            default: return c.ToString();
-        }
-    }
-
-    private static void DrawRoads(string currentLSystem, Texture2D texture, float segmentLength, float angle, HashSet<Vector2Int> regionSet, Vector2 start)
+    private static List<Vector2Int> DrawRoads(string currentLSystem, float segmentLength, float angle, HashSet<Vector2Int> regionSet, Vector2 start)
     {
         Vector2 position = start;
         float currentAngle = 0f;
+
+        Dictionary<float, Vector2> angleCache = new Dictionary<float, Vector2>();
+        List<Vector2Int> pixelsToDraw = new List<Vector2Int>();
 
         foreach (char c in currentLSystem)
         {
@@ -66,8 +67,14 @@ public class LSystem : MonoBehaviour
             {
                 case 'A':
                 case 'B':
-                    Vector2 newPosition = position + (new Vector2(Mathf.Cos(currentAngle * Mathf.Deg2Rad), Mathf.Sin(currentAngle * Mathf.Deg2Rad)) * segmentLength);
-                    DrawLine(texture, position, newPosition, regionSet);
+                    Vector2 direction;
+                    if (!angleCache.TryGetValue(currentAngle, out direction))
+                    {
+                        direction = new Vector2(Mathf.Cos(currentAngle * Mathf.Deg2Rad), Mathf.Sin(currentAngle * Mathf.Deg2Rad));
+                        angleCache[currentAngle] = direction;
+                    }
+                    Vector2 newPosition = position + direction * segmentLength;
+                    pixelsToDraw.AddRange(GetLinePixels(position, newPosition, regionSet));
                     position = newPosition;
                     break;
                 case '+':
@@ -78,10 +85,12 @@ public class LSystem : MonoBehaviour
                     break;
             }
         }
+        return pixelsToDraw;
     }
 
-    private static void DrawLine(Texture2D texture, Vector2 start, Vector2 end, HashSet<Vector2Int> regionSet)
+    private static List<Vector2Int> GetLinePixels(Vector2 start, Vector2 end, HashSet<Vector2Int> regionSet)
     {
+        List<Vector2Int> pixels = new List<Vector2Int>();
         int x0 = (int)start.x;
         int y0 = (int)start.y;
         int x1 = (int)end.x;
@@ -98,7 +107,7 @@ public class LSystem : MonoBehaviour
             Vector2Int pixelPos = new Vector2Int(x0, y0);
             if (regionSet.Contains(pixelPos))
             {
-                texture.SetPixel(x0, y0, Color.black);
+                pixels.Add(pixelPos);
             }
 
             if (x0 == x1 && y0 == y1) break;
@@ -114,5 +123,6 @@ public class LSystem : MonoBehaviour
                 y0 += sy;
             }
         }
+        return pixels;
     }
 }

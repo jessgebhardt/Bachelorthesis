@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PoissonDiskSampling : MonoBehaviour
 {
-    public static List<Vector3> GenerateDistrictPoints(Vector3 sampleRegionSize, int numberOfDistricts, int minNumberOfDistricts, int maxNumberOfDistricts, float cityRadius, Vector3 cityCenter, int numSampleBeforeRejection = 30)
+    public static List<Vector3> GenerateDistrictPoints(int numberOfDistricts, int minNumberOfDistricts, int maxNumberOfDistricts, float cityRadius, Vector3 cityCenter, int numSampleBeforeRejection = 30)
     {
         // Fix numberOfDistricts!!!!!!!!!!
 
@@ -12,11 +12,12 @@ public class PoissonDiskSampling : MonoBehaviour
         float districtRadius = CalculateDistrictRadius(districts, cityRadius);
 
         float cellSize = districtRadius / Mathf.Sqrt(2);
-        int[,] grid = new int[Mathf.CeilToInt(sampleRegionSize.x / cellSize), Mathf.CeilToInt(sampleRegionSize.z / cellSize)];
+        int gridSize = Mathf.CeilToInt((cityRadius * 2) / cellSize);
+        int[,] grid = new int[gridSize, gridSize];
         List<Vector3> points = new List<Vector3>();
         List<Vector3> spawnPoints = new List<Vector3>();
 
-        spawnPoints.Add(new Vector3(sampleRegionSize.x/2, 1, sampleRegionSize.z / 2));
+        spawnPoints.Add(cityCenter);
         while (spawnPoints.Count > 0 /*&& points.Count < districts*/) // vorerst removed, bis bessere Methode gefunden, um Punkteanzahl zu kontrollieren
         {
             int spawnIndex = Random.Range(0, spawnPoints.Count);
@@ -30,12 +31,14 @@ public class PoissonDiskSampling : MonoBehaviour
                 float rand = Random.Range(districtRadius, 2 * districtRadius);
                 Vector3 candidate = new Vector3(spawnCentre.x + dir.x * rand, 1 , spawnCentre.z + dir.z * rand);
 
-                if (IsValid(candidate, sampleRegionSize, cellSize, districtRadius, points, grid) &&
+                if (IsValid(candidate, cityCenter, cityRadius, cellSize, districtRadius, points, grid) &&
                     Vector3.Distance(candidate, cityCenter) <= cityRadius)
                 {
                     points.Add(candidate);
                     spawnPoints.Add(candidate);
-                    grid[(int)(candidate.x / cellSize), (int)(candidate.z / cellSize)] = points.Count;
+                    int gridX = Mathf.FloorToInt((candidate.x - (cityCenter.x - cityRadius)) / cellSize);
+                    int gridZ = Mathf.FloorToInt((candidate.z - (cityCenter.z - cityRadius)) / cellSize);
+                    grid[gridX, gridZ] = points.Count;
                     candidateAccepted = true;
                     break;
                 }
@@ -49,9 +52,9 @@ public class PoissonDiskSampling : MonoBehaviour
         return points;
     }
 
-    static bool IsValid(Vector3 candidate, Vector3 sampleRegionSize, float cellSize,float radius, List<Vector3> points, int[,] grid)
+    static bool IsValid(Vector3 candidate, Vector3 cityCenter, float cityRadius, float cellSize, float radius, List<Vector3> points, int[,] grid)
     {
-        if (candidate.x >= 0 && candidate.x < sampleRegionSize.x && candidate.z >= 0 && candidate.z < sampleRegionSize.z)
+        if (Vector3.Distance(candidate, cityCenter) < cityRadius)
         {
             int cellX = (int)(candidate.x / cellSize);
             int cellZ = (int)(candidate.z / cellSize);
