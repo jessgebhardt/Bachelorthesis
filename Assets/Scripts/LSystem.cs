@@ -50,7 +50,7 @@ public class LSystem : MonoBehaviour
             currentLength *= 4;
         }
 
-        return iterations+2;
+        return iterations + 2;
     }
 
     private static List<Vector2Int> DrawRoads(string currentLSystem, float segmentLength, float angle, HashSet<Vector2Int> regionSet, Vector2 start)

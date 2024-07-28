@@ -28,16 +28,16 @@ public class BorderPreparation : MonoBehaviour
 
         startPoint = (Vector2Int)GetStartPoint();
 
-        List<Border> borderList = MarkSegments(startPoint, segmentLength);
+        List<List<Vector2Int>> extractedRegions = DistrictExtractor.ExtractDistrictsForRoads(voronoiTexture);
+        List<List<Vector2Int>> segments = PrepareSegments(extractedRegions);
+        voronoiTexture = SecondaryRoadsGenerator.GenerateSecondaryRoads(extractedRegions, segments, voronoiTexture);
+
+        // List<Border> borderList = MarkSegments(startPoint, segmentLength);
 
         splitMarks.Add(startPoint);
 
         // Add back later
         // RoadGenerator.GenerateRoad(borderList);
-
-        List<List<Vector2Int>> extractedRegions = DistrictExtractor.ExtractDistrictsForRoads(voronoiTexture);
-        List<List<Vector2Int>> segments = PrepareSegments(extractedRegions);
-        voronoiTexture = SecondaryRoadsGenerator.GenerateSecondaryRoads(extractedRegions, segments, voronoiTexture);
 
         return voronoiTexture;
     }
@@ -507,8 +507,7 @@ public class BorderPreparation : MonoBehaviour
     private List<List<Vector2Int>> PrepareSegments(List<List<Vector2Int>> extractedRegions)
     {
         // Precompute neighbors for all segment points
-        Dictionary<Vector2Int, List<Vector2Int>> segmentPointNeighbors = roadSegmentPoints
-            .ToDictionary(point => point, point => GetNeighbors(point, false));
+        // Dictionary<Vector2Int, List<Vector2Int>> segmentPointNeighbors = roadSegmentPoints.ToDictionary(point => point, point => neighbor(point, false));
 
         List<List<Vector2Int>> extractedSegments = new List<List<Vector2Int>>();
 
@@ -517,16 +516,30 @@ public class BorderPreparation : MonoBehaviour
             HashSet<Vector2Int> regionSet = new HashSet<Vector2Int>(regionPixels);
             List<Vector2Int> segmentPoints = new List<Vector2Int>();
 
-            foreach (var segmentPointNeighbor in segmentPointNeighbors)
+            //foreach (var segmentPointNeighbor in segmentPointNeighbors)
+            //{
+            //    foreach (var neighbor in segmentPointNeighbor.Value)
+            //    {
+            //        if (regionSet.Contains(neighbor))
+            //        {
+            //            segmentPoints.Add(neighbor);
+            //        }
+            //    }
+            //}
+            foreach (Vector2Int regionPixel in regionPixels)
             {
-                foreach (var neighbor in segmentPointNeighbor.Value)
+                foreach (Vector2Int neighbor in GetNeighbors(regionPixel, false))
                 {
-                    if (regionSet.Contains(neighbor))
+                    if (!regionPixels.Contains(neighbor))
                     {
                         segmentPoints.Add(neighbor);
+                        continue;
                     }
                 }
+                continue;
             }
+
+
 
             extractedSegments.Add(segmentPoints);
         }

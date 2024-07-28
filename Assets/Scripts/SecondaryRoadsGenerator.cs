@@ -44,7 +44,7 @@ public class SecondaryRoadsGenerator : MonoBehaviour
 
         Parallel.For(0, regionsCount, i =>
         {
-            var pixelsToDraw = LSystem.GenerateLSystem(axiom, angle, segmentLength, extractedRegions[i], chosenSegments[i]);
+            List<Vector2Int> pixelsToDraw = LSystem.GenerateLSystem(axiom, angle, segmentLength, extractedRegions[i], chosenSegments[i]);
             lock (allPixelsToDraw)
             {
                 allPixelsToDraw.AddRange(pixelsToDraw);
