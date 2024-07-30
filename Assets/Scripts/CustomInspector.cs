@@ -14,5 +14,9 @@ public class CustomInspector : Editor
         {
             districtGenerator.GenerateRoads();
         }
+        if (GUILayout.Button("Generate Lots"))
+        {
+            districtGenerator.GenerateLots();
+        }
     }
 }

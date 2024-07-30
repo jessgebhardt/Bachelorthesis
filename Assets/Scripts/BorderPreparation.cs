@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class BorderPreparation : MonoBehaviour
@@ -28,13 +26,13 @@ public class BorderPreparation : MonoBehaviour
 
         startPoint = (Vector2Int)GetStartPoint();
 
-        List<List<Vector2Int>> extractedRegions = DistrictExtractor.ExtractDistrictsForRoads(voronoiTexture);
+        List<List<Vector2Int>> extractedRegions = DistrictExtractor.ExtractRegions(voronoiTexture, 0);
         List<List<Vector2Int>> segments = PrepareSegments(extractedRegions);
         voronoiTexture = SecondaryRoadsGenerator.GenerateSecondaryRoads(extractedRegions, segments, voronoiTexture);
 
         // List<Border> borderList = MarkSegments(startPoint, segmentLength);
 
-        splitMarks.Add(startPoint);
+        // splitMarks.Add(startPoint);
 
         // Add back later
         // RoadGenerator.GenerateRoad(borderList);

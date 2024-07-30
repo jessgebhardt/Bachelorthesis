@@ -21,11 +21,11 @@ public class SecondaryRoadsGenerator : MonoBehaviour
     private static Vector2Int[] ChooseStartpoints(List<List<Vector2Int>> regionsSegmentMarks)
     {
         Vector2Int[] chosenSegments = new Vector2Int[regionsSegmentMarks.Count];
-        Debug.Log("all: "+regionsSegmentMarks.Count);
+        Debug.Log("all: " + regionsSegmentMarks.Count);
 
         for (int i = 0; i < regionsSegmentMarks.Count; i++)
         {
-            Debug.Log(i+": "+regionsSegmentMarks[i].Count);
+            Debug.Log(i+": " + regionsSegmentMarks[i].Count);
             int randomNumber = Random.Range(0, regionsSegmentMarks[i].Count);
             chosenSegments[i] = regionsSegmentMarks[i][randomNumber];
         }

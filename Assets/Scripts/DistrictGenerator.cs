@@ -21,7 +21,7 @@ public class DistrictGenerator : MonoBehaviour
     private static int counter = -1;
 
     [SerializeField] private Vector3 sampleRegionSize = new Vector3(10, 1, 10); // Muss nicht vom User eingestellt werden, sp‰ter noch ‰ndern
-    [SerializeField] private int rejectionSamples = 30;
+    [SerializeField, Min(0)] private int rejectionSamples = 30;
     // [SerializeField] private float displayRadius = 10;
 
     private List<Vector3> candidatePoints;
@@ -29,13 +29,20 @@ public class DistrictGenerator : MonoBehaviour
 
     // SerializeField] private Material primaryRoadMaterial;
     [SerializeField] private GameObject voronoiDiagram;
-    [SerializeField] private int distictCellDistortion;
+    [SerializeField, Min(0)] private int distictCellDistortion;
     private VoronoiDiagram voronoiScript;
     private Texture2D voronoiTexture;
     [SerializeField] GameObject prepareBorders;
     private BorderPreparation prepareBordersScript;
 
-    [SerializeField] int segmentLength = 50;
+    [SerializeField, Min(0)] private int segmentLength = 50;
+    [SerializeField, Min(0)] private int roadWidth = 7;
+    [SerializeField, Min(0)] int minBlockSquareSize = 30;
+    [SerializeField, Min(0)] int minLotSquareSize = 5;
+
+
+    // TEST
+    private List<List<Vector2Int>> regionBlocks;
 
     private void OnValidate()
     {
@@ -53,6 +60,14 @@ public class DistrictGenerator : MonoBehaviour
         prepareBordersScript = prepareBorders.GetComponent<BorderPreparation>();
         voronoiTexture = prepareBordersScript.GenerateRoads(voronoiTexture, cityBoundaries.outerBoundaryRadius, cityBoundaries.transform.position, segmentLength);
         ApplyTexture();
+    }
+
+    public void GenerateLots()
+    {
+        // Warning -> Sind straﬂen schon generiert?
+        voronoiTexture = LotGenerator.GenerateLots(voronoiTexture, roadWidth, minBlockSquareSize, minLotSquareSize);
+        ApplyTexture();
+        //Debug.Log("Anzahl der lots: " + lots.Count);
     }
 
     private void CalculateMinAndMaxDistricts()
@@ -312,24 +327,24 @@ public class DistrictGenerator : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (candidatePoints != null)
-        {
-            Gizmos.color = Color.white;
-            foreach (Vector3 point in candidatePoints)
-            {
-                Gizmos.DrawSphere(point, 10f);
-            }
-        }
-        Debug.Log("Districtamount: " + generatedDistricts.Count);
-        if (generatedDistricts != null)
-        {
-            Gizmos.color = Color.white;
-            foreach (District district in generatedDistricts)
-            {
-                Gizmos.color = district.type.color;
-                Gizmos.DrawSphere(district.position, 10f);
-            }
-        }
+        //if (candidatePoints != null)
+        //{
+        //    Gizmos.color = Color.white;
+        //    foreach (Vector3 point in candidatePoints)
+        //    {
+        //        Gizmos.DrawSphere(point, 10f);
+        //    }
+        //}
+        //Debug.Log("Districtamount: " + generatedDistricts.Count);
+        //if (generatedDistricts != null)
+        //{
+        //    Gizmos.color = Color.white;
+        //    foreach (District district in generatedDistricts)
+        //    {
+        //        Gizmos.color = district.type.color;
+        //        Gizmos.DrawSphere(district.position, 10f);
+        //    }
+        //}
     }
 }
 
