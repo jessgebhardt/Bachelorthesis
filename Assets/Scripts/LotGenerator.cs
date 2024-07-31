@@ -131,19 +131,22 @@ public class LotGenerator : MonoBehaviour
         // Hier weiter: um das Problem zu lösen, nimm die lots die um den unvalid lot liegen und combine die??
 
         List<List<Vector2Int>> validLots = new List<List<Vector2Int>>();
-        
+        List<List<Vector2Int>> processedLots = new List<List<Vector2Int>>();
 
         foreach (var lot in lots)
         {
-            if (HasStreetConnection(lot, regionsEdge))
+            if (HasStreetConnection(lot, regionsEdge) && !processedLots.Contains(lot))
             {
                 if (lot.Count >= minLotSize && IsWideEnough(lot, minLotSize))
                 {
                     validLots.Add(lot);
+                    processedLots.Add(lot);
                 }
                 else
                 {
-                    foreach (var otherLot in validLots)
+                    List<List<Vector2Int>> neighborLots = GetNeighborLots(lot, lots);
+
+                    foreach (var otherLot in neighborLots)
                     {
                         List<Vector2Int> combinedLot = new List<Vector2Int>(lot);
                         combinedLot.AddRange(otherLot);
@@ -158,10 +161,14 @@ public class LotGenerator : MonoBehaviour
                             return result;
                         });
 
-                        if (combinedLot.Count >= minLotSize && IsWideEnough(lot, minLotSize))
+                        if (combinedLot.Count >= minLotSize && IsWideEnough(combinedLot, minLotSize))
                         {
                             validLots.Remove(otherLot);
                             validLots.Add(combinedLot);
+
+                            processedLots.Add(otherLot);
+                            processedLots.Add(lot);
+
                             break;
                         }
                     }
@@ -215,7 +222,6 @@ public class LotGenerator : MonoBehaviour
         return false;
     }
 
-
     private static List<HashSet<Vector2Int>> GetAllRegionEdges(List<List<Vector2Int>> regions)
     {
         List<HashSet<Vector2Int>> allEdges = new List<HashSet<Vector2Int>>();
@@ -248,4 +254,44 @@ public class LotGenerator : MonoBehaviour
         return lotWidth >= minLotSize/2 && lotHeight >= minLotSize/2;
     }
 
+
+    private static List<List<Vector2Int>> GetNeighborLots(List<Vector2Int> originalLot, List<List<Vector2Int>> allLots)
+    {
+        HashSet<Vector2Int> edges = GetEdges(originalLot);
+        List<List<Vector2Int>> neighborLots = new List<List<Vector2Int>>();
+
+        foreach (var lot in allLots)
+        {
+            if (originalLot != lot)
+            {
+                foreach (var edge in edges)
+                {
+                    List<Vector2Int> neighbors = GetDirectNeighbors(edge);
+
+                    foreach (var neighbor in neighbors)
+                    {
+                        if (lot.Contains(neighbor))
+                        {
+                            neighborLots.Add(lot);
+                        }
+                    }
+                }
+            }
+        }
+
+        return neighborLots;
+    }
+
+    private static List<Vector2Int> GetDirectNeighbors(Vector2Int point)
+    {
+        List<Vector2Int> neighbors = new List<Vector2Int>
+        {
+            new Vector2Int(point.x, point.y + 1),
+            new Vector2Int(point.x + 1, point.y),
+            new Vector2Int(point.x, point.y - 1),
+            new Vector2Int(point.x - 1, point.y),
+        };
+
+        return neighbors;
+    }
 }
