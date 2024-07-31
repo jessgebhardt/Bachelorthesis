@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class LotGenerator : MonoBehaviour
@@ -30,7 +27,7 @@ public class LotGenerator : MonoBehaviour
             HashSet<Vector2Int> edgePixels = GetEdges(v);
             foreach (var pos in edgePixels)
             {
-                voronoiTexture.SetPixel(pos.x, pos.y, Color.green); 
+                voronoiTexture.SetPixel(pos.x, pos.y, Color.green);
             }
         }
 
@@ -128,8 +125,6 @@ public class LotGenerator : MonoBehaviour
 
     private static List<List<Vector2Int>> RemoveInvalidLots(List<List<Vector2Int>> lots, int minLotSize, HashSet<Vector2Int> regionsEdge)
     {
-        // Hier weiter: um das Problem zu lösen, nimm die lots die um den unvalid lot liegen und combine die??
-
         List<List<Vector2Int>> validLots = new List<List<Vector2Int>>();
         List<List<Vector2Int>> processedLots = new List<List<Vector2Int>>();
 
@@ -234,24 +229,42 @@ public class LotGenerator : MonoBehaviour
         return allEdges;
     }
 
-    /*&& höhe und breite mind half of minlotsize an weitesten stellen*/
     private static bool IsWideEnough(List<Vector2Int> lot, int minLotSize)
     {
-        int minX = int.MaxValue, minY = int.MaxValue;
-        int maxX = int.MinValue, maxY = int.MinValue;
+        int halfMinLotSize = minLotSize / 2;
 
-        foreach (var point in lot)
+        Vector2Int center = FindCentroid(lot);
+
+        int left = center.x;
+        int right = center.x;
+        while (lot.Contains(new Vector2Int(left - 1, center.y)))
         {
-            if (point.x < minX) minX = point.x;
-            if (point.x > maxX) maxX = point.x;
-            if (point.y < minY) minY = point.y;
-            if (point.y > maxY) maxY = point.y;
+            left--;
+        }
+        while (lot.Contains(new Vector2Int(right + 1, center.y)))
+        {
+            right++;
+        }
+        int width = right - left;
+
+        int down = center.y;
+        int up = center.y;
+        while (lot.Contains(new Vector2Int(center.x, down - 1)))
+        {
+            down--;
+        }
+        while (lot.Contains(new Vector2Int(center.x, up + 1)))
+        {
+            up++;
+        }
+        int height = up - down;
+
+        if (width >= halfMinLotSize && height >= halfMinLotSize)
+        {
+            return true;
         }
 
-        int lotWidth = maxX - minX;
-        int lotHeight = maxY - minY;
-
-        return lotWidth >= minLotSize/2 && lotHeight >= minLotSize/2;
+        return false;
     }
 
 
@@ -293,5 +306,23 @@ public class LotGenerator : MonoBehaviour
         };
 
         return neighbors;
+    }
+
+    public static Vector2Int FindCentroid(List<Vector2Int> points)
+    {
+        int sumX = 0;
+        int sumY = 0;
+        int count = points.Count;
+
+        foreach (var point in points)
+        {
+            sumX += point.x;
+            sumY += point.y;
+        }
+
+        int centerX = sumX / count;
+        int centerY = sumY / count;
+
+        return new Vector2Int(centerX, centerY);
     }
 }
