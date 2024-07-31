@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class LotGenerator : MonoBehaviour
 {
-    public static Texture2D GenerateLots(Texture2D voronoiTexture, int roadWidth, int minLotSquareSize)
+    public static List<List<Vector2Int>> GenerateLots(Texture2D voronoiTexture, int roadWidth, int minLotSquareSize)
     {
         List<List<Vector2Int>> extractedRegions = DistrictExtractor.ExtractRegions(voronoiTexture, roadWidth);
 
@@ -21,19 +21,7 @@ public class LotGenerator : MonoBehaviour
             validLots.AddRange(RemoveInvalidLots(regionLots, minLotSquareSize, allregionEdges[i]));
         }
 
-        // TEST
-        foreach (var v in validLots)
-        {
-            HashSet<Vector2Int> edgePixels = GetEdges(v);
-            foreach (var pos in edgePixels)
-            {
-                voronoiTexture.SetPixel(pos.x, pos.y, Color.green);
-            }
-        }
-
-        voronoiTexture.Apply();
-
-        return voronoiTexture;
+        return validLots;
     }
 
     private static HashSet<Vector2Int> GetEdges(List<Vector2Int> lot)
