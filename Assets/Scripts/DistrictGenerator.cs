@@ -37,8 +37,7 @@ public class DistrictGenerator : MonoBehaviour
 
     [SerializeField, Min(0)] private int segmentLength = 50;
     [SerializeField, Min(0)] private int roadWidth = 7;
-    [SerializeField, Min(0)] int minBlockSquareSize = 30;
-    [SerializeField, Min(0)] int minLotSquareSize = 5;
+    [SerializeField, Min(0)] int minLotSquareSize = 30;
 
 
     // TEST
@@ -65,7 +64,7 @@ public class DistrictGenerator : MonoBehaviour
     public void GenerateLots()
     {
         // Warning -> Sind straﬂen schon generiert?
-        voronoiTexture = LotGenerator.GenerateLots(voronoiTexture, roadWidth, minBlockSquareSize, minLotSquareSize);
+        voronoiTexture = LotGenerator.GenerateLots(voronoiTexture, roadWidth, minLotSquareSize);
         ApplyTexture();
         //Debug.Log("Anzahl der lots: " + lots.Count);
     }
