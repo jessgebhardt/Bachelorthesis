@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -358,6 +357,8 @@ public struct DistrictType
     public bool outerBoundaries;
     // public Dictionary<string, float> attractionValues;
     // public Dictionary<string, float> repulsionValues;
+    public List<GameObject> buildingTypes; // Nächster Schritt, miteinbeziehen
+    public int minLotSizeSquared; // Nächster Schritt, miteinbeziehen
 }
 
 [System.Serializable]
