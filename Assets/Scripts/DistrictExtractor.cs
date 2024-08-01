@@ -5,8 +5,6 @@ public class DistrictExtractor : MonoBehaviour
 {
     public static List<List<Vector2Int>> ExtractRegions(Texture2D texture, int inset)
     {
-        Debug.Log("INSET: "+inset);
-
         int width = texture.width;
         int height = texture.height;
         bool[,] visited = new bool[width, height];
@@ -70,7 +68,7 @@ public class DistrictExtractor : MonoBehaviour
         }
     }
 
-    private static bool IsNearBlackBorder(Texture2D texture, int x, int y, int inset)
+    public static bool IsNearBlackBorder(Texture2D texture, int x, int y, int inset)
     {
         int width = texture.width;
         int height = texture.height;

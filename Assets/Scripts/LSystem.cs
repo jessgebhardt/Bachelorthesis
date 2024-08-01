@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LSystem : MonoBehaviour
 {
-    public static List<Vector2Int> GenerateLSystem(string axiom, float angle, float segmentLength, List<Vector2Int> region, Vector2Int startPosition)
+    public static List<Vector2Int> GenerateLSystem(string axiom, float angle, int segmentLength, List<Vector2Int> region, Vector2Int startPosition)
     {
         HashSet<Vector2Int> regionSet = new HashSet<Vector2Int>(region);
 
@@ -53,12 +53,12 @@ public class LSystem : MonoBehaviour
         return iterations + 2;
     }
 
-    private static List<Vector2Int> DrawRoads(string currentLSystem, float segmentLength, float angle, HashSet<Vector2Int> regionSet, Vector2 start)
+    private static List<Vector2Int> DrawRoads(string currentLSystem, int segmentLength, float angle, HashSet<Vector2Int> regionSet, Vector2Int start)
     {
-        Vector2 position = start;
+        Vector2Int position = start;
         float currentAngle = 0f;
 
-        Dictionary<float, Vector2> angleCache = new Dictionary<float, Vector2>();
+        Dictionary<float, Vector2Int> angleCache = new Dictionary<float, Vector2Int>();
         List<Vector2Int> pixelsToDraw = new List<Vector2Int>();
 
         foreach (char c in currentLSystem)
@@ -67,13 +67,13 @@ public class LSystem : MonoBehaviour
             {
                 case 'A':
                 case 'B':
-                    Vector2 direction;
+                    Vector2Int direction;
                     if (!angleCache.TryGetValue(currentAngle, out direction))
                     {
-                        direction = new Vector2(Mathf.Cos(currentAngle * Mathf.Deg2Rad), Mathf.Sin(currentAngle * Mathf.Deg2Rad));
+                        direction = new Vector2Int((int)Mathf.Cos(currentAngle * Mathf.Deg2Rad), (int)Mathf.Sin(currentAngle * Mathf.Deg2Rad));
                         angleCache[currentAngle] = direction;
                     }
-                    Vector2 newPosition = position + direction * segmentLength;
+                    Vector2Int newPosition = position + direction * segmentLength;
                     pixelsToDraw.AddRange(GetLinePixels(position, newPosition, regionSet));
                     position = newPosition;
                     break;
@@ -88,7 +88,7 @@ public class LSystem : MonoBehaviour
         return pixelsToDraw;
     }
 
-    private static List<Vector2Int> GetLinePixels(Vector2 start, Vector2 end, HashSet<Vector2Int> regionSet)
+    private static List<Vector2Int> GetLinePixels(Vector2Int start, Vector2Int end, HashSet<Vector2Int> regionSet)
     {
         List<Vector2Int> pixels = new List<Vector2Int>();
         int x0 = (int)start.x;

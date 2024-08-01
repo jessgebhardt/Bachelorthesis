@@ -37,7 +37,7 @@ public class SecondaryRoadsGenerator : MonoBehaviour
     {
         string axiom = "A";
         float angle = 90f;
-        float segmentLength = 50f;
+        int segmentLength = 50;
 
         int regionsCount = extractedRegions.Count;
         List<Vector2Int> allPixelsToDraw = new List<Vector2Int>();

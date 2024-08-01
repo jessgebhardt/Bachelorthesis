@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static VoronoiDiagram;
 
 public class DistrictGenerator : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class DistrictGenerator : MonoBehaviour
     // private List<Vector3> coreDistrictLocations; // generate Core and Outer seperately?? -> damit man die Bezirke einfacher verteilen kan aufgrund von der min und max anzahl, don't forget!!!
     // private List<Vector3> outerDistrictLocations;
 
-    private IDictionary<int, District> districtsDictionatry;
+    private IDictionary<int, District> districtsDictionary;
     private static int counter = -1;
 
     [SerializeField] private Vector3 sampleRegionSize = new Vector3(10, 1, 10); // Muss nicht vom User eingestellt werden, sp‰ter noch ‰ndern
@@ -31,6 +32,8 @@ public class DistrictGenerator : MonoBehaviour
     [SerializeField, Min(0)] private int distictCellDistortion;
     private VoronoiDiagram voronoiScript;
     private Texture2D voronoiTexture;
+    private Dictionary<int, Region> regions;
+
     [SerializeField] GameObject prepareBorders;
     private BorderPreparation prepareBordersScript;
 
@@ -38,7 +41,7 @@ public class DistrictGenerator : MonoBehaviour
     [SerializeField, Min(0)] private int roadWidth = 7;
     [SerializeField, Min(0)] int minLotSquareSize = 30;
 
-    private List<List<Vector2Int>> regionLots;
+    private Dictionary<int, List<List<Vector2Int>>> regionLots;
 
     private void OnValidate()
     {
@@ -48,7 +51,7 @@ public class DistrictGenerator : MonoBehaviour
         GenerateCandidatePositions();
         SelectDistrictPositions();
         voronoiScript = voronoiDiagram.GetComponent<VoronoiDiagram>();
-        voronoiTexture = voronoiScript.GenerateVoronoiDiagram(districtsDictionatry, distictCellDistortion, new Vector2(cityBoundaries.transform.position.x, cityBoundaries.transform.position.z), cityBoundaries.outerBoundaryRadius); // Why 100??? and why did i have to rotate the plane?? so many questions
+        (voronoiTexture, regions) = voronoiScript.GenerateVoronoiDiagram(districtsDictionary, distictCellDistortion, new Vector2Int((int)cityBoundaries.transform.position.x, (int)cityBoundaries.transform.position.z), cityBoundaries.outerBoundaryRadius); // Why 100??? and why did i have to rotate the plane?? so many questions
     }
 
     public void GenerateRoads() 
@@ -61,9 +64,21 @@ public class DistrictGenerator : MonoBehaviour
     public void GenerateLots()
     {
         // Warning -> Sind straﬂen schon generiert?
-        regionLots = LotGenerator.GenerateLots(voronoiTexture, roadWidth, minLotSquareSize);
+        regionLots = LotGenerator.GenerateLots(voronoiTexture, regions, roadWidth, minLotSquareSize);
         Debug.Log("Anzahl der lots: " + regionLots.Count);
-        BuildingsGenerator.GenerateBuildings(regionLots);
+        
+        foreach (var region in regionLots)
+        {
+            List<GameObject> regionsBuildingPrefabs = new List<GameObject>();
+
+            District district;
+            districtsDictionary.TryGetValue(region.Key, out district);
+
+            regionsBuildingPrefabs = district.type.buildingTypes;
+
+
+            BuildingsGenerator.GenerateBuildings(region.Value, regionsBuildingPrefabs);
+        }
     }
 
     private void CalculateMinAndMaxDistricts()
@@ -92,7 +107,7 @@ public class DistrictGenerator : MonoBehaviour
             return;
         }
         generatedDistricts.Clear();
-        districtsDictionatry = new Dictionary<int, District>();
+        districtsDictionary = new Dictionary<int, District>();
 
         // Maybe generate Points for core and outer seperately?
         List<Vector3> coreDistrictLocations = cityBoundaries.CheckWithinBoundaries(candidatePoints, "inner");
@@ -106,7 +121,7 @@ public class DistrictGenerator : MonoBehaviour
                 type = bestDistrictType
             };
             generatedDistricts.Add(newDistrict);
-            districtsDictionatry.Add(GenerateUniqueID(), newDistrict);
+            districtsDictionary.Add(GenerateUniqueID(), newDistrict);
             candidatePoints.Remove(coreLocation);
         }
 
@@ -123,7 +138,7 @@ public class DistrictGenerator : MonoBehaviour
                 type = bestDistrictType
             };
             generatedDistricts.Add(newDistrict);
-            districtsDictionatry.Add(GenerateUniqueID(), newDistrict);
+            districtsDictionary.Add(GenerateUniqueID(), newDistrict);
             candidatePoints.Remove(outerLocation);
         }
     //    List<KeyValuePair<Vector3, float>> evaluatedPoints = new List<KeyValuePair<Vector3, float>>();

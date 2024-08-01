@@ -1,27 +1,55 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static VoronoiDiagram;
 
 public class LotGenerator : MonoBehaviour
 {
-    public static List<List<Vector2Int>> GenerateLots(Texture2D voronoiTexture, int roadWidth, int minLotSquareSize)
+    public static Dictionary<int, List<List<Vector2Int>>> GenerateLots(Texture2D voronoiTexture, Dictionary<int, Region> regions, int roadWidth, int minLotSquareSize)
     {
-        List<List<Vector2Int>> extractedRegions = DistrictExtractor.ExtractRegions(voronoiTexture, roadWidth);
+        // Verarbeitet die Regionen, indem nahe der schwarzen Kante liegende Pixel entfernt werden
+        Dictionary<int, Region> modifiedRegions = new Dictionary<int, Region>(regions);
 
-        List<List<Vector2Int>> validLots = new List<List<Vector2Int>>();
+        List<Vector2Int> pixelsToRemove = new List<Vector2Int>();
 
-        List<HashSet<Vector2Int>> allregionEdges = GetAllRegionEdges(extractedRegions);
-
-
-        for (int i = 0; i < extractedRegions.Count; i++)
+        foreach (var region in regions)
         {
-            List<List<Vector2Int>> regionLots = SubdivideIntoLots(extractedRegions[i], minLotSquareSize);
-
-            regionLots = SortLots(regionLots);
-
-            validLots.AddRange(RemoveInvalidLots(regionLots, minLotSquareSize, allregionEdges[i]));
+            foreach (var pixel in region.Value.Pixels)
+            {
+                if (DistrictExtractor.IsNearBlackBorder(voronoiTexture, pixel.x, pixel.y, roadWidth))
+                {
+                    pixelsToRemove.Add(pixel);
+                }
+            }
         }
 
-        return validLots;
+        foreach (var region in modifiedRegions.Values)
+        {
+            foreach (Vector2Int pixel in pixelsToRemove)
+            {
+                region.Pixels.Remove(pixel);
+            }
+        }
+
+        // Erzeugt eine Liste von Lots für jede Region
+        Dictionary<int, List<List<Vector2Int>>> regionLots = new Dictionary<int, List<List<Vector2Int>>>();
+
+        foreach (var region in modifiedRegions)
+        {
+            int regionId = region.Key;
+            List<Vector2Int> regionPixels = region.Value.Pixels;
+
+            List<List<Vector2Int>> lotList = SubdivideIntoLots(regionPixels, minLotSquareSize);
+
+            lotList = SortLots(lotList);
+
+            HashSet<Vector2Int> regionEdges = GetEdges(regionPixels);
+
+            List<List<Vector2Int>> validLots = RemoveInvalidLots(lotList, minLotSquareSize, regionEdges);
+
+            regionLots[regionId] = validLots;
+        }
+
+        return regionLots;
     }
 
     private static HashSet<Vector2Int> GetEdges(List<Vector2Int> lot)
@@ -51,7 +79,6 @@ public class LotGenerator : MonoBehaviour
         }
 
         return edges;
-
     }
 
     private static List<List<Vector2Int>> SubdivideIntoLots(List<Vector2Int> region, int minBlockSize)
@@ -156,7 +183,6 @@ public class LotGenerator : MonoBehaviour
                         }
                     }
                 }
-
             }
         }
 
@@ -205,18 +231,6 @@ public class LotGenerator : MonoBehaviour
         return false;
     }
 
-    private static List<HashSet<Vector2Int>> GetAllRegionEdges(List<List<Vector2Int>> regions)
-    {
-        List<HashSet<Vector2Int>> allEdges = new List<HashSet<Vector2Int>>();
-
-        foreach (var region in regions)
-        {
-            allEdges.Add(GetEdges(region));
-        }
-
-        return allEdges;
-    }
-
     private static bool IsWideEnough(List<Vector2Int> lot, int minLotSize)
     {
         int halfMinLotSize = minLotSize / 2;
@@ -247,14 +261,8 @@ public class LotGenerator : MonoBehaviour
         }
         int height = up - down;
 
-        if (width >= halfMinLotSize && height >= halfMinLotSize)
-        {
-            return true;
-        }
-
-        return false;
+        return width >= halfMinLotSize && height >= halfMinLotSize;
     }
-
 
     private static List<List<Vector2Int>> GetNeighborLots(List<Vector2Int> originalLot, List<List<Vector2Int>> allLots)
     {
@@ -285,15 +293,13 @@ public class LotGenerator : MonoBehaviour
 
     private static List<Vector2Int> GetDirectNeighbors(Vector2Int point)
     {
-        List<Vector2Int> neighbors = new List<Vector2Int>
+        return new List<Vector2Int>
         {
             new Vector2Int(point.x, point.y + 1),
             new Vector2Int(point.x + 1, point.y),
             new Vector2Int(point.x, point.y - 1),
             new Vector2Int(point.x - 1, point.y),
         };
-
-        return neighbors;
     }
 
     public static Vector2Int FindCentroid(List<Vector2Int> points)

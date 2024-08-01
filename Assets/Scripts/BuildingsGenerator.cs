@@ -4,25 +4,27 @@ using UnityEngine;
 
 public class BuildingsGenerator : MonoBehaviour
 {
-    public static void GenerateBuildings(List<List<Vector2Int>> regionsLots)
+    public static void GenerateBuildings(List<List<Vector2Int>> lots, List<GameObject> buildingPrefabs)
     {
         //RemoveGeneratedBuildings();???
 
-        foreach (var lot in regionsLots)
+        foreach (var lot in lots)
         {
-            //Vector3 center = FindCentroid(lot);
-            //Vector3 position = new Vector3(center.x, buildingHeight / 2, center.z);
+            Vector3 center = FindCentroid(lot);
+            Vector3 position = new Vector3(center.x, 0, center.z);
 
-            //// aus prefabs für diese region
-            //// finde die, die ins gundstück passen würden
-            //// wähle eines random aus
-            //// drehe es so, dass es in das Grundstück passt
-            //GameObject buildingPrefab = new GameObject("test");
+            // aus prefabs für diese region
+            // finde die, die ins gundstück passen würden
+            // wähle eines random aus
+            int randomNumber = Random.Range(0, buildingPrefabs.Count);
+            GameObject buildingPrefab = buildingPrefabs[randomNumber];
+            // drehe es so, dass es in das Grundstück passt
 
 
-            //// add empty gameobject first und füge da alle buildings ein
-            //GameObject newBuilding = Instantiate(buildingPrefab, position, Quaternion.identity);
-            //newBuilding.transform.localScale = new Vector3(1, buildingHeight, 1); // Skaliere das Gebäude
+
+            // add empty gameobject first und füge da alle buildings ein
+            GameObject newBuilding = Instantiate(buildingPrefab, position, Quaternion.identity);
+            // newBuilding.transform.localScale = new Vector3(1, 1, 1); // Skaliere das Gebäude
         }
     }
 
