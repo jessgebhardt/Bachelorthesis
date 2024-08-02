@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using static VoronoiDiagram;
 
@@ -14,8 +13,6 @@ public class DistrictGenerator : MonoBehaviour
     [SerializeField, Min(0)] private int numberOfDistricts;
     private int minNumberOfDistricts;
     private int maxNumberOfDistricts;
-    // private List<Vector3> coreDistrictLocations; // generate Core and Outer seperately?? -> damit man die Bezirke einfacher verteilen kan aufgrund von der min und max anzahl, don't forget!!!
-    // private List<Vector3> outerDistrictLocations;
 
     private IDictionary<int, District> districtsDictionary;
     private static int counter = -1;
@@ -100,40 +97,30 @@ public class DistrictGenerator : MonoBehaviour
             Debug.LogError("No candidate points available for district generation.");
             return;
         }
+
         generatedDistricts.Clear();
         districtsDictionary = new Dictionary<int, District>();
 
-        // Maybe generate Points for core and outer seperately?
-        List<Vector3> coreDistrictLocations = cityBoundaries.CheckWithinBoundaries(candidatePoints, "inner");
-        foreach (Vector3 coreLocation in coreDistrictLocations)
+        List<Vector3> locations = new List<Vector3>(candidatePoints);
+        List<Vector3> pointsToRemove = new List<Vector3>();
+
+        foreach (Vector3 location in locations)
         {
-            DistrictType bestDistrictType = CalculateBestDistrictForLocation(coreLocation, "inner");
+            DistrictType bestDistrictType = CalculateBestDistrictForLocation(location);
             District newDistrict = new District
             {
                 name = bestDistrictType.name,
-                position = coreLocation,
+                position = location,
                 type = bestDistrictType
             };
             generatedDistricts.Add(newDistrict);
             districtsDictionary.Add(GenerateUniqueID(), newDistrict);
-            candidatePoints.Remove(coreLocation);
+            pointsToRemove.Add(location);
         }
 
-
-        List<Vector3> outerDistrictLocations = cityBoundaries.CheckWithinBoundaries(candidatePoints, "outer");
-
-        foreach (Vector3 outerLocation in outerDistrictLocations)
+        foreach (Vector3 point in pointsToRemove)
         {
-            DistrictType bestDistrictType = CalculateBestDistrictForLocation(outerLocation, "outer");
-            District newDistrict = new District
-            {
-                name = bestDistrictType.name,
-                position = outerLocation,
-                type = bestDistrictType
-            };
-            generatedDistricts.Add(newDistrict);
-            districtsDictionary.Add(GenerateUniqueID(), newDistrict);
-            candidatePoints.Remove(outerLocation);
+            candidatePoints.Remove(point);
         }
     //    List<KeyValuePair<Vector3, float>> evaluatedPoints = new List<KeyValuePair<Vector3, float>>();
     //    // int districtsToGenerate = Mathf.Min(numberOfDistricts, candidatePoints.Count);
@@ -187,22 +174,12 @@ public class DistrictGenerator : MonoBehaviour
     //    return bestPoints;
     //}
 
-    DistrictType CalculateBestDistrictForLocation(Vector3 location, string boundaryType)
+    DistrictType CalculateBestDistrictForLocation(Vector3 location)
     {
-        DistrictType[] selectedDistrictTypes = districtTypes;
-        if (boundaryType == "inner")
-        {
-            selectedDistrictTypes = districtTypes.Where(d => d.innerBoundaries).ToArray();
-        }
-        else if (boundaryType == "outer")
-        {
-            selectedDistrictTypes = districtTypes.Where(d => d.outerBoundaries).ToArray();
-        }
-
-        DistrictType bestDistrictType = selectedDistrictTypes[0];
+        DistrictType bestDistrictType = districtTypes[0];
         float bestSuitability = float.MinValue;
 
-        foreach (DistrictType type in selectedDistrictTypes)
+        foreach (DistrictType type in districtTypes)
         {
             float suitability = CalculateSuitability(type, location);
             if (suitability > bestSuitability)
@@ -321,8 +298,6 @@ public struct DistrictType
     [Range(0, 10)] public float distanceToPrimaryStreets;
     [Min(1)] public int minNumberOfPlacements; // Nächster Schritt, miteinbeziehen
     [Min(1)] public int maxNumberOfPlacements; // Nächster Schritt, miteinbeziehen
-    public bool innerBoundaries;
-    public bool outerBoundaries;
     // public Dictionary<string, float> attractionValues;
     // public Dictionary<string, float> repulsionValues;
     public List<GameObject> buildingTypes;
