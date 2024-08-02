@@ -20,14 +20,11 @@ public class DistrictGenerator : MonoBehaviour
     private IDictionary<int, District> districtsDictionary;
     private static int counter = -1;
 
-    [SerializeField] private Vector3 sampleRegionSize = new Vector3(10, 1, 10); // Muss nicht vom User eingestellt werden, sp‰ter noch ‰ndern
     [SerializeField, Min(0)] private int rejectionSamples = 30;
-    // [SerializeField] private float displayRadius = 10;
 
     private List<Vector3> candidatePoints;
     private CityBoundaries cityBoundaries;
 
-    // SerializeField] private Material primaryRoadMaterial;
     [SerializeField] private GameObject voronoiDiagram;
     [SerializeField, Min(0)] private int distictCellDistortion;
     private VoronoiDiagram voronoiScript;
@@ -70,7 +67,6 @@ public class DistrictGenerator : MonoBehaviour
 
     public void GenerateLotsAndBuildings()
     {
-        // Warning -> Sind straﬂen schon generiert?
         regionLots = LotGenerator.GenerateLots(voronoiTexture, regions, roadWidth, minLotSquareSize);
         BuildingsGenerator.GenerateBuildings(regionLots, districtsDictionary);
     }
@@ -224,9 +220,8 @@ public class DistrictGenerator : MonoBehaviour
     {
         float Sd = CalculateSuitabilityBasedOnNeighbors(type, location);
         float Sa = CalculateSuitabilityBasedOnArea(type, location);
-        // float Sh = CalculateSuitabilityBasedOnPrimaryStreets(type, location);
 
-        float S = importanceOfNeighbours * Sd + importanceOfCityCenterDistance * Sa /*+ importanceOfPrimaryStreetDistance * Sh*/;
+        float S = importanceOfNeighbours * Sd + importanceOfCityCenterDistance * Sa;
         return S;
     }
 
@@ -254,28 +249,11 @@ public class DistrictGenerator : MonoBehaviour
 
     float ScaleDistance(float value)
     {
-        float originalMax = Mathf.Sqrt(Mathf.Pow(sampleRegionSize.x / 2, 2) + Mathf.Pow(sampleRegionSize.z / 2, 2));
+        float originalMax = cityBoundaries.outerBoundaryRadius;
         float normalizedVal = (value - 0) / (originalMax - 0);
         float scaledVal = normalizedVal * (10 - 0) + 0;
         return scaledVal;
     }
-
-    //float CalculateSuitabilityBasedOnPrimaryStreets(DistrictType type, Vector3 location)
-    //{
-    //    float closestDistance = UnityEngine.Random.Range(0, 10);
-    //    //float closestDistance = float.MaxValue;
-    //    //foreach (var primaryStreet in primaryStreets)
-    //    //{
-    //    //    float distance = Vector3.Distance(location, primaryStreet);
-    //    //    float scaledDistance = ScaleDistance(distance);
-    //    //    if (scaledDistance < closestDistance)
-    //    //    {
-    //    //        closestDistance = scaledDistance;
-    //    //    }
-    //    //}
-    //    float Sh = GetSuitability(closestDistance, type.distanceToPrimaryStreets);
-    //    return Sh;
-    //}
 
     float GetAttraction(DistrictType districtType, DistrictType neighborType)
     {
@@ -334,28 +312,6 @@ public class DistrictGenerator : MonoBehaviour
         }
     }
 
-
-    private void OnDrawGizmos()
-    {
-        //if (candidatePoints != null)
-        //{
-        //    Gizmos.color = Color.white;
-        //    foreach (Vector3 point in candidatePoints)
-        //    {
-        //        Gizmos.DrawSphere(point, 10f);
-        //    }
-        //}
-
-        //if (generatedDistricts != null)
-        //{
-        //    Gizmos.color = Color.white;
-        //    foreach (District district in generatedDistricts)
-        //    {
-        //        Gizmos.color = district.type.color;
-        //        Gizmos.DrawSphere(district.position, 10f);
-        //    }
-        //}
-    }
 }
 
 [System.Serializable]
