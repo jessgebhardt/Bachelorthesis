@@ -96,6 +96,13 @@ public class LotGenerator : MonoBehaviour
             }
         }
 
+        //string allEdges = "";
+        //foreach (Vector2Int edge in edges)
+        //{
+        //    allEdges += edge.ToString();
+        //}
+        //Debug.Log("NEW EDGE:"+ allEdges);
+
         return edges;
     }
 
@@ -137,7 +144,7 @@ public class LotGenerator : MonoBehaviour
             grid[gridCoord].Add(point);
         }
 
-List<List<Vector2Int>> blocks = new List<List<Vector2Int>>();
+        List<List<Vector2Int>> blocks = new List<List<Vector2Int>>();
         foreach (var cell in grid.Values)
         {
             cell.Sort((a, b) =>
@@ -159,16 +166,16 @@ List<List<Vector2Int>> blocks = new List<List<Vector2Int>>();
     private static List<List<Vector2Int>> RemoveInvalidLots(List<List<Vector2Int>> lots, int minLotSize, HashSet<Vector2Int> regionsEdge)
     {
         List<List<Vector2Int>> validLots = new List<List<Vector2Int>>();
-        List<List<Vector2Int>> processedLots = new List<List<Vector2Int>>();
+        HashSet<Vector2Int> processedLots = new HashSet<Vector2Int>();
 
         foreach (var lot in lots)
         {
-            if (HasStreetConnection(lot, regionsEdge) && !processedLots.Contains(lot))
+            if (HasStreetConnection(lot, regionsEdge) && !processedLots.Overlaps(lot))
             {
                 if (lot.Count >= minLotSize && IsWideEnough(lot, minLotSize))
                 {
                     validLots.Add(lot);
-                    processedLots.Add(lot);
+                    processedLots.UnionWith(lot);
                 }
                 else
                 {
@@ -176,9 +183,15 @@ List<List<Vector2Int>> blocks = new List<List<Vector2Int>>();
 
                     foreach (var otherLot in neighborLots)
                     {
+                        if (processedLots.Overlaps(otherLot))
+                        {
+                            continue;
+                        }
+
                         List<Vector2Int> combinedLot = new List<Vector2Int>(lot);
                         combinedLot.AddRange(otherLot);
 
+                        combinedLot = combinedLot.Distinct().ToList();
                         combinedLot.Sort((a, b) =>
                         {
                             int result = a.x.CompareTo(b.x);
@@ -189,13 +202,13 @@ List<List<Vector2Int>> blocks = new List<List<Vector2Int>>();
                             return result;
                         });
 
-                        if (combinedLot.Count >= minLotSize && IsWideEnough(combinedLot, minLotSize))
+                        if (combinedLot.Count >= minLotSize && IsWideEnough(combinedLot, minLotSize) && !processedLots.Overlaps(combinedLot))
                         {
                             validLots.Remove(otherLot);
                             validLots.Add(combinedLot);
 
-                            processedLots.Add(otherLot);
-                            processedLots.Add(lot);
+                            processedLots.UnionWith(otherLot);
+                            processedLots.UnionWith(lot);
 
                             break;
                         }
@@ -206,6 +219,7 @@ List<List<Vector2Int>> blocks = new List<List<Vector2Int>>();
 
         return validLots;
     }
+
 
     private static List<List<Vector2Int>> SortLots(List<List<Vector2Int>> lots)
     {
