@@ -49,24 +49,6 @@ public class LotGenerator : MonoBehaviour
             regionLots[regionId] = validLots;
         }
 
-
-
-        // TEST
-        foreach (var v in testLots)
-        {
-            HashSet<Vector2Int> edgePixels = GetEdges(v);
-            foreach (var pos in edgePixels)
-            {
-                voronoiTexture.SetPixel(pos.x, pos.y, Color.green);
-            }
-        }
-
-
-
-        voronoiTexture.Apply();
-
-
-
         return regionLots;
     }
 
@@ -95,13 +77,6 @@ public class LotGenerator : MonoBehaviour
                 edges.Add(point);
             }
         }
-
-        //string allEdges = "";
-        //foreach (Vector2Int edge in edges)
-        //{
-        //    allEdges += edge.ToString();
-        //}
-        //Debug.Log("NEW EDGE:"+ allEdges);
 
         return edges;
     }

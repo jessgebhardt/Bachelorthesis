@@ -6,14 +6,9 @@ public class SecondaryRoadsGenerator : MonoBehaviour
 {
     public static Texture2D GenerateSecondaryRoads(List<List<Vector2Int>> extractedRegions, List<List<Vector2Int>> regionsSegmentMarks, Texture2D voronoiTexture)
     {
-        Debug.Log(extractedRegions.Count);
-        Debug.Log(regionsSegmentMarks.Count);
-
         Vector2Int[] chosenSegments = ChooseStartpoints(regionsSegmentMarks);
 
         voronoiTexture = GenerateRoads(extractedRegions, chosenSegments, voronoiTexture);
-
-        Debug.Log(chosenSegments.Length);
 
         return voronoiTexture;
     }
@@ -21,11 +16,9 @@ public class SecondaryRoadsGenerator : MonoBehaviour
     private static Vector2Int[] ChooseStartpoints(List<List<Vector2Int>> regionsSegmentMarks)
     {
         Vector2Int[] chosenSegments = new Vector2Int[regionsSegmentMarks.Count];
-        Debug.Log("all: " + regionsSegmentMarks.Count);
 
         for (int i = 0; i < regionsSegmentMarks.Count; i++)
         {
-            Debug.Log(i+": " + regionsSegmentMarks[i].Count);
             int randomNumber = Random.Range(0, regionsSegmentMarks[i].Count);
             chosenSegments[i] = regionsSegmentMarks[i][randomNumber];
         }
@@ -49,7 +42,6 @@ public class SecondaryRoadsGenerator : MonoBehaviour
             {
                 allPixelsToDraw.AddRange(pixelsToDraw);
             }
-            Debug.Log("DONE");
         });
 
         ApplyChanges(voronoiTexture, allPixelsToDraw);

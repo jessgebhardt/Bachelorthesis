@@ -348,7 +348,7 @@ public class DistrictGenerator : MonoBehaviour
         //        Gizmos.DrawSphere(point, 10f);
         //    }
         //}
-        //Debug.Log("Districtamount: " + generatedDistricts.Count);
+
         //if (generatedDistricts != null)
         //{
         //    Gizmos.color = Color.white;

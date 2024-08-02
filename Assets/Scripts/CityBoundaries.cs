@@ -68,7 +68,7 @@ public class CityBoundaries : MonoBehaviour
                 radius = outerBoundaryRadius;
                 break;
             default:
-                Debug.Log("radiusType is not inner or outer");
+                Debug.LogWarning("radiusType is not inner or outer");
                 break;
         }
 
