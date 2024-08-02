@@ -310,7 +310,6 @@ public class DistrictGenerator : MonoBehaviour
             renderer.sharedMaterial.mainTexture = voronoiTexture;
         }
     }
-
 }
 
 [System.Serializable]

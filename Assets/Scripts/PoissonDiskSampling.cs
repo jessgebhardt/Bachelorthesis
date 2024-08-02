@@ -5,8 +5,6 @@ public class PoissonDiskSampling : MonoBehaviour
 {
     public static List<Vector3> GenerateDistrictPoints(int numberOfDistricts, int minNumberOfDistricts, int maxNumberOfDistricts, float cityRadius, Vector3 cityCenter, int numSampleBeforeRejection = 30)
     {
-        // Fix numberOfDistricts!!!!!!!!!!
-
         int districts = ValidateNumberOfDistricts(numberOfDistricts, minNumberOfDistricts, maxNumberOfDistricts, true);
 
         float districtRadius = CalculateDistrictRadius(districts, cityRadius);
@@ -15,10 +13,9 @@ public class PoissonDiskSampling : MonoBehaviour
         int gridSize = Mathf.CeilToInt((cityRadius * 2) / cellSize);
         int[,] grid = new int[gridSize, gridSize];
         List<Vector3> points = new List<Vector3>();
-        List<Vector3> spawnPoints = new List<Vector3>();
+        List<Vector3> spawnPoints = new List<Vector3>() { cityCenter };
 
-        spawnPoints.Add(cityCenter);
-        while (spawnPoints.Count > 0 /*&& points.Count < districts*/) // vorerst removed, bis bessere Methode gefunden, um Punkteanzahl zu kontrollieren
+        while (spawnPoints.Count > 0 && points.Count < districts)
         {
             int spawnIndex = Random.Range(0, spawnPoints.Count);
             Vector3 spawnCentre = spawnPoints[spawnIndex];
