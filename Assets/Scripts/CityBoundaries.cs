@@ -35,12 +35,14 @@ public class CityBoundaries : MonoBehaviour
     {
         Vector3 centerPosition = transform.position;
         float angle = 2 * Mathf.PI / segments;
-        for (int i = 0; i <= segments; i++)
+        for (int i = 0; i < segments; i++)
         {
             float outerX = Mathf.Sin(i * angle) * outerBoundaryRadius;
             float outerZ = Mathf.Cos(i * angle) * outerBoundaryRadius;
 
-            lineRenderer.SetPosition(i + segments + 1, new Vector3(outerX, 0, outerZ) + centerPosition);
+            lineRenderer.SetPosition(i, new Vector3(outerX, 0, outerZ) + centerPosition);
         }
+        // Make sure the last position connects back to the first position
+        lineRenderer.SetPosition(segments, lineRenderer.GetPosition(0));
     }
 }
