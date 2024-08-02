@@ -5,48 +5,57 @@ using static VoronoiDiagram;
 
 public class LotGenerator : MonoBehaviour
 {
-    public static Dictionary<int, List<List<Vector2Int>>> GenerateLots(Texture2D voronoiTexture, Dictionary<int, Region> regions, int roadWidth, int minLotSquareSize)
+    public static Dictionary<int, List<List<Vector2Int>>> GenerateLots(Texture2D voronoiTexture, Dictionary<int, Region> regions, IDictionary<int, District> districtsDictionary, int roadWidth)
     {
-        Dictionary<int, Region> modifiedRegions = new Dictionary<int, Region>(regions);
+        List<List<Vector2Int>> areas = DistrictExtractor.ExtractRegions(voronoiTexture, roadWidth);
 
-        List<Vector2Int> pixelsToRemove = new List<Vector2Int>();
-
+        Dictionary<int, List<List<Vector2Int>>> regionAreas = new Dictionary<int, List<List<Vector2Int>>>();
         foreach (var region in regions)
         {
-            foreach (var pixel in region.Value.Pixels)
+            regionAreas[region.Key] = new List<List<Vector2Int>>();
+        }
+
+        Dictionary<int, HashSet<Vector2Int>> regionPixelSets = new Dictionary<int, HashSet<Vector2Int>>();
+        foreach (var region in regions)
+        {
+            regionPixelSets[region.Key] = new HashSet<Vector2Int>(region.Value.Pixels);
+        }
+
+        foreach (var area in areas)
+        {
+            foreach (var region in regionPixelSets)
             {
-                if (DistrictExtractor.IsNearBlackBorder(voronoiTexture, pixel.x, pixel.y, roadWidth))
+                if (area.Any(pixel => region.Value.Contains(pixel)))
                 {
-                    pixelsToRemove.Add(pixel);
+                    regionAreas[region.Key].Add(area);
+                    break;
                 }
             }
         }
 
-        foreach (var region in modifiedRegions.Values)
-        {
-            region.Pixels = region.Pixels.Except(pixelsToRemove).ToList();
-        }
-
         Dictionary<int, List<List<Vector2Int>>> regionLots = new Dictionary<int, List<List<Vector2Int>>>();
 
-        List<List<Vector2Int>> testLots = new List<List<Vector2Int>>();
-
-        foreach (var region in modifiedRegions)
+        foreach (var region in regions)
         {
+            District district;
+            districtsDictionary.TryGetValue(region.Key, out district);
+            int minLotSize = district.type.minLotSizeSquared;
+
             int regionId = region.Key;
-            List<Vector2Int> regionPixels = region.Value.Pixels;
 
-            List<List<Vector2Int>> lotList = SubdivideIntoLots(regionPixels, minLotSquareSize);
+            foreach (var area in regionAreas[region.Key])
+            {
+                List<List<Vector2Int>> lotList = SubdivideIntoLots(area, minLotSize);
 
-            lotList = SortLots(lotList);
+                lotList = SortLots(lotList);
 
-            HashSet<Vector2Int> regionEdges = GetEdges(regionPixels);
+                HashSet<Vector2Int> regionEdges = GetEdges(area);
 
-            List<List<Vector2Int>> validLots = RemoveInvalidLots(lotList, minLotSquareSize, regionEdges);
+                List<List<Vector2Int>> validLots = RemoveInvalidLots(lotList, minLotSize, regionEdges);
 
-            testLots.AddRange(validLots);
-
-            regionLots[regionId] = validLots;
+                regionLots[regionId] = validLots;
+            }
+            
         }
 
         return regionLots;
@@ -81,7 +90,7 @@ public class LotGenerator : MonoBehaviour
         return edges;
     }
 
-    private static List<List<Vector2Int>> SubdivideIntoLots(List<Vector2Int> region, int minBlockSize)
+    private static List<List<Vector2Int>> SubdivideIntoLots(List<Vector2Int> region, int minSize)
     {
         int minX = int.MaxValue, minY = int.MaxValue;
         int maxX = int.MinValue, maxY = int.MinValue;
@@ -97,8 +106,8 @@ public class LotGenerator : MonoBehaviour
         int regionWidth = maxX - minX;
         int regionHeight = maxY - minY;
 
-        int numCellsX = Mathf.CeilToInt((float)regionWidth / minBlockSize);
-        int numCellsY = Mathf.CeilToInt((float)regionHeight / minBlockSize);
+        int numCellsX = Mathf.CeilToInt((float)regionWidth / minSize);
+        int numCellsY = Mathf.CeilToInt((float)regionHeight / minSize);
 
         float cellSizeX = (float)regionWidth / numCellsX + 1;
         float cellSizeY = (float)regionHeight / numCellsY + 1;
@@ -141,24 +150,28 @@ public class LotGenerator : MonoBehaviour
     private static List<List<Vector2Int>> RemoveInvalidLots(List<List<Vector2Int>> lots, int minLotSize, HashSet<Vector2Int> regionsEdge)
     {
         List<List<Vector2Int>> validLots = new List<List<Vector2Int>>();
-        HashSet<Vector2Int> processedLots = new HashSet<Vector2Int>();
+        HashSet<Vector2Int> processedPoints = new HashSet<Vector2Int>();
 
         foreach (var lot in lots)
         {
-            if (HasStreetConnection(lot, regionsEdge) && !processedLots.Overlaps(lot))
+            if (HasStreetConnection(lot, regionsEdge))
             {
-                if (lot.Count >= minLotSize && IsWideEnough(lot, minLotSize))
+                if (lot.Count >= minLotSize && IsWideEnough(lot, minLotSize) && !processedPoints.Overlaps(lot))
                 {
                     validLots.Add(lot);
-                    processedLots.UnionWith(lot);
+
+                    foreach (var point in lot)
+                    {
+                        processedPoints.Add(point);
+                    }
                 }
-                else
+                else if (lot.Count < minLotSize || !IsWideEnough(lot, minLotSize))
                 {
                     List<List<Vector2Int>> neighborLots = GetNeighborLots(lot, lots);
 
                     foreach (var otherLot in neighborLots)
                     {
-                        if (processedLots.Overlaps(otherLot))
+                        if (processedPoints.Overlaps(otherLot))
                         {
                             continue;
                         }
@@ -177,13 +190,19 @@ public class LotGenerator : MonoBehaviour
                             return result;
                         });
 
-                        if (combinedLot.Count >= minLotSize && IsWideEnough(combinedLot, minLotSize) && !processedLots.Overlaps(combinedLot))
+                        if (combinedLot.Count >= minLotSize && IsWideEnough(combinedLot, minLotSize) && !processedPoints.Overlaps(combinedLot))
                         {
                             validLots.Remove(otherLot);
                             validLots.Add(combinedLot);
 
-                            processedLots.UnionWith(otherLot);
-                            processedLots.UnionWith(lot);
+                            foreach (var point in otherLot)
+                            {
+                                processedPoints.Add(point);
+                            }
+                            foreach (var point in lot)
+                            {
+                                processedPoints.Add(point);
+                            }
 
                             break;
                         }
@@ -194,6 +213,7 @@ public class LotGenerator : MonoBehaviour
 
         return validLots;
     }
+
 
 
     private static List<List<Vector2Int>> SortLots(List<List<Vector2Int>> lots)

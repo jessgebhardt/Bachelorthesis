@@ -36,7 +36,6 @@ public class DistrictGenerator : MonoBehaviour
 
     [SerializeField, Min(0)] private int segmentLength = 50;
     [SerializeField, Min(0)] private int roadWidth = 7;
-    [SerializeField, Min(0)] int minLotSquareSize = 30;
 
     private Dictionary<int, List<List<Vector2Int>>> regionLots;
 
@@ -67,7 +66,7 @@ public class DistrictGenerator : MonoBehaviour
 
     public void GenerateLotsAndBuildings()
     {
-        regionLots = LotGenerator.GenerateLots(voronoiTexture, regions, roadWidth, minLotSquareSize);
+        regionLots = LotGenerator.GenerateLots(voronoiTexture, regions, districtsDictionary, roadWidth);
         BuildingsGenerator.GenerateBuildings(regionLots, districtsDictionary);
     }
 
@@ -327,8 +326,8 @@ public struct DistrictType
     public bool outerBoundaries;
     // public Dictionary<string, float> attractionValues;
     // public Dictionary<string, float> repulsionValues;
-    public List<GameObject> buildingTypes; // Nächster Schritt, miteinbeziehen
-    public int minLotSizeSquared; // Nächster Schritt, miteinbeziehen
+    public List<GameObject> buildingTypes;
+    [Min(1)] public int minLotSizeSquared;
 }
 
 [System.Serializable]
