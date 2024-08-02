@@ -14,9 +14,17 @@ public class CustomInspector : Editor
         {
             districtGenerator.GenerateRoads();
         }
-        if (GUILayout.Button("Generate Lots"))
+        if (GUILayout.Button("Remove Roads"))
         {
-            districtGenerator.GenerateLots();
+            districtGenerator.RemoveRoads();
+        }
+        if (GUILayout.Button("Generate Lots and Buildings"))
+        {
+            districtGenerator.GenerateLotsAndBuildings();
+        }
+        if (GUILayout.Button("Remove Buildings"))
+        {
+            districtGenerator.RemoveBuildings();
         }
     }
 }

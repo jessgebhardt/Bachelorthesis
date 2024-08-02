@@ -52,33 +52,35 @@ public class DistrictGenerator : MonoBehaviour
         SelectDistrictPositions();
         voronoiScript = voronoiDiagram.GetComponent<VoronoiDiagram>();
         (voronoiTexture, regions) = voronoiScript.GenerateVoronoiDiagram(districtsDictionary, distictCellDistortion, new Vector2Int((int)cityBoundaries.transform.position.x, (int)cityBoundaries.transform.position.z), cityBoundaries.outerBoundaryRadius); // Why 100??? and why did i have to rotate the plane?? so many questions
+        voronoiTexture.Apply();
     }
 
     public void GenerateRoads() 
     {
         prepareBordersScript = prepareBorders.GetComponent<BorderPreparation>();
         voronoiTexture = prepareBordersScript.GenerateRoads(voronoiTexture, cityBoundaries.outerBoundaryRadius, cityBoundaries.transform.position, segmentLength);
+        voronoiTexture.Apply();
         ApplyTexture();
     }
 
-    public void GenerateLots()
+    public void RemoveRoads()
+    {
+        RoadGenerator.RemoveOldRoadsAndRoadSystems();
+    }
+
+    public void GenerateLotsAndBuildings()
     {
         // Warning -> Sind straﬂen schon generiert?
         regionLots = LotGenerator.GenerateLots(voronoiTexture, regions, roadWidth, minLotSquareSize);
-        Debug.Log("Anzahl der lots: " + regionLots.Count);
-        
-        foreach (var region in regionLots)
-        {
-            List<GameObject> regionsBuildingPrefabs = new List<GameObject>();
 
-            District district;
-            districtsDictionary.TryGetValue(region.Key, out district);
+        ApplyTexture();
 
-            regionsBuildingPrefabs = district.type.buildingTypes;
+        //BuildingsGenerator.GenerateBuildings(regionLots, districtsDictionary);
+    }
 
-
-            BuildingsGenerator.GenerateBuildings(region.Value, regionsBuildingPrefabs);
-        }
+    public void RemoveBuildings()
+    {
+        BuildingsGenerator.RemoveOldBuildings();
     }
 
     private void CalculateMinAndMaxDistricts()
@@ -327,7 +329,7 @@ public class DistrictGenerator : MonoBehaviour
 
     private void ApplyTexture()
     {
-        voronoiTexture.Apply();
+        
         Renderer renderer = GetComponent<Renderer>();
         if (renderer != null)
         {

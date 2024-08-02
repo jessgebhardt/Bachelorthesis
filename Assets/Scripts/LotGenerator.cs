@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static VoronoiDiagram;
 
@@ -6,7 +7,6 @@ public class LotGenerator : MonoBehaviour
 {
     public static Dictionary<int, List<List<Vector2Int>>> GenerateLots(Texture2D voronoiTexture, Dictionary<int, Region> regions, int roadWidth, int minLotSquareSize)
     {
-        // Verarbeitet die Regionen, indem nahe der schwarzen Kante liegende Pixel entfernt werden
         Dictionary<int, Region> modifiedRegions = new Dictionary<int, Region>(regions);
 
         List<Vector2Int> pixelsToRemove = new List<Vector2Int>();
@@ -24,14 +24,12 @@ public class LotGenerator : MonoBehaviour
 
         foreach (var region in modifiedRegions.Values)
         {
-            foreach (Vector2Int pixel in pixelsToRemove)
-            {
-                region.Pixels.Remove(pixel);
-            }
+            region.Pixels = region.Pixels.Except(pixelsToRemove).ToList();
         }
 
-        // Erzeugt eine Liste von Lots für jede Region
         Dictionary<int, List<List<Vector2Int>>> regionLots = new Dictionary<int, List<List<Vector2Int>>>();
+
+        List<List<Vector2Int>> testLots = new List<List<Vector2Int>>();
 
         foreach (var region in modifiedRegions)
         {
@@ -46,8 +44,28 @@ public class LotGenerator : MonoBehaviour
 
             List<List<Vector2Int>> validLots = RemoveInvalidLots(lotList, minLotSquareSize, regionEdges);
 
+            testLots.AddRange(validLots);
+
             regionLots[regionId] = validLots;
         }
+
+
+
+        // TEST
+        foreach (var v in testLots)
+        {
+            HashSet<Vector2Int> edgePixels = GetEdges(v);
+            foreach (var pos in edgePixels)
+            {
+                voronoiTexture.SetPixel(pos.x, pos.y, Color.green);
+            }
+        }
+
+
+
+        voronoiTexture.Apply();
+
+
 
         return regionLots;
     }
@@ -119,7 +137,7 @@ public class LotGenerator : MonoBehaviour
             grid[gridCoord].Add(point);
         }
 
-        List<List<Vector2Int>> blocks = new List<List<Vector2Int>>();
+List<List<Vector2Int>> blocks = new List<List<Vector2Int>>();
         foreach (var cell in grid.Values)
         {
             cell.Sort((a, b) =>

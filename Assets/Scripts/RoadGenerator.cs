@@ -9,28 +9,13 @@ public class RoadGenerator : MonoBehaviour
     {
         List<Road> newRoads = new List<Road>();
 
-        // Delete RoadArchitectSystem
-        RoadSystem oldRoadSystem = FindObjectOfType<RoadSystem>();
-        if (oldRoadSystem != null)
-        {
-            DestroyImmediate(oldRoadSystem.gameObject);
-        }
+        RemoveOldRoadsAndRoadSystems();
 
         // Add new RoadArchitectSystem
         EditorMenu.CreateRoadSystem();
 
         // Find the RoadArchitectSystem in your scene
         RoadSystem roadSystem = FindObjectOfType<RoadSystem>();
-
-        // Delete existing roads
-        Road[] oldRoads = FindObjectsOfType<Road>();
-        if (oldRoads != null)
-        {
-            foreach (var oldRoad in oldRoads)
-            {
-                DestroyImmediate(oldRoad.gameObject);
-            }
-        }
 
         // Ensure road updates are disabled initially
         roadSystem.isAllowingRoadUpdates = false;
@@ -47,6 +32,26 @@ public class RoadGenerator : MonoBehaviour
         // Enable road updates and update the road system
         roadSystem.isAllowingRoadUpdates = true;
         roadSystem.UpdateAllRoads();
+    }
+
+    public static void RemoveOldRoadsAndRoadSystems()
+    {
+        // Delete RoadArchitectSystem
+        RoadSystem oldRoadSystem = FindObjectOfType<RoadSystem>();
+        if (oldRoadSystem != null)
+        {
+            DestroyImmediate(oldRoadSystem.gameObject);
+        }
+
+        // Delete existing roads
+        Road[] oldRoads = FindObjectsOfType<Road>();
+        if (oldRoads != null)
+        {
+            foreach (var oldRoad in oldRoads)
+            {
+                DestroyImmediate(oldRoad.gameObject);
+            }
+        }
     }
 
     private static List<Road> GenerateDistrictBorderRoads(RoadSystem roadSystem, List<Border> borderList)

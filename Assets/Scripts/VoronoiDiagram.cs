@@ -220,7 +220,11 @@ public class VoronoiDiagram : MonoBehaviour
             if (isBorder)
             {
                 pixelColors[index] = Color.black;
-                regions[closestRegionIds[index]].Pixels.Remove(new Vector2Int(x, y));
+                lock (regions)
+                {
+                    regions[closestRegionIds[index]].Pixels.Remove(new Vector2Int(x, y));
+
+                }
             }
         });
 
