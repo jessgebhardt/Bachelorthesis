@@ -1,8 +1,7 @@
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-
-[ExecuteInEditMode] // Ermöglicht die Ausführung des Skripts im Unity-Editor, ohne den Play mode zu aktivieren
+[ExecuteInEditMode]
 public class CityBoundaries : MonoBehaviour
 {
     [Range(10, 1490)] public float outerBoundaryRadius = 450f;
@@ -22,17 +21,16 @@ public class CityBoundaries : MonoBehaviour
         UpdateBoundaries();
     }
 
-    // Initialisiert die LineRenderer-Komponente
     void InitializeLineRenderer(LineRenderer lineRenderer, Color color)
     {
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.widthMultiplier = 2f;
-        lineRenderer.positionCount = (segments + 1) * 2;
+        lineRenderer.positionCount = segments + 1;
         lineRenderer.startColor = color;
         lineRenderer.endColor = color;
+        lineRenderer.loop = true; // Makes sure the line renderer forms a closed loop
     }
 
-    // Aktualisiert die Grenzlinien
     void UpdateBoundaries()
     {
         Vector3 centerPosition = transform.position;
@@ -42,7 +40,7 @@ public class CityBoundaries : MonoBehaviour
             float outerX = Mathf.Sin(i * angle) * outerBoundaryRadius;
             float outerZ = Mathf.Cos(i * angle) * outerBoundaryRadius;
 
-            lineRenderer.SetPosition(i, new Vector3(outerX, 0, outerZ) + centerPosition);
+            lineRenderer.SetPosition(i + segments + 1, new Vector3(outerX, 0, outerZ) + centerPosition);
         }
     }
 }
