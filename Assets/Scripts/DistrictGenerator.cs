@@ -72,10 +72,7 @@ public class DistrictGenerator : MonoBehaviour
     {
         // Warning -> Sind straﬂen schon generiert?
         regionLots = LotGenerator.GenerateLots(voronoiTexture, regions, roadWidth, minLotSquareSize);
-
-        ApplyTexture();
-
-        //BuildingsGenerator.GenerateBuildings(regionLots, districtsDictionary);
+        BuildingsGenerator.GenerateBuildings(regionLots, districtsDictionary);
     }
 
     public void RemoveBuildings()
