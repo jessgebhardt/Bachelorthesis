@@ -28,7 +28,7 @@ public class CityBoundaries : MonoBehaviour
         lineRenderer.positionCount = segments + 1;
         lineRenderer.startColor = color;
         lineRenderer.endColor = color;
-        lineRenderer.loop = true; // Makes sure the line renderer forms a closed loop
+        lineRenderer.loop = true;
     }
 
     void UpdateBoundaries()
@@ -42,7 +42,6 @@ public class CityBoundaries : MonoBehaviour
 
             lineRenderer.SetPosition(i, new Vector3(outerX, 0, outerZ) + centerPosition);
         }
-        // Make sure the last position connects back to the first position
         lineRenderer.SetPosition(segments, lineRenderer.GetPosition(0));
     }
 }

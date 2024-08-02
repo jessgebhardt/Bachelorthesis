@@ -122,57 +122,7 @@ public class DistrictGenerator : MonoBehaviour
         {
             candidatePoints.Remove(point);
         }
-    //    List<KeyValuePair<Vector3, float>> evaluatedPoints = new List<KeyValuePair<Vector3, float>>();
-    //    // int districtsToGenerate = Mathf.Min(numberOfDistricts, candidatePoints.Count);
-    //    foreach (var point in outerDistricts)
-    //    {
-    //        float score = EvaluatePoint(point);
-    //        // ...
-    //        evaluatedPoints.Add(new KeyValuePair<Vector3, float>(point, score));
-    //    }
-    //    evaluatedPoints.Sort((x, y) => y.Value.CompareTo(x.Value));
-
-    //    List<Vector3> selectedPoints = new List<Vector3>();
-    //    for (int i = 0; i < numberOfDistricts && i < evaluatedPoints.Count; i++)
-    //    {
-    //        selectedPoints.Add(evaluatedPoints[i].Key);
-    //    }
-
-    //    for (int i = 0; i < selectedPoints.Count; i++)
-    //    {
-    //        // change following
-    //        DistrictType[] outerDistrictTypes = districtTypes.Where(d => d.outerBoundaries).ToArray();
-    //        int randDistrict = Random.Range(0, outerDistrictTypes.Length);
-    //        DistrictType type = outerDistrictTypes[randDistrict];
-    //        District newDistrict = new District
-    //        {
-    //            name = type.name,
-    //            color = type.color,
-    //            position = selectedPoints[i]
-    //        };
-    //        generatedDistricts.Add(newDistrict);
-    //    }
-    //    candidatePoints.Clear();
     }
-
-    //private float EvaluatePoint(Vector3 point)
-    //{
-    //    // change following
-    //    float score = 0;
-    //    score = Random.Range(0.0f, 1.0f);
-    //    return score;
-    //}
-
-    //private List<Vector3> SelectBestPoints(List<Vector3> points)
-    //{
-    //    // change following
-    //    List<Vector3> bestPoints = new List<Vector3>();
-    //    for (int i = 0; i < numberOfDistricts && i < points.Count; i++)
-    //    {
-    //        bestPoints.Add(points[i]);
-    //    }
-    //    return bestPoints;
-    //}
 
     DistrictType CalculateBestDistrictForLocation(Vector3 location)
     {
@@ -296,8 +246,8 @@ public struct DistrictType
     public Color color;
     [Range(0, 10)] public float distanceFromCenter;
     [Range(0, 10)] public float distanceToPrimaryStreets;
-    [Min(1)] public int minNumberOfPlacements; // Nächster Schritt, miteinbeziehen
-    [Min(1)] public int maxNumberOfPlacements; // Nächster Schritt, miteinbeziehen
+    [Min(1)] public int minNumberOfPlacements;
+    [Min(1)] public int maxNumberOfPlacements;
     // public Dictionary<string, float> attractionValues;
     // public Dictionary<string, float> repulsionValues;
     public List<GameObject> buildingTypes;
