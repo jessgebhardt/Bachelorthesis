@@ -40,6 +40,7 @@ public class DistrictGenerator : MonoBehaviour
     {
         counter = -1;
         cityBoundaries = gameObject.GetComponent<CityBoundaries>();
+        ValidateDistrictColors();
         CalculateMinAndMaxDistricts();
         GenerateCandidatePositions();
         SelectDistrictPositions();
@@ -70,6 +71,25 @@ public class DistrictGenerator : MonoBehaviour
     public void RemoveBuildings()
     {
         BuildingGenerator.RemoveOldBuildings();
+    }
+
+    private void ValidateDistrictColors()
+    {
+        if (districtTypes.Length > 0)
+        {
+            for (int i = 0; i < districtTypes.Length; i++)
+            {
+                if (districtTypes[i].color == Color.black)
+                {
+                    districtTypes[i].color = AdjustBlackColor(districtTypes[i].color);
+                }
+            }
+        }
+    }
+
+    private Color AdjustBlackColor(Color color)
+    {
+        return new Color(color.r + 0.1f, color.g + 0.1f, color.b + 0.1f, color.a);
     }
 
     private void CalculateMinAndMaxDistricts()
