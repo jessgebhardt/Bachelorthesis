@@ -64,12 +64,12 @@ public class DistrictGenerator : MonoBehaviour
     public void GenerateLotsAndBuildings()
     {
         regionLots = LotGenerator.GenerateLots(voronoiTexture, regions, districtsDictionary, roadWidth);
-        BuildingsGenerator.GenerateBuildings(regionLots, districtsDictionary);
+        BuildingGenerator.GenerateBuildings(regionLots, districtsDictionary);
     }
 
     public void RemoveBuildings()
     {
-        BuildingsGenerator.RemoveOldBuildings();
+        BuildingGenerator.RemoveOldBuildings();
     }
 
     private void CalculateMinAndMaxDistricts()

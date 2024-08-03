@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildingsGenerator : MonoBehaviour
+public class BuildingGenerator : MonoBehaviour
 {
     public static void GenerateBuildings(Dictionary<int, List<List<Vector2Int>>> regionLots, IDictionary<int, District> districtsDictionary)
     {
