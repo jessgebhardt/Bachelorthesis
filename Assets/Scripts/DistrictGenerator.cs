@@ -9,7 +9,7 @@ public class DistrictGenerator : MonoBehaviour
     [SerializeField, Range(0, 1)] private float importanceOfNeighbours = 0.4f;
     [SerializeField, Range(0, 1)] private float importanceOfCityCenterDistance = 0.3f;
 
-    public List<DistrictType> districtTypes = new List<DistrictType>();
+    [SerializeField] private List<DistrictType> districtTypes = new List<DistrictType>();
     [SerializeField] private List<District> generatedDistricts = new List<District>();
     [SerializeField, Min(0)] private int numberOfDistricts;
     private int minNumberOfDistricts;
@@ -170,9 +170,28 @@ public class DistrictGenerator : MonoBehaviour
         List<Vector3> locations = new List<Vector3>(candidatePoints);
         List<Vector3> pointsToRemove = new List<Vector3>();
 
+        List<DistrictType> minDistrictTypes = GetMinDistrictTypes();
+        List<DistrictType> restDistrictTypes = GetRestDistrictTypes();
+
         foreach (Vector3 location in locations)
         {
-            DistrictType bestDistrictType = CalculateBestDistrictForLocation(location);
+            List<DistrictType> districtTypesToPlace = minDistrictTypes;
+
+            if (minDistrictTypes.Count == 0)
+            {
+                districtTypesToPlace = restDistrictTypes;
+            }
+            DistrictType bestDistrictType = CalculateBestDistrictForLocation(location, districtTypesToPlace);
+
+            if (minDistrictTypes.Count == 0)
+            {
+                restDistrictTypes.Remove(bestDistrictType);
+
+            } else
+            {
+                minDistrictTypes.Remove(bestDistrictType);
+            }
+
             District newDistrict = new District
             {
                 name = bestDistrictType.name,
@@ -190,22 +209,57 @@ public class DistrictGenerator : MonoBehaviour
         }
     }
 
-    DistrictType CalculateBestDistrictForLocation(Vector3 location)
+    DistrictType CalculateBestDistrictForLocation(Vector3 location, List<DistrictType> districtTypesToPlace)
     {
-        DistrictType bestDistrictType = districtTypes[0];
+        DistrictType bestDistrictType = districtTypesToPlace[0];
         float bestSuitability = float.MinValue;
 
         foreach (DistrictType type in districtTypes)
         {
-            float suitability = CalculateSuitability(type, location);
-            if (suitability > bestSuitability)
+            if (districtTypesToPlace.Contains(type))
             {
-                bestSuitability = suitability;
-                bestDistrictType = type;
+                float suitability = CalculateSuitability(type, location);
+                if (suitability > bestSuitability)
+                {
+                    bestSuitability = suitability;
+                    bestDistrictType = type;
+                }
             }
         }
 
         return bestDistrictType;
+    }
+
+    private List<DistrictType> GetMinDistrictTypes()
+    {
+        List<DistrictType> minDistrictTypes = new List<DistrictType>();
+
+        foreach (DistrictType type in districtTypes)
+        {
+            int minPlacements = type.minNumberOfPlacements;
+            for (int i = 0; i < minPlacements; i++)
+            {
+                minDistrictTypes.Add(type);
+            }
+        }
+
+        return minDistrictTypes;
+    }
+
+    private List<DistrictType> GetRestDistrictTypes()
+    {
+        List<DistrictType> restDistrictTypes = new List<DistrictType>();
+
+        foreach (DistrictType type in districtTypes)
+        {
+            int restPlacements = type.maxNumberOfPlacements - type.minNumberOfPlacements;
+            for (int i = 0; i < restPlacements; i++)
+            {
+                restDistrictTypes.Add(type);
+            }
+        }
+
+        return restDistrictTypes;
     }
 
     float CalculateSuitability(DistrictType type, Vector3 location)
@@ -224,7 +278,7 @@ public class DistrictGenerator : MonoBehaviour
         {
             float attraction = GetAttraction(type, placedDistrict.type);
             float repulsion = GetRepulsion(type, placedDistrict.type);
-            float distance = Vector3.Distance(location, placedDistrict.position);
+            float distance = ScaleDistance(Vector3.Distance(location, placedDistrict.position));
 
             Sd += (attraction - repulsion) / distance;
         }
@@ -235,7 +289,10 @@ public class DistrictGenerator : MonoBehaviour
     {
         float distanceFromCenter = Vector3.Distance(location, cityBoundaries.transform.position);
         float scaledDistance = ScaleDistance(distanceFromCenter);
+
+        //float Sa = 10 - CalculateAverage(scaledDistance, type.distanceFromCenter);
         float Sa = GetSuitability(scaledDistance, type.distanceFromCenter);
+
         return Sa;
     }
 
@@ -268,6 +325,11 @@ public class DistrictGenerator : MonoBehaviour
             }
         }
         return 0f;
+    }
+
+    float CalculateAverage(float a, float b)
+    {
+        return (a + b) / 2.0f;
     }
 
     float GetSuitability(float calculatedValue, float specifiedValue)
@@ -331,7 +393,6 @@ public struct DistrictType
     public string name;
     public Color color;
     [Range(0, 10)] public float distanceFromCenter;
-    [Range(0, 10)] public float distanceToPrimaryStreets;
     [Min(1)] public int minNumberOfPlacements;
     [Min(1)] public int maxNumberOfPlacements;
     public List<GameObject> buildingTypes;
