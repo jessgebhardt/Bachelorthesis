@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEditor;
-using Unity.VisualScripting;
+using System.Collections.Generic;
 
 [CustomEditor(typeof(DistrictGenerator))]
 public class CustomInspector : Editor
@@ -10,7 +10,15 @@ public class CustomInspector : Editor
         DrawDefaultInspector();
 
         DistrictGenerator districtGenerator = (DistrictGenerator)target;
-        if(GUILayout.Button("Generate Roads"))
+
+        if (GUILayout.Button("Generate Districts"))
+        {
+            districtGenerator.GenerateDistricts();
+        }
+
+        EditorGUILayout.Space();
+
+        if (GUILayout.Button("Generate Roads"))
         {
             districtGenerator.GenerateRoads();
         }
@@ -18,6 +26,9 @@ public class CustomInspector : Editor
         {
             districtGenerator.RemoveRoads();
         }
+
+        EditorGUILayout.Space();
+
         if (GUILayout.Button("Generate Lots and Buildings"))
         {
             districtGenerator.GenerateLotsAndBuildings();

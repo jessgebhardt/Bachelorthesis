@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 using static VoronoiDiagram;
 
@@ -8,7 +9,7 @@ public class DistrictGenerator : MonoBehaviour
     [SerializeField, Range(0, 1)] private float importanceOfNeighbours = 0.4f;
     [SerializeField, Range(0, 1)] private float importanceOfCityCenterDistance = 0.3f;
 
-    [SerializeField] private DistrictType[] districtTypes;
+    public List<DistrictType> districtTypes = new List<DistrictType>();
     [SerializeField] private List<District> generatedDistricts = new List<District>();
     [SerializeField, Min(0)] private int numberOfDistricts;
     private int minNumberOfDistricts;
@@ -16,6 +17,7 @@ public class DistrictGenerator : MonoBehaviour
 
     private IDictionary<int, District> districtsDictionary;
     private static int counter = -1;
+    private static bool relationsAndIDsInitialized = false;
 
     [SerializeField, Min(0)] private int rejectionSamples = 30;
 
@@ -32,22 +34,32 @@ public class DistrictGenerator : MonoBehaviour
     private BorderPreparation prepareBordersScript;
 
     [SerializeField, Min(0)] private int segmentLength = 50;
-    [SerializeField, Min(0)] private int roadWidth = 7;
+    [SerializeField, Min(0)] private int roadWidth = 8;
 
     private Dictionary<int, List<List<Vector2Int>>> regionLots;
 
     private void OnValidate()
     {
         counter = -1;
-        cityBoundaries = gameObject.GetComponent<CityBoundaries>();
         ValidateDistrictColors();
+        if (!relationsAndIDsInitialized)
+        {
+            InitializeRelationsAndIDs();
+        }
+    }
+
+    public void GenerateDistricts()
+    {
         CalculateMinAndMaxDistricts();
+        cityBoundaries = gameObject.GetComponent<CityBoundaries>();
         GenerateCandidatePositions();
         SelectDistrictPositions();
         voronoiScript = voronoiDiagram.GetComponent<VoronoiDiagram>();
         (voronoiTexture, regions) = voronoiScript.GenerateVoronoiDiagram(districtsDictionary, distictCellDistortion, new Vector2Int((int)cityBoundaries.transform.position.x, (int)cityBoundaries.transform.position.z), cityBoundaries.outerBoundaryRadius); // Why 100??? and why did i have to rotate the plane?? so many questions
         voronoiTexture.Apply();
+        ApplyTexture();
     }
+
 
     public void GenerateRoads() 
     {
@@ -75,13 +87,15 @@ public class DistrictGenerator : MonoBehaviour
 
     private void ValidateDistrictColors()
     {
-        if (districtTypes.Length > 0)
+        if (districtTypes.Count > 0)
         {
-            for (int i = 0; i < districtTypes.Length; i++)
+            for (int i = 0; i < districtTypes.Count; i++)
             {
-                if (districtTypes[i].color == Color.black)
+                var districtType = districtTypes[i];
+                if (districtType.color == Color.black)
                 {
-                    districtTypes[i].color = AdjustBlackColor(districtTypes[i].color);
+                    districtType.color = AdjustBlackColor(districtType.color);
+                    districtTypes[i] = districtType;
                 }
             }
         }
@@ -101,6 +115,38 @@ public class DistrictGenerator : MonoBehaviour
             minNumberOfDistricts += districtType.minNumberOfPlacements;
             maxNumberOfDistricts += districtType.maxNumberOfPlacements;
         }
+    }
+
+    private void InitializeRelationsAndIDs()
+    {
+        if (districtTypes.Count > 0)
+        {
+            for (int i = 0; i < districtTypes.Count; i++)
+            {
+                var districtType = districtTypes[i];
+                districtType.id = i;
+
+                if (districtType.relations.Count == 0)
+                {
+                    for (int j = 0; j < districtTypes.Count; j++)
+                    {
+                        if (i == j) { continue; }
+
+                        var relatedDistrictType = districtTypes[j];
+                        districtType.relations.Add(new DistrictRelation
+                        {
+                            districtTypeId = relatedDistrictType.id,
+                            _name = relatedDistrictType.name,
+                            attraction = 0,
+                            repulsion = 0
+                        });
+                    }
+                }
+                districtTypes[i] = districtType;
+            }
+        }
+
+        relationsAndIDsInitialized = true;
     }
 
     private void GenerateCandidatePositions()
@@ -165,7 +211,7 @@ public class DistrictGenerator : MonoBehaviour
     float CalculateSuitability(DistrictType type, Vector3 location)
     {
         float Sd = CalculateSuitabilityBasedOnNeighbors(type, location);
-        float Sa = CalculateSuitabilityBasedOnArea(type, location);
+        float Sa = CalculateSuitabilityBasedOnPosition(type, location);
 
         float S = importanceOfNeighbours * Sd + importanceOfCityCenterDistance * Sa;
         return S;
@@ -185,7 +231,7 @@ public class DistrictGenerator : MonoBehaviour
         return Sd;
     }
 
-    float CalculateSuitabilityBasedOnArea(DistrictType type, Vector3 location)
+    float CalculateSuitabilityBasedOnPosition(DistrictType type, Vector3 location)
     {
         float distanceFromCenter = Vector3.Distance(location, cityBoundaries.transform.position);
         float scaledDistance = ScaleDistance(distanceFromCenter);
@@ -201,26 +247,27 @@ public class DistrictGenerator : MonoBehaviour
         return scaledVal;
     }
 
-    float GetAttraction(DistrictType districtType, DistrictType neighborType)
+    float GetAttraction(DistrictType currentType, DistrictType otherType)
     {
-        //var attractionDict = districtType.attractionValues;
-        //if (attractionDict.ContainsKey(neighborType.name))
-        //{
-        //    return attractionDict[neighborType.name];
-        //}
-        //return 0; // Standardwert, wenn kein spezifischer Koeffizient definiert ist
-        return UnityEngine.Random.Range(0, 10);
+        foreach (DistrictRelation relation in currentType.relations)
+        {
+            if (relation.districtTypeId == otherType.id)
+            {
+                return relation.attraction;
+            }
+        }
+        return 0f;
     }
-
-    float GetRepulsion(DistrictType districtType, DistrictType neighborType)
+    float GetRepulsion(DistrictType currentType, DistrictType otherType)
     {
-        //var repulsionDict = districtType.repulsionValues;
-        //if (repulsionDict.ContainsKey(neighborType.name))
-        //{
-        //    return repulsionDict[neighborType.name];
-        //}
-        //return 0; // Standardwert, wenn kein spezifischer Koeffizient definiert ist
-        return UnityEngine.Random.Range(0, 10);
+        foreach (DistrictRelation relation in currentType.relations)
+        {
+            if (relation.districtTypeId == otherType.id)
+            {
+                return relation.repulsion;
+            }
+        }
+        return 0f;
     }
 
     float GetSuitability(float calculatedValue, float specifiedValue)
@@ -260,18 +307,36 @@ public class DistrictGenerator : MonoBehaviour
 }
 
 [System.Serializable]
+public struct DistrictRelation
+{
+    [NonSerialized] public int districtTypeId;
+
+    [SerializeField, HideInInspector] public string _name;
+
+    public string name
+    {
+        get { return _name; }
+        private set { _name = value; }
+    }
+
+    [Range(0, 10)] public float attraction;
+    [Range(0, 10)] public float repulsion;
+}
+
+
+[System.Serializable]
 public struct DistrictType
 {
+    [NonSerialized] public int id;
     public string name;
     public Color color;
     [Range(0, 10)] public float distanceFromCenter;
     [Range(0, 10)] public float distanceToPrimaryStreets;
     [Min(1)] public int minNumberOfPlacements;
     [Min(1)] public int maxNumberOfPlacements;
-    // public Dictionary<string, float> attractionValues;
-    // public Dictionary<string, float> repulsionValues;
     public List<GameObject> buildingTypes;
     [Min(1)] public int minLotSizeSquared;
+    public List<DistrictRelation> relations;
 }
 
 [System.Serializable]
@@ -281,10 +346,3 @@ public struct District
     public Vector3 position;
     public DistrictType type;
 }
-
-//[System.Serializable]
-//public struct AttractionRepulsion
-//{
-//    public string districtName;
-//    public float value;
-//}
