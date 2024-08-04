@@ -30,9 +30,9 @@ public class BorderPreparation : MonoBehaviour
         List<List<Vector2Int>> segments = PrepareSegments(extractedRegions);
         voronoiTexture = SecondaryRoadsGenerator.GenerateSecondaryRoads(extractedRegions, segments, voronoiTexture);
 
-        // List<Border> borderList = MarkSegments(startPoint, segmentLength);
+        List<Border> borderList = MarkSegments(startPoint, segmentLength);
 
-        // splitMarks.Add(startPoint);
+        splitMarks.Add(startPoint);
 
         // Add back later
         // RoadGenerator.GenerateRoad(borderList);
@@ -558,7 +558,7 @@ public class BorderPreparation : MonoBehaviour
         //    }
         //}
 
-        //if(startPoint != null) { Gizmos.color = Color.magenta; Gizmos.DrawSphere(new Vector3(startPoint.x, 1, startPoint.y), 10f); }
+        if(startPoint != null) { Gizmos.color = Color.magenta; Gizmos.DrawSphere(new Vector3(startPoint.x, 1, startPoint.y), 10f); }
 
         if (splitMarks != null)
         {
