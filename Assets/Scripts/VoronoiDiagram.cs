@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class VoronoiDiagram : MonoBehaviour
 {
-    private Vector2Int[] districtPoints;
-    private Dictionary<int, List<Vector2Int>> regionCorners = new Dictionary<int, List<Vector2Int>>();
-    private List<Vector2Int> sortedVectors = new List<Vector2Int>();
-    private Vector2Int[] allPoints;
-    private Color[] allPointColors;
-    private Vector2Int cityCenter = new Vector2Int(0, 0);
-    private float cityRadius = 1;
+    //private Vector2Int[] districtPoints;
+    //private Dictionary<int, List<Vector2Int>> regionCorners = new Dictionary<int, List<Vector2Int>>();
+    //private List<Vector2Int> sortedVectors = new List<Vector2Int>();
+    //private Vector2Int[] allPoints;
+    //private Color[] allPointColors;
+    //private Vector2Int cityCenter = new Vector2Int(0, 0);
+    //private float cityRadius = 1;
 
     public class Region
     {
@@ -19,23 +19,20 @@ public class VoronoiDiagram : MonoBehaviour
         public List<Vector2Int> Pixels = new List<Vector2Int>();
     }
 
-    public (Texture2D, Dictionary<int, Region>) GenerateVoronoiDiagram(IDictionary<int, District> districts, int cellDistortion, Vector2Int center, float radius)
+    public static (Texture2D, Dictionary<int, Region>) GenerateVoronoiDiagram(DistrictsData districtsData, VoronoiData voronoiData, CityBoundariesData boundariesData, Renderer renderer)
     {
-        int size = (int)transform.localScale.x * 10;
+        int size = (int)voronoiData.voronoiDiagram.transform.localScale.x * 10;
 
-        cityCenter = center;
-        cityRadius = radius;
-
-        int regionCount = districts.Count;
-        districtPoints = new Vector2Int[regionCount];
+        int regionCount = districtsData.districtsDictionary.Count;
+        voronoiData.districtPoints = new Vector2Int[regionCount];
         Color[] regionColors = new Color[regionCount];
         int[] ids = new int[regionCount];
 
         int index = 0;
-        foreach (KeyValuePair<int, District> kvp in districts)
+        foreach (KeyValuePair<int, District> kvp in districtsData.districtsDictionary)
         {
             District district = kvp.Value;
-            districtPoints[kvp.Key] = new Vector2Int((int)district.position.x, (int)district.position.z);
+            voronoiData.districtPoints[kvp.Key] = new Vector2Int((int)district.position.x, (int)district.position.z);
             Color regionColor = district.type.color;
             regionColor.a = 0.2f;
             regionColors[kvp.Key] = regionColor;
@@ -43,9 +40,9 @@ public class VoronoiDiagram : MonoBehaviour
             index++;
         }
 
-        (Color[] pixelColors, Dictionary<int, Region> regions) = GenerateDistortedVoronoi(size, regionCount, regionColors, ids, cellDistortion);
+        (Color[] pixelColors, Dictionary<int, Region> regions) = GenerateDistortedVoronoi(size, regionCount, regionColors, ids, voronoiData, boundariesData);
 
-        SetMaterialToTransparent();
+        SetMaterialToTransparent(renderer.sharedMaterial);
 
         Texture2D voronoiTexture = new Texture2D(size, size, TextureFormat.RGBA32, false)
         {
@@ -57,7 +54,6 @@ public class VoronoiDiagram : MonoBehaviour
             voronoiTexture.SetPixels(pixelColors);
             voronoiTexture.Apply();
 
-            var renderer = GetComponent<Renderer>();
             if (renderer != null)
             {
                 renderer.sharedMaterial.mainTexture = voronoiTexture;
@@ -75,51 +71,52 @@ public class VoronoiDiagram : MonoBehaviour
         return (voronoiTexture, regions);
     }
 
-    public (Color[], Dictionary<int, Region>) GenerateDistortedVoronoi(int size, int regionCount, Color[] regionColors, int[] ids, int randomPointCount)
+    public static (Color[], Dictionary<int, Region>) GenerateDistortedVoronoi(int size, int regionCount, Color[] regionColors, int[] ids, VoronoiData voronoiData, CityBoundariesData boundariesData)
     {
-        bool borders = randomPointCount <= 0;
+        bool borders = voronoiData.distictCellDistortion <= 0;
 
-        (Color[] initialVoronoi, Dictionary<int, Region> initialRegions) = GenerateVoronoi(size, regionCount, districtPoints, regionColors, ids, borders);
+        (Color[] initialVoronoi, Dictionary<int, Region> initialRegions) = GenerateVoronoi(size, regionCount, voronoiData.districtPoints, regionColors, ids, borders, boundariesData, voronoiData);
 
-        if (randomPointCount <= 0)
+        if (borders)
         {
-            allPoints = null;
+            voronoiData.allPoints = null;
             return (initialVoronoi, initialRegions);
         }
 
-        int totalPoints = randomPointCount + regionCount;
-        allPoints = new Vector2Int[totalPoints];
-        allPointColors = new Color[totalPoints];
+        int totalPoints = voronoiData.distictCellDistortion + regionCount;
+        voronoiData.allPoints = new Vector2Int[totalPoints];
+        voronoiData.allPointColors = new Color[totalPoints];
         int[] allIds = new int[totalPoints];
 
         for (int i = 0; i < regionCount; i++)
         {
-            allPoints[i] = districtPoints[ids[i]];
-            allPointColors[i] = regionColors[ids[i]];
+            voronoiData.allPoints[i] = voronoiData.districtPoints[ids[i]];
+            voronoiData.allPointColors[i] = regionColors[ids[i]];
             allIds[i] = ids[i];
         }
 
-        for (int i = 0; i < randomPointCount; i++)
+        for (int i = 0; i < voronoiData.distictCellDistortion; i++)
         {
-            Vector2 randomOffset = UnityEngine.Random.insideUnitCircle * cityRadius;
-            Vector2Int randomPosition = cityCenter + Vector2Int.RoundToInt(randomOffset);
+            Vector2 randomOffset = UnityEngine.Random.insideUnitCircle * boundariesData.outerBoundaryRadius;
+            Vector2Int randomPosition = new Vector2Int((int)boundariesData.center.x, (int)boundariesData.center.z) + Vector2Int.RoundToInt(randomOffset);
 
             int pixelIndex = Mathf.Clamp((int)randomPosition.x + (int)randomPosition.y * size, 0, initialVoronoi.Length - 1);
             Color closestColor = initialVoronoi[pixelIndex];
 
-            allPoints[i + regionCount] = randomPosition;
-            allPointColors[i + regionCount] = closestColor;
+            voronoiData.allPoints[i + regionCount] = randomPosition;
+            voronoiData.allPointColors[i + regionCount] = closestColor;
 
             int closestOriginalId = Array.FindIndex(regionColors, color => color == closestColor);
             allIds[i + regionCount] = closestOriginalId >= 0 ? ids[closestOriginalId] : -1;
         }
 
-        (Color[] finalVoronoi, Dictionary<int, Region> finalRegions) = GenerateVoronoi(size, totalPoints, allPoints, allPointColors, allIds, true);
+        (Color[] finalVoronoi, Dictionary<int, Region> finalRegions) = GenerateVoronoi(size, totalPoints, voronoiData.allPoints, voronoiData.allPointColors, allIds, true, boundariesData, voronoiData);
         return (finalVoronoi, finalRegions);
     }
 
-    public (Color[], Dictionary<int, Region>) GenerateVoronoi(int size, int regionAmount, Vector2Int[] points, Color[] regionColors, int[] ids, bool borders)
+    private static (Color[], Dictionary<int, Region>) GenerateVoronoi(int size, int regionAmount, Vector2Int[] points, Color[] regionColors, int[] ids, bool borders, CityBoundariesData boundariesData, VoronoiData voronoiData)
     {
+        Vector2Int cityCenter = new Vector2Int((int)boundariesData.center.x, (int)boundariesData.center.z);
         Dictionary<int, Region> regions = new Dictionary<int, Region>();
         Color[] pixelColors = new Color[size * size];
         Vector2Int[] pixelPositions = new Vector2Int[size * size];
@@ -136,9 +133,9 @@ public class VoronoiDiagram : MonoBehaviour
         Parallel.For(0, size * size, index =>
         {
             Vector2Int pixelPosition = pixelPositions[index];
-            float centerDistance = Vector2.Distance(new Vector2(pixelPosition.x, pixelPosition.y), cityCenter);
+            float centerDistance = Vector2Int.Distance(new Vector2Int(pixelPosition.x, pixelPosition.y), new Vector2Int((int)boundariesData.center.x, (int)boundariesData.center.z));
 
-            if (centerDistance < cityRadius)
+            if (centerDistance < boundariesData.outerBoundaryRadius)
             {
                 float minDistance = float.MaxValue;
                 Vector2 closestPoint = new Vector2();
@@ -155,9 +152,9 @@ public class VoronoiDiagram : MonoBehaviour
                 }
 
                 float minOriginalPointDistance = float.MaxValue;
-                for (int i = 0; i < districtPoints.Length; i++)
+                for (int i = 0; i < voronoiData.districtPoints.Length; i++)
                 {
-                    float distance = Vector2.Distance(closestPoint, districtPoints[i]);
+                    float distance = Vector2.Distance(closestPoint, voronoiData.districtPoints[i]);
                     if (distance < minOriginalPointDistance)
                     {
                         minOriginalPointDistance = distance;
@@ -185,7 +182,7 @@ public class VoronoiDiagram : MonoBehaviour
 
         if (borders)
         {
-            pixelColors = GenerateBorders(size, closestRegionIds, pixelColors, cityCenter, cityRadius, regions);
+            pixelColors = GenerateBorders(size, closestRegionIds, pixelColors, cityCenter, boundariesData.outerBoundaryRadius, regions);
         }
 
         return (pixelColors, regions);
@@ -231,19 +228,18 @@ public class VoronoiDiagram : MonoBehaviour
         return pixelColors;
     }
 
-    private void SetMaterialToTransparent()
+    private static void SetMaterialToTransparent(Material sharedMaterial)
     {
-        Material material = GetComponent<MeshRenderer>().sharedMaterial;
-        if (material != null)
+        if (sharedMaterial != null)
         {
-            material.SetFloat("_Mode", 3);
-            material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-            material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-            material.SetInt("_ZWrite", 0);
-            material.DisableKeyword("_ALPHATEST_ON");
-            material.EnableKeyword("_ALPHABLEND_ON");
-            material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-            material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+            sharedMaterial.SetFloat("_Mode", 3);
+            sharedMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            sharedMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            sharedMaterial.SetInt("_ZWrite", 0);
+            sharedMaterial.DisableKeyword("_ALPHATEST_ON");
+            sharedMaterial.EnableKeyword("_ALPHABLEND_ON");
+            sharedMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+            sharedMaterial.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
         }
     }
 }
