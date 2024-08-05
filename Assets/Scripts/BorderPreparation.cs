@@ -44,7 +44,7 @@ public class BorderPreparation : MonoBehaviour
         return voronoiTexture;
     }
 
-    void ClearAllLists ()
+    private void ClearAllLists ()
     {
         splitMarks.Clear();
         visited.Clear();
@@ -73,7 +73,7 @@ public class BorderPreparation : MonoBehaviour
 
     }
 
-    bool IsDirectNeighborClear(Vector2Int point)
+    private bool IsDirectNeighborClear(Vector2Int point)
     {
         foreach (Vector2Int neighbor in GetNeighbors(point, false)) 
         {
@@ -102,7 +102,7 @@ public class BorderPreparation : MonoBehaviour
         }
     }
 
-    public List<Border> MarkSegments(Vector2Int startPoint, int segmentLength)
+    private List<Border> MarkSegments(Vector2Int startPoint, int segmentLength)
     {
 
         List<Border> borderList = new List<Border>();
@@ -176,7 +176,7 @@ public class BorderPreparation : MonoBehaviour
         return borderList;
     }
 
-    public (List<BorderToTrace>, List<Vector2Int>) TraceBorder(BorderToTrace borderToTrace, int segmentLength)
+    private (List<BorderToTrace>, List<Vector2Int>) TraceBorder(BorderToTrace borderToTrace, int segmentLength)
     {
         bool noSplitMarkFound = true;
 
@@ -279,7 +279,7 @@ public class BorderPreparation : MonoBehaviour
         return (bordersToTrace, segmentPoints);
     }
 
-    public List<Vector2Int> FindNextBorderPoints(Vector2Int startPoint)
+    private List<Vector2Int> FindNextBorderPoints(Vector2Int startPoint)
     {
         List<Vector2Int> nextBorderPoints = new List<Vector2Int>();
         List<Vector2Int> remainingNeighbors = new List<Vector2Int>();
@@ -326,7 +326,7 @@ public class BorderPreparation : MonoBehaviour
     }
 
 
-    public List<Vector2Int> FindPointsWithExactlyOneNeighbor(List<Vector2Int> points)
+    private List<Vector2Int> FindPointsWithExactlyOneNeighbor(List<Vector2Int> points)
     {
         var pointsWithOneNeighbor = new List<Vector2Int>();
 
@@ -354,7 +354,7 @@ public class BorderPreparation : MonoBehaviour
         return pointsWithOneNeighbor;
     }
 
-    public (bool, List<(Vector2Int, Vector2Int)>) HasExactlyOneNeighbor(List<Vector2Int> points)
+    private (bool, List<(Vector2Int, Vector2Int)>) HasExactlyOneNeighbor(List<Vector2Int> points)
     {
         List<(Vector2Int, Vector2Int)> neighborPairs = new List<(Vector2Int, Vector2Int)>();
 
@@ -389,7 +389,7 @@ public class BorderPreparation : MonoBehaviour
         return (true, neighborPairs);
     }
 
-    public Vector2Int? FindPointWithoutNeighbor(List<Vector2Int> points)
+    private Vector2Int? FindPointWithoutNeighbor(List<Vector2Int> points)
     {
         foreach (Vector2Int point in points)
         {
@@ -418,7 +418,7 @@ public class BorderPreparation : MonoBehaviour
         return null; // Falls alle Punkte Nachbarn haben
     }
 
-    bool IsBorderSplit(List<Vector2Int> remainingNeighbors)
+    private bool IsBorderSplit(List<Vector2Int> remainingNeighbors)
     {
         (bool hasExactlyOneNeighbor, List<(Vector2Int, Vector2Int)> neighborPairs) = HasExactlyOneNeighbor(remainingNeighbors);
 
@@ -428,7 +428,7 @@ public class BorderPreparation : MonoBehaviour
         return false;
     }
 
-    bool IsSplitMarkClose(Vector2Int referencePoint, out Vector2Int closestPoint)
+    private bool IsSplitMarkClose(Vector2Int referencePoint, out Vector2Int closestPoint)
     {
         int radius = 3;
         closestPoint = new Vector2Int();
@@ -454,7 +454,7 @@ public class BorderPreparation : MonoBehaviour
         return pointFound;
     }
 
-    bool HasDeadEndNeighbor(List<Vector2Int> remainingNeighbors)
+    private bool HasDeadEndNeighbor(List<Vector2Int> remainingNeighbors)
     {
         foreach (Vector2Int remaining in remainingNeighbors)
         {
@@ -467,7 +467,7 @@ public class BorderPreparation : MonoBehaviour
         return false;
     }
 
-    bool IsDeadEnd(Vector2Int remainingNeighbor, List<Vector2Int> remainingNeighbors)
+    private bool IsDeadEnd(Vector2Int remainingNeighbor, List<Vector2Int> remainingNeighbors)
     {
         foreach (Vector2Int neighbor in GetNeighbors(remainingNeighbor, true))
         {
@@ -484,7 +484,7 @@ public class BorderPreparation : MonoBehaviour
     }
 
 
-    bool AreNeighbors(List<Vector2Int> points)
+    private bool AreNeighbors(List<Vector2Int> points)
     {
         HashSet<Vector2Int> pointSet = new HashSet<Vector2Int>(points);
 
@@ -501,7 +501,7 @@ public class BorderPreparation : MonoBehaviour
         return false;
     }
 
-    bool IsBlackPixel(Vector2Int point)
+    private bool IsBlackPixel(Vector2Int point)
     {
         if (point.x < 0 || point.x >= voronoiTexture.width || point.y < 0 || point.y >= voronoiTexture.height)
         {
@@ -511,7 +511,7 @@ public class BorderPreparation : MonoBehaviour
         return voronoiTexture.GetPixel(point.x, point.y) == Color.black;
     }
 
-    bool IsClearPixel(Vector2Int point)
+    private bool IsClearPixel(Vector2Int point)
     {
         if (point.x < 0 || point.x >= voronoiTexture.width || point.y < 0 || point.y >= voronoiTexture.height)
         {

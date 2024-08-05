@@ -21,7 +21,7 @@ public class CityBoundaries : MonoBehaviour
         UpdateBoundaries();
     }
 
-    void InitializeLineRenderer(LineRenderer lineRenderer, Color color)
+    private void InitializeLineRenderer(LineRenderer lineRenderer, Color color)
     {
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.widthMultiplier = 2f;
@@ -31,7 +31,7 @@ public class CityBoundaries : MonoBehaviour
         lineRenderer.loop = true;
     }
 
-    void UpdateBoundaries()
+    private void UpdateBoundaries()
     {
         Vector3 centerPosition = transform.position;
         float angle = 2 * Mathf.PI / segments;

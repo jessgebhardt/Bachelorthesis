@@ -75,7 +75,7 @@ public class VoronoiDiagram : MonoBehaviour
         return (voronoiTexture, regions);
     }
 
-    public (Color[], Dictionary<int, Region>) GenerateDistortedVoronoi(int size, int regionCount, Color[] regionColors, int[] ids, int randomPointCount)
+    private (Color[], Dictionary<int, Region>) GenerateDistortedVoronoi(int size, int regionCount, Color[] regionColors, int[] ids, int randomPointCount)
     {
         bool borders = randomPointCount <= 0;
 
@@ -118,7 +118,7 @@ public class VoronoiDiagram : MonoBehaviour
         return (finalVoronoi, finalRegions);
     }
 
-    public (Color[], Dictionary<int, Region>) GenerateVoronoi(int size, int regionAmount, Vector2Int[] points, Color[] regionColors, int[] ids, bool borders)
+    private (Color[], Dictionary<int, Region>) GenerateVoronoi(int size, int regionAmount, Vector2Int[] points, Color[] regionColors, int[] ids, bool borders)
     {
         Dictionary<int, Region> regions = new Dictionary<int, Region>();
         Color[] pixelColors = new Color[size * size];
@@ -191,7 +191,7 @@ public class VoronoiDiagram : MonoBehaviour
         return (pixelColors, regions);
     }
 
-    public static Color[] GenerateBorders(int size, int[] closestRegionIds, Color[] pixelColors, Vector2Int cityCenter, float cityRadius, Dictionary<int, Region> regions)
+    private static Color[] GenerateBorders(int size, int[] closestRegionIds, Color[] pixelColors, Vector2Int cityCenter, float cityRadius, Dictionary<int, Region> regions)
     {
         Parallel.For(0, size * size, index =>
         {

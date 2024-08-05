@@ -49,7 +49,7 @@ public class PoissonDiskSampling : MonoBehaviour
         return points;
     }
 
-    static bool IsValid(Vector3 candidate, Vector3 cityCenter, float cityRadius, float cellSize, float radius, List<Vector3> points, int[,] grid)
+    private static bool IsValid(Vector3 candidate, Vector3 cityCenter, float cityRadius, float cellSize, float radius, List<Vector3> points, int[,] grid)
     {
         if (Vector3.Distance(candidate, cityCenter) < cityRadius)
         {
@@ -80,7 +80,7 @@ public class PoissonDiskSampling : MonoBehaviour
         return false;
     }
 
-    static float CalculateDistrictRadius(int numberOfDistricts, float cityRadius)
+    private static float CalculateDistrictRadius(int numberOfDistricts, float cityRadius)
     {
         float cityArea = Mathf.PI * cityRadius * cityRadius;
         float areaPerDistrict = cityArea / numberOfDistricts*2;

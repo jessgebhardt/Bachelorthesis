@@ -209,7 +209,7 @@ public class DistrictGenerator : MonoBehaviour
         }
     }
 
-    DistrictType CalculateBestDistrictForLocation(Vector3 location, List<DistrictType> districtTypesToPlace)
+    private DistrictType CalculateBestDistrictForLocation(Vector3 location, List<DistrictType> districtTypesToPlace)
     {
         DistrictType bestDistrictType = districtTypesToPlace[0];
         float bestSuitability = float.MinValue;
@@ -262,7 +262,7 @@ public class DistrictGenerator : MonoBehaviour
         return restDistrictTypes;
     }
 
-    float CalculateSuitability(DistrictType type, Vector3 location)
+    private float CalculateSuitability(DistrictType type, Vector3 location)
     {
         float Sd = CalculateSuitabilityBasedOnNeighbors(type, location);
         float Sa = CalculateSuitabilityBasedOnPosition(type, location);
@@ -271,7 +271,7 @@ public class DistrictGenerator : MonoBehaviour
         return S;
     }
 
-    float CalculateSuitabilityBasedOnNeighbors(DistrictType type, Vector3 location)
+    private float CalculateSuitabilityBasedOnNeighbors(DistrictType type, Vector3 location)
     {
         float Sd = 0f;
         foreach (District placedDistrict in generatedDistricts)
@@ -285,7 +285,7 @@ public class DistrictGenerator : MonoBehaviour
         return Sd;
     }
 
-    float CalculateSuitabilityBasedOnPosition(DistrictType type, Vector3 location)
+    private float CalculateSuitabilityBasedOnPosition(DistrictType type, Vector3 location)
     {
         float distanceFromCenter = Vector3.Distance(location, cityBoundaries.transform.position);
         float scaledDistance = ScaleDistance(distanceFromCenter);
@@ -296,7 +296,7 @@ public class DistrictGenerator : MonoBehaviour
         return Sa;
     }
 
-    float ScaleDistance(float value)
+    private float ScaleDistance(float value)
     {
         float originalMax = cityBoundaries.outerBoundaryRadius;
         float normalizedVal = (value - 0) / (originalMax - 0);
@@ -304,7 +304,7 @@ public class DistrictGenerator : MonoBehaviour
         return scaledVal;
     }
 
-    float GetAttraction(DistrictType currentType, DistrictType otherType)
+    private float GetAttraction(DistrictType currentType, DistrictType otherType)
     {
         foreach (DistrictRelation relation in currentType.relations)
         {
@@ -315,7 +315,7 @@ public class DistrictGenerator : MonoBehaviour
         }
         return 0f;
     }
-    float GetRepulsion(DistrictType currentType, DistrictType otherType)
+    private float GetRepulsion(DistrictType currentType, DistrictType otherType)
     {
         foreach (DistrictRelation relation in currentType.relations)
         {
@@ -327,12 +327,12 @@ public class DistrictGenerator : MonoBehaviour
         return 0f;
     }
 
-    float CalculateAverage(float a, float b)
+    private float CalculateAverage(float a, float b)
     {
         return (a + b) / 2.0f;
     }
 
-    float GetSuitability(float calculatedValue, float specifiedValue)
+    private float GetSuitability(float calculatedValue, float specifiedValue)
     {
         if (Mathf.Approximately(calculatedValue, specifiedValue)) // Mathf.Approximately, um Gleitkommazahlen zu vergleichen
         {

@@ -68,7 +68,7 @@ public class DistrictExtractor : MonoBehaviour
         }
     }
 
-    public static bool IsNearBlackBorder(Texture2D texture, int x, int y, int inset)
+    private static bool IsNearBlackBorder(Texture2D texture, int x, int y, int inset)
     {
         int width = texture.width;
         int height = texture.height;
