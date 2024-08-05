@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -19,7 +20,7 @@ public class VoronoiDiagram : MonoBehaviour
         public List<Vector2Int> Pixels = new List<Vector2Int>();
     }
 
-    public (Texture2D, Dictionary<int, Region>) GenerateVoronoiDiagram(IDictionary<int, District> districts, int cellDistortion, Vector2Int center, float radius)
+    public (Texture2D, Dictionary<int, Region>) GenerateVoronoiDiagram(IDictionary<int, District> districts, int cellDistortion, Vector2Int center, float radius, int borderWidth)
     {
         int size = (int)transform.localScale.x * 10;
 
@@ -43,7 +44,7 @@ public class VoronoiDiagram : MonoBehaviour
             index++;
         }
 
-        (Color[] pixelColors, Dictionary<int, Region> regions) = GenerateDistortedVoronoi(size, regionCount, regionColors, ids, cellDistortion);
+        (Color[] pixelColors, Dictionary<int, Region> regions) = GenerateDistortedVoronoi(size, regionCount, regionColors, ids, cellDistortion, borderWidth);
 
         SetMaterialToTransparent();
 
@@ -75,13 +76,13 @@ public class VoronoiDiagram : MonoBehaviour
         return (voronoiTexture, regions);
     }
 
-    private (Color[], Dictionary<int, Region>) GenerateDistortedVoronoi(int size, int regionCount, Color[] regionColors, int[] ids, int randomPointCount)
+    private (Color[], Dictionary<int, Region>) GenerateDistortedVoronoi(int size, int regionCount, Color[] regionColors, int[] ids, int randomPointCount, int borderWidth)
     {
         bool borders = randomPointCount <= 0;
 
-        (Color[] initialVoronoi, Dictionary<int, Region> initialRegions) = GenerateVoronoi(size, regionCount, districtPoints, regionColors, ids, borders);
+        (Color[] initialVoronoi, Dictionary<int, Region> initialRegions) = GenerateVoronoi(size, regionCount, districtPoints, regionColors, ids, borders, borderWidth);
 
-        if (randomPointCount <= 0)
+        if (borders)
         {
             allPoints = null;
             return (initialVoronoi, initialRegions);
@@ -114,11 +115,11 @@ public class VoronoiDiagram : MonoBehaviour
             allIds[i + regionCount] = closestOriginalId >= 0 ? ids[closestOriginalId] : -1;
         }
 
-        (Color[] finalVoronoi, Dictionary<int, Region> finalRegions) = GenerateVoronoi(size, totalPoints, allPoints, allPointColors, allIds, true);
+        (Color[] finalVoronoi, Dictionary<int, Region> finalRegions) = GenerateVoronoi(size, totalPoints, allPoints, allPointColors, allIds, true, borderWidth);
         return (finalVoronoi, finalRegions);
     }
 
-    private (Color[], Dictionary<int, Region>) GenerateVoronoi(int size, int regionAmount, Vector2Int[] points, Color[] regionColors, int[] ids, bool borders)
+    private (Color[], Dictionary<int, Region>) GenerateVoronoi(int size, int regionAmount, Vector2Int[] points, Color[] regionColors, int[] ids, bool borders, int borderWidth)
     {
         Dictionary<int, Region> regions = new Dictionary<int, Region>();
         Color[] pixelColors = new Color[size * size];
@@ -155,6 +156,7 @@ public class VoronoiDiagram : MonoBehaviour
                 }
 
                 float minOriginalPointDistance = float.MaxValue;
+                
                 for (int i = 0; i < districtPoints.Length; i++)
                 {
                     float distance = Vector2.Distance(closestPoint, districtPoints[i]);
@@ -185,51 +187,73 @@ public class VoronoiDiagram : MonoBehaviour
 
         if (borders)
         {
-            pixelColors = GenerateBorders(size, closestRegionIds, pixelColors, cityCenter, cityRadius, regions);
+            pixelColors = GenerateBorders(size, closestRegionIds, pixelColors, cityCenter, cityRadius, regions, borderWidth);
         }
 
         return (pixelColors, regions);
     }
 
-    private static Color[] GenerateBorders(int size, int[] closestRegionIds, Color[] pixelColors, Vector2Int cityCenter, float cityRadius, Dictionary<int, Region> regions)
+    private static Color[] GenerateBorders(int size, int[] closestRegionIds, Color[] pixelColors, Vector2Int cityCenter, float cityRadius, Dictionary<int, Region> regions, int width)
     {
-        Parallel.For(0, size * size, index =>
+        // Berechne die Anzahl der Offsets
+        int totalOffsets = (2 * width + 1) * (2 * width + 1) - 1;
+        int[] xOffsets = new int[totalOffsets];
+        int[] yOffsets = new int[totalOffsets];
+        int index = 0;
+
+        // Offsets berechnen
+        for (int dx = -width; dx <= width; dx++)
         {
-            int x = index % size;
-            int y = index / size;
-            int currentRegionIndex = closestRegionIds[index];
-            bool isBorder = false;
-
-            if (index - 1 >= 0 && index - 1 < pixelColors.Length && pixelColors[index - 1] != Color.black && x > 0 && closestRegionIds[index - 1] != currentRegionIndex)
+            for (int dy = -width; dy <= width; dy++)
             {
-                isBorder = true;
-            }
-            if (index + 1 >= 0 && index + 1 < pixelColors.Length && pixelColors[index + 1] != null && pixelColors[index + 1] != Color.black && x < size - 1 && closestRegionIds[index + 1] != currentRegionIndex)
-            {
-                isBorder = true;
-            }
-            if (index - size >= 0 && index - size < pixelColors.Length && pixelColors[index - size] != Color.black && y > 0 && closestRegionIds[index - size] != currentRegionIndex)
-            {
-                isBorder = true;
-            }
-            if (index + size >= 0 && index + size < pixelColors.Length && pixelColors[index + size] != Color.black && y < size - 1 && closestRegionIds[index + size] != currentRegionIndex)
-            {
-                isBorder = true;
-            }
-
-            if (isBorder)
-            {
-                pixelColors[index] = Color.black;
-                lock (regions)
+                if (dx != 0 || dy != 0)
                 {
-                    regions[closestRegionIds[index]].Pixels.Remove(new Vector2Int(x, y));
+                    xOffsets[index] = dx;
+                    yOffsets[index] = dy;
+                    index++;
+                }
+            }
+        }
 
+        Parallel.ForEach(Partitioner.Create(0, size * size), range =>
+        {
+            for (int i = range.Item1; i < range.Item2; i++)
+            {
+                int x = i % size;
+                int y = i / size;
+                int currentRegionIndex = closestRegionIds[i];
+                bool isBorder = false;
+
+                for (int j = 0; j < xOffsets.Length; j++)
+                {
+                    int neighborX = x + xOffsets[j];
+                    int neighborY = y + yOffsets[j];
+                    int neighborIndex = neighborY * size + neighborX;
+
+                    if (neighborX >= 0 && neighborX < size && neighborY >= 0 && neighborY < size &&
+                        neighborIndex >= 0 && neighborIndex < pixelColors.Length &&
+                        closestRegionIds[neighborIndex] != currentRegionIndex)
+                    {
+                        isBorder = true;
+                        break;
+                    }
+                }
+
+                if (isBorder)
+                {
+                    pixelColors[i] = Color.black;
+                    lock (regions)
+                    {
+                        regions[closestRegionIds[i]].Pixels.Remove(new Vector2Int(x, y));
+                    }
                 }
             }
         });
 
         return pixelColors;
     }
+
+
 
     private void SetMaterialToTransparent()
     {

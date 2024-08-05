@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BorderPreparation : MonoBehaviour
+public class BorderPreparationOrg : MonoBehaviour
 {
     private Texture2D voronoiTexture;
 
@@ -15,7 +15,7 @@ public class BorderPreparation : MonoBehaviour
     private Vector2Int cityCenterInt;
     private float cityRadius;
 
-    public Texture2D GenerateRoads(Texture2D texture, float outerBoundaryRadius, Vector3 cityCenter, int segmentLength, int roadWidth)
+    public Texture2D GenerateRoads(Texture2D texture, float outerBoundaryRadius, Vector3 cityCenter, int segmentLength)
     {
         ClearAllLists();
 
@@ -27,9 +27,19 @@ public class BorderPreparation : MonoBehaviour
         startPoint = (Vector2Int)GetStartPoint();
 
 
+        /// for secondary Roads:
         List<List<Vector2Int>> extractedRegions = DistrictExtractor.ExtractRegions(voronoiTexture, 0);
         List<List<Vector2Int>> segments = PrepareSegments(extractedRegions);
-        voronoiTexture = SecondaryRoadsGenerator.GenerateSecondaryRoads(extractedRegions, segments, voronoiTexture, roadWidth);
+        voronoiTexture = SecondaryRoadsGenerator.GenerateSecondaryRoads(extractedRegions, segments, voronoiTexture, 0);
+
+
+        /// for nice roads:
+
+        //List<BorderOrg> borderList = MarkSegments(startPoint, segmentLength);
+
+        //splitMarks.Add(startPoint);
+
+        //RoadGenerator.GenerateRoad(borderList);
 
         return voronoiTexture;
     }
@@ -92,11 +102,11 @@ public class BorderPreparation : MonoBehaviour
         }
     }
 
-    private List<Border> MarkSegments(Vector2Int startPoint, int segmentLength)
+    private List<BorderOrg> MarkSegments(Vector2Int startPoint, int segmentLength)
     {
 
-        List<Border> borderList = new List<Border>();
-        List<BorderToTrace> bordersToTrace = new List<BorderToTrace>();
+        List<BorderOrg> borderList = new List<BorderOrg>();
+        List<BorderToTraceOrg> bordersToTrace = new List<BorderToTraceOrg>();
 
         List<Vector2Int> segmentMarks = new List<Vector2Int>();
 
@@ -120,7 +130,7 @@ public class BorderPreparation : MonoBehaviour
             }
         }
 
-        BorderToTrace newBorderToTrace = new BorderToTrace
+        BorderToTraceOrg newBorderToTrace = new BorderToTraceOrg
         {
             startPoint = startPoint,
             nextPoint = nextPoint
@@ -133,14 +143,14 @@ public class BorderPreparation : MonoBehaviour
 
         while (bordersToTrace.Count > 0)
         {
-            BorderToTrace currentBorder = bordersToTrace[0];
+            BorderToTraceOrg currentBorder = bordersToTrace[0];
             bordersToTrace.RemoveAt(0);
 
-            (List<BorderToTrace> newBordersToTrace, List<Vector2Int> segmentPoints) = TraceBorder(currentBorder, segmentLength);
+            (List<BorderToTraceOrg> newBordersToTrace, List<Vector2Int> segmentPoints) = TraceBorder(currentBorder, segmentLength);
 
             if (newBordersToTrace.Count != 0)
             {
-                Border newBorder = new Border
+                BorderOrg newBorder = new BorderOrg
                 {
                     startPoint = currentBorder.startPoint,
                     segments = segmentPoints,
@@ -148,10 +158,10 @@ public class BorderPreparation : MonoBehaviour
                 };
                 borderList.Add(newBorder);
 
-                List<BorderToTrace> bordersToCheck = new List<BorderToTrace>();
+                List<BorderToTraceOrg> bordersToCheck = new List<BorderToTraceOrg>();
                 bordersToCheck.AddRange(newBordersToTrace);
 
-                foreach (BorderToTrace border in bordersToCheck)
+                foreach (BorderToTraceOrg border in bordersToCheck)
                 {
                     if (border.nextPoint == null)
                     {
@@ -166,11 +176,11 @@ public class BorderPreparation : MonoBehaviour
         return borderList;
     }
 
-    private (List<BorderToTrace>, List<Vector2Int>) TraceBorder(BorderToTrace borderToTrace, int segmentLength)
+    private (List<BorderToTraceOrg>, List<Vector2Int>) TraceBorder(BorderToTraceOrg borderToTrace, int segmentLength)
     {
         bool noSplitMarkFound = true;
 
-        List<BorderToTrace> bordersToTrace = new List<BorderToTrace>();
+        List<BorderToTraceOrg> bordersToTrace = new List<BorderToTraceOrg>();
 
         List<Vector2Int> segmentPoints = new List<Vector2Int>();
 
@@ -246,7 +256,7 @@ public class BorderPreparation : MonoBehaviour
 
             if (nextBorderPoints.Count == 0)
             {
-                BorderToTrace newBorderToTrace = new BorderToTrace
+                BorderToTraceOrg newBorderToTrace = new BorderToTraceOrg
                 {
                     startPoint = splitMark,
                     nextPoint = null
@@ -256,7 +266,7 @@ public class BorderPreparation : MonoBehaviour
             {
                 foreach (Vector2Int nextPoint in nextBorderPoints)
                 {
-                    BorderToTrace newBorderToTrace = new BorderToTrace
+                    BorderToTraceOrg newBorderToTrace = new BorderToTraceOrg
                     {
                         startPoint = splitMark,
                         nextPoint = nextPoint
@@ -613,7 +623,7 @@ public class BorderPreparation : MonoBehaviour
 }
 
 [System.Serializable]
-public struct Border
+public struct BorderOrg
 {
     public Vector2Int startPoint;
     public List<Vector2Int> segments;
@@ -621,7 +631,7 @@ public struct Border
 }
 
 [System.Serializable]
-public struct BorderToTrace
+public struct BorderToTraceOrg
 {
     public Vector2Int startPoint;
     public Vector2Int? nextPoint;

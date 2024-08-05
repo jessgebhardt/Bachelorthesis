@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class SecondaryRoadsGenerator : MonoBehaviour
 {
-    public static Texture2D GenerateSecondaryRoads(List<List<Vector2Int>> extractedRegions, List<List<Vector2Int>> regionsSegmentMarks, Texture2D voronoiTexture)
+    private static int width;
+    public static Texture2D GenerateSecondaryRoads(List<List<Vector2Int>> extractedRegions, List<List<Vector2Int>> regionsSegmentMarks, Texture2D voronoiTexture, int roadWidth)
     {
+        width = roadWidth;
         Vector2Int[] chosenSegments = ChooseStartpoints(regionsSegmentMarks);
 
         voronoiTexture = GenerateRoads(extractedRegions, chosenSegments, voronoiTexture);
@@ -30,7 +32,7 @@ public class SecondaryRoadsGenerator : MonoBehaviour
     {
         string axiom = "A";
         float angle = 90f;
-        int segmentLength = 50;
+        int segmentLength = 50 + width * 2;
 
         int regionsCount = extractedRegions.Count;
         List<Vector2Int> allPixelsToDraw = new List<Vector2Int>();
@@ -53,7 +55,18 @@ public class SecondaryRoadsGenerator : MonoBehaviour
     {
         foreach (var pixel in pixelsToDraw)
         {
-            texture.SetPixel(pixel.x, pixel.y, Color.black);
+            for (int dx = -width; dx <= width; dx++)
+            {
+                for (int dy = -width; dy <= width; dy++)
+                {
+                    int newX = pixel.x + dx;
+                    int newY = pixel.y + dy;
+                    if (newX >= 0 && newX < texture.width && newY >= 0 && newY < texture.height)
+                    {
+                        texture.SetPixel(newX, newY, Color.black);
+                    }
+                }
+            }
         }
     }
 }

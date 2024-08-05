@@ -55,7 +55,7 @@ public class DistrictGenerator : MonoBehaviour
         GenerateCandidatePositions();
         SelectDistrictPositions();
         voronoiScript = voronoiDiagram.GetComponent<VoronoiDiagram>();
-        (voronoiTexture, regions) = voronoiScript.GenerateVoronoiDiagram(districtsDictionary, distictCellDistortion, new Vector2Int((int)cityBoundaries.transform.position.x, (int)cityBoundaries.transform.position.z), cityBoundaries.outerBoundaryRadius); // Why 100??? and why did i have to rotate the plane?? so many questions
+        (voronoiTexture, regions) = voronoiScript.GenerateVoronoiDiagram(districtsDictionary, distictCellDistortion, new Vector2Int((int)cityBoundaries.transform.position.x, (int)cityBoundaries.transform.position.z), cityBoundaries.outerBoundaryRadius, roadWidth);
         voronoiTexture.Apply();
         ApplyTexture();
     }
@@ -64,14 +64,9 @@ public class DistrictGenerator : MonoBehaviour
     public void GenerateRoads() 
     {
         prepareBordersScript = prepareBorders.GetComponent<BorderPreparation>();
-        voronoiTexture = prepareBordersScript.GenerateRoads(voronoiTexture, cityBoundaries.outerBoundaryRadius, cityBoundaries.transform.position, segmentLength);
+        voronoiTexture = prepareBordersScript.GenerateRoads(voronoiTexture, cityBoundaries.outerBoundaryRadius, cityBoundaries.transform.position, segmentLength, roadWidth);
         voronoiTexture.Apply();
         ApplyTexture();
-    }
-
-    public void RemoveRoads()
-    {
-        RoadGenerator.RemoveOldRoadsAndRoadSystems();
     }
 
     public void GenerateLotsAndBuildings()

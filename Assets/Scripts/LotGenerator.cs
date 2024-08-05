@@ -7,7 +7,7 @@ public class LotGenerator : MonoBehaviour
 {
     public static Dictionary<int, List<List<Vector2Int>>> GenerateLots(Texture2D voronoiTexture, Dictionary<int, Region> regions, IDictionary<int, District> districtsDictionary, int roadWidth)
     {
-        List<List<Vector2Int>> areas = DistrictExtractor.ExtractRegions(voronoiTexture, roadWidth);
+        List<List<Vector2Int>> areas = DistrictExtractor.ExtractRegions(voronoiTexture, 0);
 
         Dictionary<int, List<List<Vector2Int>>> regionAreas = new Dictionary<int, List<List<Vector2Int>>>();
         foreach (var region in regions)
