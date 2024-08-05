@@ -12,21 +12,26 @@ public class RoadGenerator : MonoBehaviour
         RemoveOldRoadsAndRoadSystems();
 
         // Add new RoadArchitectSystem
-        EditorMenu.CreateRoadSystem();
+        // EditorMenu.CreateRoadSystem();
+        GameObject roadSystemObject = new GameObject("RoadArchitectSystem");
+        RoadSystem roadSystem = roadSystemObject.AddComponent<RoadSystem>();
 
         // Find the RoadArchitectSystem in your scene
-        RoadSystem roadSystem = FindObjectOfType<RoadSystem>();
+        // RoadSystem roadSystem = FindObjectOfType<RoadSystem>();
 
         // Ensure road updates are disabled initially
         roadSystem.isAllowingRoadUpdates = false;
 
+
+        RoadArchitectUnitTest2(roadSystem);
+
         // Generate roads
-        newRoads.AddRange(GenerateDistrictBorderRoads(roadSystem, borderList));
+        // newRoads.AddRange(GenerateDistrictBorderRoads(roadSystem, borderList));
 
         // Not working yet because of missing vertecies..
-        //foreach (Road road in newRoads) 
+        //foreach (Road road in newRoads)
         //{
-        //    RoadAutomation.CreateIntersectionsProgrammaticallyForRoad(road);
+        // RoadAutomation.CreateIntersectionsProgrammaticallyForRoad(newRoads[0]);
         //}
 
         // Enable road updates and update the road system
@@ -79,6 +84,7 @@ public class RoadGenerator : MonoBehaviour
 
             // Create the road programmatically
             Road road = RoadAutomation.CreateRoadProgrammatically(roadSystem, ref vector3Positions);
+            road.isUsingMeshColliders = false;
             newRoads.Add(road);
         }
         return newRoads;
@@ -92,4 +98,89 @@ public class RoadGenerator : MonoBehaviour
             (pointA.z + pointB.z) / 2
         );
     }
+
+
+    private static void RoadArchitectUnitTest2(RoadSystem roadSystem)
+    {
+        //Create node locations:
+        float startLocX = 800f;
+        float startLocY = 200f;
+        float startLocYSep = 200f;
+        float height = 20f;
+        Road road1 = null;
+        Road road2 = null;
+
+        //Create base road:
+        List<Vector3> nodeLocations = new List<Vector3>();
+        for (int index = 0; index < 9; index++)
+        {
+            nodeLocations.Add(new Vector3(startLocX + (index * 200f), height, 600f));
+        }
+        road1 = RoadAutomation.CreateRoadProgrammatically(roadSystem, ref nodeLocations);
+
+        //Get road system, create road #1:
+        nodeLocations.Clear();
+        for (int index = 0; index < 5; index++)
+        {
+            nodeLocations.Add(new Vector3(startLocX, height, startLocY + (index * startLocYSep)));
+        }
+        road2 = RoadAutomation.CreateRoadProgrammatically(roadSystem, ref nodeLocations);
+        //UnitTest_IntersectionHelper(bRoad, tRoad, RoadIntersection.iStopTypeEnum.TrafficLight1, RoadIntersection.RoadTypeEnum.NoTurnLane);
+
+        //Get road system, create road #2:
+        nodeLocations.Clear();
+        for (int index = 0; index < 5; index++)
+        {
+            nodeLocations.Add(new Vector3(startLocX + (startLocYSep * 2f), height, startLocY + (index * startLocYSep)));
+        }
+        road2 = RoadAutomation.CreateRoadProgrammatically(roadSystem, ref nodeLocations);
+        //UnitTest_IntersectionHelper(bRoad, tRoad, RoadIntersection.iStopTypeEnum.TrafficLight1, RoadIntersection.RoadTypeEnum.TurnLane);
+
+        //Get road system, create road #3:
+        nodeLocations.Clear();
+        for (int index = 0; index < 5; index++)
+        {
+            nodeLocations.Add(new Vector3(startLocX + (startLocYSep * 4f), height, startLocY + (index * startLocYSep)));
+        }
+        road2 = RoadAutomation.CreateRoadProgrammatically(roadSystem, ref nodeLocations);
+        //UnitTest_IntersectionHelper(bRoad, tRoad, RoadIntersection.iStopTypeEnum.TrafficLight1, RoadIntersection.RoadTypeEnum.BothTurnLanes);
+
+        //Get road system, create road #4:
+        nodeLocations.Clear();
+        for (int index = 0; index < 5; index++)
+        {
+            nodeLocations.Add(new Vector3(startLocX + (startLocYSep * 6f), height, startLocY + (index * startLocYSep)));
+        }
+        road2 = RoadAutomation.CreateRoadProgrammatically(roadSystem, ref nodeLocations);
+        //UnitTest_IntersectionHelper(bRoad, tRoad, RoadIntersection.iStopTypeEnum.TrafficLight1, RoadIntersection.RoadTypeEnum.TurnLane);
+
+        //Get road system, create road #4:
+        nodeLocations.Clear();
+        for (int index = 0; index < 5; index++)
+        {
+            nodeLocations.Add(new Vector3(startLocX + (startLocYSep * 8f), height, startLocY + (index * startLocYSep)));
+        }
+        road2 = RoadAutomation.CreateRoadProgrammatically(roadSystem, ref nodeLocations);
+        //UnitTest_IntersectionHelper(bRoad, tRoad, RoadIntersection.iStopTypeEnum.TrafficLight1, RoadIntersection.RoadTypeEnum.TurnLane);
+
+        RoadAutomation.CreateIntersectionsProgrammaticallyForRoad(road1, RoadIntersection.iStopTypeEnum.None, RoadIntersection.RoadTypeEnum.NoTurnLane);
+
+        //Now count road intersections, if not 5 throw error
+        int intersctionsCount = 0;
+        foreach (SplineN node in road1.spline.nodes)
+        {
+            if (node.isIntersection)
+            {
+                intersctionsCount += 1;
+            }
+        }
+
+        if (intersctionsCount != 5)
+        {
+            Debug.LogError("Unit Test #2 failed: " + intersctionsCount.ToString() + " intersections instead of 5.");
+        }
+    }
+
+
+
 }

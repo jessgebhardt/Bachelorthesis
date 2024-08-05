@@ -26,16 +26,20 @@ public class BorderPreparation : MonoBehaviour
 
         startPoint = (Vector2Int)GetStartPoint();
 
+
+        /// for secondary Roads:
         List<List<Vector2Int>> extractedRegions = DistrictExtractor.ExtractRegions(voronoiTexture, 0);
         List<List<Vector2Int>> segments = PrepareSegments(extractedRegions);
         voronoiTexture = SecondaryRoadsGenerator.GenerateSecondaryRoads(extractedRegions, segments, voronoiTexture);
 
-        List<Border> borderList = MarkSegments(startPoint, segmentLength);
 
-        splitMarks.Add(startPoint);
+        /// for nice roads:
 
-        // Add back later
-        // RoadGenerator.GenerateRoad(borderList);
+        //List<Border> borderList = MarkSegments(startPoint, segmentLength);
+
+        //splitMarks.Add(startPoint);
+
+        //RoadGenerator.GenerateRoad(borderList);
 
         return voronoiTexture;
     }
@@ -215,7 +219,18 @@ public class BorderPreparation : MonoBehaviour
                 
                 if (current != borderToTrace.startPoint && IsBorderSplit(remainingNeighbors) || nextPoints.Count == 0)
                 {
+                    //Vector2Int closestsplitMark;
+                    //bool markFound = IsSplitMarkClose(current, out closestsplitMark);
+                    //if (markFound)
+                    //{
+                    //    splitMark = closestsplitMark;
+
+                    //} else
+                    //{
+                    //    splitMark = current;
+                    //}
                     splitMark = current;
+
                     noSplitMarkFound = false;
                 }
 
@@ -413,6 +428,31 @@ public class BorderPreparation : MonoBehaviour
         return false;
     }
 
+    bool IsSplitMarkClose(Vector2Int referencePoint, out Vector2Int closestPoint)
+    {
+        int radius = 3;
+        closestPoint = new Vector2Int();
+        float closestDistance = float.MaxValue;
+        bool pointFound = false;
+
+        foreach (Vector2Int point in splitMarks)
+        {
+            float distance = Vector2Int.Distance(referencePoint, point);
+
+            if (distance <= radius)
+            {
+                pointFound = true;
+
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestPoint = point;
+                }
+            }
+        }
+
+        return pointFound;
+    }
 
     bool HasDeadEndNeighbor(List<Vector2Int> remainingNeighbors)
     {
