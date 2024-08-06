@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static VoronoiDiagram;
 
 public class LotGenerator : MonoBehaviour
 {
@@ -10,20 +9,20 @@ public class LotGenerator : MonoBehaviour
         List<List<Vector2Int>> areas = DistrictExtractor.ExtractRegions(voronoiTexture, 0);
 
         Dictionary<int, List<List<Vector2Int>>> regionAreas = new Dictionary<int, List<List<Vector2Int>>>();
-        foreach (var region in regions)
+        foreach (KeyValuePair<int, Region> region in regions)
         {
             regionAreas[region.Key] = new List<List<Vector2Int>>();
         }
 
         Dictionary<int, HashSet<Vector2Int>> regionPixelSets = new Dictionary<int, HashSet<Vector2Int>>();
-        foreach (var region in regions)
+        foreach (KeyValuePair<int, Region> region in regions)
         {
             regionPixelSets[region.Key] = new HashSet<Vector2Int>(region.Value.Pixels);
         }
 
-        foreach (var area in areas)
+        foreach (List<Vector2Int> area in areas)
         {
-            foreach (var region in regionPixelSets)
+            foreach (KeyValuePair<int, HashSet<Vector2Int>> region in regionPixelSets)
             {
                 if (area.Any(pixel => region.Value.Contains(pixel)))
                 {
@@ -35,7 +34,7 @@ public class LotGenerator : MonoBehaviour
 
         Dictionary<int, List<List<Vector2Int>>> regionLots = new Dictionary<int, List<List<Vector2Int>>>();
 
-        foreach (var region in regions)
+        foreach (KeyValuePair<int, Region> region in regions)
         {
             District district;
             districtsDictionary.TryGetValue(region.Key, out district);
@@ -43,7 +42,7 @@ public class LotGenerator : MonoBehaviour
 
             int regionId = region.Key;
 
-            foreach (var area in regionAreas[region.Key])
+            foreach (List<Vector2Int> area in regionAreas[region.Key])
             {
                 List<List<Vector2Int>> lotList = SubdivideIntoLots(area, minLotSize);
 
@@ -55,7 +54,7 @@ public class LotGenerator : MonoBehaviour
 
                 regionLots[regionId] = validLots;
             }
-            
+
         }
 
         return regionLots;
@@ -69,7 +68,7 @@ public class LotGenerator : MonoBehaviour
         int[] dx = { 1, -1, 0, 0 };
         int[] dy = { 0, 0, 1, -1 };
 
-        foreach (var point in lot)
+        foreach (Vector2Int point in lot)
         {
             bool isEdge = false;
             for (int i = 0; i < 4; i++)
@@ -95,7 +94,7 @@ public class LotGenerator : MonoBehaviour
         int minX = int.MaxValue, minY = int.MaxValue;
         int maxX = int.MinValue, maxY = int.MinValue;
 
-        foreach (var point in region)
+        foreach (Vector2Int point in region)
         {
             if (point.x < minX) minX = point.x;
             if (point.x > maxX) maxX = point.x;
@@ -114,7 +113,7 @@ public class LotGenerator : MonoBehaviour
 
         Dictionary<Vector2Int, List<Vector2Int>> grid = new Dictionary<Vector2Int, List<Vector2Int>>();
 
-        foreach (var point in region)
+        foreach (Vector2Int point in region)
         {
             int gridX = Mathf.FloorToInt((point.x - minX) / cellSizeX);
             int gridY = Mathf.FloorToInt((point.y - minY) / cellSizeY);
@@ -129,7 +128,7 @@ public class LotGenerator : MonoBehaviour
         }
 
         List<List<Vector2Int>> blocks = new List<List<Vector2Int>>();
-        foreach (var cell in grid.Values)
+        foreach (List<Vector2Int> cell in grid.Values)
         {
             cell.Sort((a, b) =>
             {
@@ -152,7 +151,7 @@ public class LotGenerator : MonoBehaviour
         List<List<Vector2Int>> validLots = new List<List<Vector2Int>>();
         HashSet<Vector2Int> processedPoints = new HashSet<Vector2Int>();
 
-        foreach (var lot in lots)
+        foreach (List<Vector2Int> lot in lots)
         {
             if (HasStreetConnection(lot, regionsEdge))
             {
@@ -160,7 +159,7 @@ public class LotGenerator : MonoBehaviour
                 {
                     validLots.Add(lot);
 
-                    foreach (var point in lot)
+                    foreach (Vector2Int point in lot)
                     {
                         processedPoints.Add(point);
                     }
@@ -169,7 +168,7 @@ public class LotGenerator : MonoBehaviour
                 {
                     List<List<Vector2Int>> neighborLots = GetNeighborLots(lot, lots);
 
-                    foreach (var otherLot in neighborLots)
+                    foreach (List<Vector2Int> otherLot in neighborLots)
                     {
                         if (processedPoints.Overlaps(otherLot))
                         {
@@ -195,11 +194,11 @@ public class LotGenerator : MonoBehaviour
                             validLots.Remove(otherLot);
                             validLots.Add(combinedLot);
 
-                            foreach (var point in otherLot)
+                            foreach (Vector2Int point in otherLot)
                             {
                                 processedPoints.Add(point);
                             }
-                            foreach (var point in lot)
+                            foreach (Vector2Int point in lot)
                             {
                                 processedPoints.Add(point);
                             }
@@ -235,7 +234,7 @@ public class LotGenerator : MonoBehaviour
     private static Vector2Int GetLowerLeftPoint(List<Vector2Int> lot)
     {
         Vector2Int lowerLeft = lot[0];
-        foreach (var point in lot)
+        foreach (Vector2Int point in lot)
         {
             if (point.x < lowerLeft.x || (point.x == lowerLeft.x && point.y < lowerLeft.y))
             {
@@ -247,7 +246,7 @@ public class LotGenerator : MonoBehaviour
 
     private static bool HasStreetConnection(List<Vector2Int> lot, HashSet<Vector2Int> regionsEdge)
     {
-        foreach (var point in regionsEdge)
+        foreach (Vector2Int point in regionsEdge)
         {
             if (lot.Contains(point))
             {
@@ -296,15 +295,15 @@ public class LotGenerator : MonoBehaviour
         HashSet<Vector2Int> edges = GetEdges(originalLot);
         List<List<Vector2Int>> neighborLots = new List<List<Vector2Int>>();
 
-        foreach (var lot in allLots)
+        foreach (List<Vector2Int> lot in allLots)
         {
             if (originalLot != lot)
             {
-                foreach (var edge in edges)
+                foreach (Vector2Int edge in edges)
                 {
                     List<Vector2Int> neighbors = GetDirectNeighbors(edge);
 
-                    foreach (var neighbor in neighbors)
+                    foreach (Vector2Int neighbor in neighbors)
                     {
                         if (lot.Contains(neighbor))
                         {
@@ -335,7 +334,7 @@ public class LotGenerator : MonoBehaviour
         int sumY = 0;
         int count = points.Count;
 
-        foreach (var point in points)
+        foreach (Vector2Int point in points)
         {
             sumX += point.x;
             sumY += point.y;

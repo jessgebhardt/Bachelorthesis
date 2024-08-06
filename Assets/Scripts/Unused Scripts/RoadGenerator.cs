@@ -5,7 +5,7 @@ using RoadArchitect.Roads;
 
 public class RoadGenerator : MonoBehaviour
 {
-    public static void GenerateRoad(List<Border> borderList)
+    public static void GenerateRoad(List<BorderOrg> borderList)
     {
         List<Road> newRoads = new List<Road>();
 
@@ -59,7 +59,7 @@ public class RoadGenerator : MonoBehaviour
         }
     }
 
-    private static List<Road> GenerateDistrictBorderRoads(RoadSystem roadSystem, List<Border> borderList)
+    private static List<Road> GenerateDistrictBorderRoads(RoadSystem roadSystem, List<BorderOrg> borderList)
     {
         List<Road> newRoads = new List<Road>();
         foreach (var border in borderList)

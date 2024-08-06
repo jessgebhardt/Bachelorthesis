@@ -9,7 +9,7 @@ public class BuildingGenerator : MonoBehaviour
 
         GameObject buildingsParent = new GameObject("BuildingsParent");
 
-        foreach (var region in regionLots)
+        foreach (KeyValuePair<int, List<List<Vector2Int>>> region in regionLots)
         {
             List<GameObject> regionsBuildingPrefabs = new List<GameObject>();
 
@@ -24,26 +24,10 @@ public class BuildingGenerator : MonoBehaviour
 
     private static void GenerateRegionsBuildings(List<List<Vector2Int>> lots, List<GameObject> buildingPrefabs, GameObject buildingsParent)
     {
-        foreach (var lot in lots)
+        foreach (List<Vector2Int> lot in lots)
         {
             Vector3 center = FindCentroid(lot);
             Vector3 position = new Vector3(center.x, 0, center.z);
-
-            //List<GameObject> suitablePrefabs = FilterSuitablePrefabs(lot, buildingPrefabs);
-
-            //if (suitablePrefabs.Count == 0)
-            //{
-            //    Debug.LogWarning("No suitable building prefabs found for the lot.");
-            //    continue;
-            //}
-
-            //int randomNumber = Random.Range(0, suitablePrefabs.Count);
-            //GameObject buildingPrefab = suitablePrefabs[randomNumber];
-
-            //Quaternion rotation = DetermineBestRotation(lot, buildingPrefab);
-
-            //GameObject newBuilding = Instantiate(buildingPrefab, position, rotation);
-
 
             int randomNumber = Random.Range(0, buildingPrefabs.Count);
             GameObject buildingPrefab = buildingPrefabs[randomNumber];
@@ -69,7 +53,7 @@ public class BuildingGenerator : MonoBehaviour
         float sumZ = 0;
         int count = points.Count;
 
-        foreach (var point in points)
+        foreach (Vector2Int point in points)
         {
             sumX += point.x;
             sumZ += point.y;
@@ -85,7 +69,7 @@ public class BuildingGenerator : MonoBehaviour
     {
         List<GameObject> suitablePrefabs = new List<GameObject>();
 
-        foreach (var prefab in buildingPrefabs)
+        foreach (GameObject prefab in buildingPrefabs)
         {
             if (PrefabFitsLot(lot, prefab))
             {
@@ -101,8 +85,8 @@ public class BuildingGenerator : MonoBehaviour
         Bounds lotBounds = CalculateLotBounds(lot);
         Bounds prefabBounds = CalculatePrefabBounds(prefab);
 
-        Debug.Log("lotBounds: "+ lotBounds+" prefabBounds: "+ prefabBounds);
-        Debug.Log("MIN: "+lotBounds.Contains(prefabBounds.min));
+        Debug.Log("lotBounds: " + lotBounds + " prefabBounds: " + prefabBounds);
+        Debug.Log("MIN: " + lotBounds.Contains(prefabBounds.min));
         Debug.Log("MAX: " + lotBounds.Contains(prefabBounds.max));
         Debug.Log(lotBounds.Contains(prefabBounds.min) && lotBounds.Contains(prefabBounds.max));
 
@@ -116,7 +100,7 @@ public class BuildingGenerator : MonoBehaviour
         int maxX = int.MinValue;
         int maxY = int.MinValue;
 
-        foreach (var point in lot)
+        foreach (Vector2Int point in lot)
         {
             if (point.x < minX) minX = point.x;
             if (point.y < minY) minY = point.y;
@@ -154,7 +138,7 @@ public class BuildingGenerator : MonoBehaviour
 
         Bounds lotBounds = CalculateLotBounds(lot);
 
-        foreach (var rotation in rotations)
+        foreach (Quaternion rotation in rotations)
         {
             Bounds rotatedBounds = CalculateRotatedBounds(prefab, rotation);
 

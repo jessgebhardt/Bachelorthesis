@@ -1,36 +1,36 @@
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(DistrictGenerator))]
+[CustomEditor(typeof(CityGenerator))]
 public class CustomInspector : Editor
 {
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
 
-        DistrictGenerator districtGenerator = (DistrictGenerator)target;
+        CityGenerator cityGenerator = (CityGenerator)target;
 
         if (GUILayout.Button("Generate Districts"))
         {
-            districtGenerator.GenerateDistricts();
+            cityGenerator.GenerateDistricts();
         }
 
         EditorGUILayout.Space();
 
         if (GUILayout.Button("Generate Secondary Roads"))
         {
-            districtGenerator.GenerateRoads();
+            cityGenerator.GenerateSecondaryRoads();
         }
 
         EditorGUILayout.Space();
 
         if (GUILayout.Button("Generate Lots and Buildings"))
         {
-            districtGenerator.GenerateLotsAndBuildings();
+            cityGenerator.GenerateLotsAndBuildings();
         }
         if (GUILayout.Button("Remove Buildings"))
         {
-            districtGenerator.RemoveBuildings();
+            cityGenerator.RemoveBuildings();
         }
     }
 }

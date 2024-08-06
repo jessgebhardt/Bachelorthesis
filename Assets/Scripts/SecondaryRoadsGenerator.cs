@@ -5,14 +5,66 @@ using UnityEngine;
 public class SecondaryRoadsGenerator : MonoBehaviour
 {
     private static int width;
-    public static Texture2D GenerateSecondaryRoads(List<List<Vector2Int>> extractedRegions, List<List<Vector2Int>> regionsSegmentMarks, Texture2D voronoiTexture, int roadWidth)
+    public static Texture2D GenerateSecondaryRoads(Texture2D voronoiTexture, int roadWidth)
     {
+        List<List<Vector2Int>> extractedRegions = DistrictExtractor.ExtractRegions(voronoiTexture, 0);
+        List<List<Vector2Int>> regionsSegmentMarks = PrepareSegments(extractedRegions);
+
         width = roadWidth;
         Vector2Int[] chosenSegments = ChooseStartpoints(regionsSegmentMarks);
 
         voronoiTexture = GenerateRoads(extractedRegions, chosenSegments, voronoiTexture);
 
         return voronoiTexture;
+    }
+
+    private static List<List<Vector2Int>> PrepareSegments(List<List<Vector2Int>> extractedRegions)
+    {
+        List<List<Vector2Int>> extractedSegments = new List<List<Vector2Int>>();
+
+        foreach (List<Vector2Int> regionPixels in extractedRegions)
+        {
+            HashSet<Vector2Int> regionSet = new HashSet<Vector2Int>(regionPixels);
+            List<Vector2Int> segmentPoints = new List<Vector2Int>();
+
+            foreach (Vector2Int regionPixel in regionPixels)
+            {
+                foreach (Vector2Int neighbor in GetNeighbors(regionPixel, false))
+                {
+                    if (!regionPixels.Contains(neighbor))
+                    {
+                        segmentPoints.Add(neighbor);
+                        continue;
+                    }
+                }
+                continue;
+            }
+
+            extractedSegments.Add(segmentPoints);
+        }
+
+        return extractedSegments;
+    }
+
+    private static List<Vector2Int> GetNeighbors(Vector2Int point, bool includeDiagonals)
+    {
+        List<Vector2Int> neighbors = new List<Vector2Int>
+        {
+            new Vector2Int(point.x, point.y + 1),
+            new Vector2Int(point.x + 1, point.y),
+            new Vector2Int(point.x, point.y - 1),
+            new Vector2Int(point.x - 1, point.y),
+        };
+
+        if (includeDiagonals)
+        {
+            neighbors.Add(new Vector2Int(point.x - 1, point.y + 1));
+            neighbors.Add(new Vector2Int(point.x + 1, point.y + 1));
+            neighbors.Add(new Vector2Int(point.x + 1, point.y - 1));
+            neighbors.Add(new Vector2Int(point.x - 1, point.y - 1));
+        }
+
+        return neighbors;
     }
 
     private static Vector2Int[] ChooseStartpoints(List<List<Vector2Int>> regionsSegmentMarks)
@@ -53,7 +105,7 @@ public class SecondaryRoadsGenerator : MonoBehaviour
 
     private static void ApplyChanges(Texture2D texture, List<Vector2Int> pixelsToDraw)
     {
-        foreach (var pixel in pixelsToDraw)
+        foreach (Vector2Int pixel in pixelsToDraw)
         {
             for (int dx = -width; dx <= width; dx++)
             {

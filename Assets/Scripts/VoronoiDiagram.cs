@@ -1,38 +1,31 @@
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 using UnityEngine;
 
 public class VoronoiDiagram : MonoBehaviour
 {
-    private Vector2Int[] districtPoints;
-    private Dictionary<int, List<Vector2Int>> regionCorners = new Dictionary<int, List<Vector2Int>>();
-    private List<Vector2Int> sortedVectors = new List<Vector2Int>();
-    private Vector2Int[] allPoints;
-    private Color[] allPointColors;
-    private Vector2Int cityCenter = new Vector2Int(0, 0);
-    private float cityRadius = 1;
+    private static Vector2Int[] districtPoints;
+    private static int size;
+    private static Vector2Int cityCenter;
+    private static float cityRadius;
+    private static Vector2Int[] allPoints;
+    private static Color[] allPointColors;
 
-    public class Region
+    public static Texture2D GenerateVoronoiDiagram(DistrictData districtData, VoronoiData voronoiData, BoundariesData boundariesData, RoadData roadData)
     {
-        public int Id;
-        public List<Vector2Int> Pixels = new List<Vector2Int>();
-    }
+        size = (int)voronoiData.voronoiDiagram.transform.localScale.x * 10;
 
-    public (Texture2D, Dictionary<int, Region>) GenerateVoronoiDiagram(IDictionary<int, District> districts, int cellDistortion, Vector2Int center, float radius, int borderWidth)
-    {
-        int size = (int)transform.localScale.x * 10;
+        cityCenter = new Vector2Int((int)boundariesData.center.x, (int)boundariesData.center.z);
+        cityRadius = boundariesData.outerBoundaryRadius;
 
-        cityCenter = center;
-        cityRadius = radius;
-
-        int regionCount = districts.Count;
+        int regionCount = districtData.districtsDictionary.Count;
         districtPoints = new Vector2Int[regionCount];
         Color[] regionColors = new Color[regionCount];
         int[] ids = new int[regionCount];
 
-        foreach (KeyValuePair<int, District> kvp in districts)
+        foreach (KeyValuePair<int, District> kvp in districtData.districtsDictionary)
         {
             District district = kvp.Value;
             districtPoints[kvp.Key] = new Vector2Int((int)district.position.x, (int)district.position.z);
@@ -41,41 +34,23 @@ public class VoronoiDiagram : MonoBehaviour
             regionColors[kvp.Key] = regionColor;
             ids[kvp.Key] = kvp.Key;
         }
-        
 
-        (Color[] pixelColors, Dictionary<int, Region> regions) = GenerateDistortedVoronoi(size, regionCount, regionColors, ids, cellDistortion, borderWidth);
 
-        SetMaterialToTransparent();
+        (Color[] pixelColors, Dictionary<int, Region> regions) = GenerateDistortedVoronoi(size, regionCount, regionColors, ids, voronoiData.distictCellDistortion, roadData.roadWidth);
+        voronoiData.regions = regions;
 
         Texture2D voronoiTexture = new Texture2D(size, size, TextureFormat.RGBA32, false)
         {
             filterMode = FilterMode.Point
         };
 
-        if (pixelColors.Length == size * size)
-        {
-            voronoiTexture.SetPixels(pixelColors);
-            voronoiTexture.Apply();
+        voronoiTexture.SetPixels(pixelColors);
+        voronoiTexture.Apply();
 
-            var renderer = GetComponent<Renderer>();
-            if (renderer != null)
-            {
-                renderer.sharedMaterial.mainTexture = voronoiTexture;
-            }
-            else
-            {
-                Debug.LogError("Renderer component not found.");
-            }
-        }
-        else
-        {
-            Debug.LogError("Pixel color array size does not match the texture size.");
-        }
-
-        return (voronoiTexture, regions);
+        return voronoiTexture;
     }
 
-    private (Color[], Dictionary<int, Region>) GenerateDistortedVoronoi(int size, int regionCount, Color[] regionColors, int[] ids, int randomPointCount, int borderWidth)
+    private static (Color[], Dictionary<int, Region>) GenerateDistortedVoronoi(int size, int regionCount, Color[] regionColors, int[] ids, int randomPointCount, int borderWidth)
     {
         bool borders = randomPointCount <= 0;
 
@@ -118,7 +93,7 @@ public class VoronoiDiagram : MonoBehaviour
         return (finalVoronoi, finalRegions);
     }
 
-    private (Color[], Dictionary<int, Region>) GenerateVoronoi(int size, int regionAmount, Vector2Int[] points, Color[] regionColors, int[] ids, bool borders, int borderWidth)
+    private static (Color[], Dictionary<int, Region>) GenerateVoronoi(int size, int regionAmount, Vector2Int[] points, Color[] regionColors, int[] ids, bool borders, int borderWidth)
     {
         Dictionary<int, Region> regions = new Dictionary<int, Region>();
         Color[] pixelColors = new Color[size * size];
@@ -152,10 +127,21 @@ public class VoronoiDiagram : MonoBehaviour
                     {
                         minDistance = distance;
                         closestPoint = points[i];
-                        closestRegionId = i;
                     }
                 }
 
+                float minOriginalPointDistance = float.MaxValue;
+
+                for (int i = 0; i < districtPoints.Length; i++)
+                {
+                    float distance = Vector2.Distance(closestPoint, districtPoints[i]);
+                    if (distance < minOriginalPointDistance)
+                    {
+                        minOriginalPointDistance = distance;
+                        closestRegionId = i;
+                    }
+                }   
+                    
                 closestRegionIds[index] = ids[closestRegionId];
                 pixelColors[index] = regionColors[closestRegionId];
 
@@ -185,13 +171,11 @@ public class VoronoiDiagram : MonoBehaviour
 
     public static Color[] GenerateBorders(int size, int[] closestRegionIds, Color[] pixelColors, Vector2Int cityCenter, float cityRadius, Dictionary<int, Region> regions, int width)
     {
-        // Berechne die Anzahl der Offsets
         int totalOffsets = (2 * width + 1) * (2 * width + 1) - 1;
         int[] xOffsets = new int[totalOffsets];
         int[] yOffsets = new int[totalOffsets];
         int index = 0;
 
-        // Offsets berechnen
         for (int dx = -width; dx <= width; dx++)
         {
             for (int dy = -width; dy <= width; dy++)
@@ -243,63 +227,6 @@ public class VoronoiDiagram : MonoBehaviour
             }
         });
 
-
-        //Parallel.For(0, size * size, index =>
-        //{
-        //    int x = index % size;
-        //    int y = index / size;
-        //    int currentRegionIndex = closestRegionIds[index];
-        //    bool isBorder = false;
-
-        //    if (currentRegionIndex != -1) 
-        //    { 
-        //        if (index - 1 >= 0 && index - 1 < pixelColors.Length && x > 0 && closestRegionIds[index - 1] != currentRegionIndex)
-        //        {
-        //            isBorder = true;
-        //        }
-        //        if (index + 1 >= 0 && index + 1 < pixelColors.Length && x < size - 1 && closestRegionIds[index + 1] != currentRegionIndex)
-        //        {
-        //            isBorder = true;
-        //        }
-        //        if (index - size >= 0 && index - size < pixelColors.Length && y > 0 && closestRegionIds[index - size] != currentRegionIndex)
-        //        {
-        //            isBorder = true;
-        //        }
-        //        if (index + size >= 0 && index + size < pixelColors.Length && y < size - 1 && closestRegionIds[index + size] != currentRegionIndex)
-        //        {
-        //            isBorder = true;
-        //        }
-
-        //        if (isBorder)
-        //        {
-        //            pixelColors[index] = Color.black;
-
-        //            lock (regions)
-        //            {
-        //                regions[closestRegionIds[index]].Pixels.Remove(new Vector2Int(x, y));
-        //            }
-        //        }
-        //    }
-        //});
-
         return pixelColors;
-    }
-
-
-
-    private void SetMaterialToTransparent()
-    {
-        Material material = GetComponent<MeshRenderer>().sharedMaterial;
-        if (material != null)
-        {
-            material.SetFloat("_Mode", 3);
-            material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-            material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-            material.SetInt("_ZWrite", 0);
-            material.DisableKeyword("_ALPHATEST_ON");
-            material.EnableKeyword("_ALPHABLEND_ON");
-            material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-            material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
-        }
     }
 }

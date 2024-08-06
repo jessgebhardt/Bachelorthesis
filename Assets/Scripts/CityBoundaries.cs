@@ -1,47 +1,31 @@
 using System;
 using UnityEngine;
 
-[ExecuteInEditMode]
 public class CityBoundaries : MonoBehaviour
 {
-    [Range(10, 1490)] public float outerBoundaryRadius = 450f;
-    [SerializeField] private int segments = 500;
-
-    private LineRenderer lineRenderer;
-
-    void Start()
+    public static void InitializeBoundaries(BoundariesData boundariesData)
     {
-        lineRenderer = gameObject.GetComponent<LineRenderer>();
-        InitializeLineRenderer(lineRenderer, Color.red);
-        UpdateBoundaries();
+        boundariesData.lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+        boundariesData.lineRenderer.widthMultiplier = 2f;
+        boundariesData.lineRenderer.positionCount = boundariesData.segments + 1;
+        boundariesData.lineRenderer.startColor = boundariesData.color;
+        boundariesData.lineRenderer.endColor = boundariesData.color;
+        boundariesData.lineRenderer.loop = true;
     }
 
-    void Update()
+    public static void UpdateBoundaries(BoundariesData boundariesData)
     {
-        UpdateBoundaries();
-    }
+        int segments = boundariesData.segments;
+        float outerBoundaryRadius = boundariesData.outerBoundaryRadius;
 
-    private void InitializeLineRenderer(LineRenderer lineRenderer, Color color)
-    {
-        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        lineRenderer.widthMultiplier = 2f;
-        lineRenderer.positionCount = segments + 1;
-        lineRenderer.startColor = color;
-        lineRenderer.endColor = color;
-        lineRenderer.loop = true;
-    }
-
-    private void UpdateBoundaries()
-    {
-        Vector3 centerPosition = transform.position;
         float angle = 2 * Mathf.PI / segments;
         for (int i = 0; i < segments; i++)
         {
             float outerX = Mathf.Sin(i * angle) * outerBoundaryRadius;
             float outerZ = Mathf.Cos(i * angle) * outerBoundaryRadius;
 
-            lineRenderer.SetPosition(i, new Vector3(outerX, 0, outerZ) + centerPosition);
+            boundariesData.lineRenderer.SetPosition(i, new Vector3(outerX, 0, outerZ) + boundariesData.center);
         }
-        lineRenderer.SetPosition(segments, lineRenderer.GetPosition(0));
+        boundariesData.lineRenderer.SetPosition(segments, boundariesData.lineRenderer.GetPosition(0));
     }
 }

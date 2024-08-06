@@ -54,7 +54,7 @@ public class DistrictExtractor : MonoBehaviour
 
             if (IsNearBlackBorder(texture, x, y, inset))
             {
-                visited[x, y] = true; // Mark near border as visited
+                visited[x, y] = true;
                 continue;
             }
 

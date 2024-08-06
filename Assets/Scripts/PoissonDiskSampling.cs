@@ -26,7 +26,7 @@ public class PoissonDiskSampling : MonoBehaviour
                 float angle = Random.value * Mathf.PI * 2;
                 Vector3 dir = new Vector3(Mathf.Sin(angle), 1, Mathf.Cos(angle));
                 float rand = Random.Range(districtRadius, 2 * districtRadius);
-                Vector3 candidate = new Vector3(spawnCentre.x + dir.x * rand, 1 , spawnCentre.z + dir.z * rand);
+                Vector3 candidate = new Vector3(spawnCentre.x + dir.x * rand, 1, spawnCentre.z + dir.z * rand);
 
                 if (IsValid(candidate, cityCenter, cityRadius, cellSize, districtRadius, points, grid) &&
                     Vector3.Distance(candidate, cityCenter) <= cityRadius)
@@ -68,7 +68,7 @@ public class PoissonDiskSampling : MonoBehaviour
                     if (pointIndex != -1)
                     {
                         float sqrDst = (candidate - points[pointIndex]).sqrMagnitude;
-                        if (sqrDst < radius*radius)
+                        if (sqrDst < radius * radius)
                         {
                             return false;
                         }
@@ -83,7 +83,7 @@ public class PoissonDiskSampling : MonoBehaviour
     private static float CalculateDistrictRadius(int numberOfDistricts, float cityRadius)
     {
         float cityArea = Mathf.PI * cityRadius * cityRadius;
-        float areaPerDistrict = cityArea / numberOfDistricts*2;
+        float areaPerDistrict = cityArea / numberOfDistricts * 2;
         float adjustedDistrictRadius = Mathf.Sqrt(areaPerDistrict / Mathf.PI);
         return adjustedDistrictRadius;
     }

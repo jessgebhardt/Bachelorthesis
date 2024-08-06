@@ -30,7 +30,7 @@ public class BorderPreparationOrg : MonoBehaviour
         /// for secondary Roads:
         List<List<Vector2Int>> extractedRegions = DistrictExtractor.ExtractRegions(voronoiTexture, 0);
         List<List<Vector2Int>> segments = PrepareSegments(extractedRegions);
-        voronoiTexture = SecondaryRoadsGenerator.GenerateSecondaryRoads(extractedRegions, segments, voronoiTexture, 0);
+        // voronoiTexture = SecondaryRoadsGenerator.GenerateSecondaryRoads(extractedRegions, segments, voronoiTexture, 0);
 
 
         /// for nice roads:
@@ -328,13 +328,13 @@ public class BorderPreparationOrg : MonoBehaviour
 
     private List<Vector2Int> FindPointsWithExactlyOneNeighbor(List<Vector2Int> points)
     {
-        var pointsWithOneNeighbor = new List<Vector2Int>();
+        List<Vector2Int> pointsWithOneNeighbor = new List<Vector2Int>();
 
-        foreach (var point in points)
+        foreach (Vector2Int point in points)
         {
             int neighborCount = 0;
 
-            foreach (var other in points)
+            foreach (Vector2Int other in points)
             {
                 if (point != other)
                 {
