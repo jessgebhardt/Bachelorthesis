@@ -116,7 +116,7 @@ public class CityGenerator : MonoBehaviour
 
     public void GenerateSecondaryRoads()
     {
-        voronoiData.voronoiTexture = SecondaryRoadsGenerator.GenerateSecondaryRoads(voronoiData.voronoiTexture, roadData.roadWidth);
+        voronoiData.voronoiTexture = SecondaryRoadsGenerator.GenerateSecondaryRoads(voronoiData.voronoiTexture, roadData);
         ApplyTexture();
     }
 

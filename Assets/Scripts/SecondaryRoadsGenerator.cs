@@ -5,15 +5,15 @@ using UnityEngine;
 public class SecondaryRoadsGenerator : MonoBehaviour
 {
     private static int width;
-    public static Texture2D GenerateSecondaryRoads(Texture2D voronoiTexture, int roadWidth)
+    public static Texture2D GenerateSecondaryRoads(Texture2D voronoiTexture, RoadData roadData)
     {
         List<List<Vector2Int>> extractedRegions = DistrictExtractor.ExtractRegions(voronoiTexture, 0);
         List<List<Vector2Int>> regionsSegmentMarks = PrepareSegments(extractedRegions);
 
-        width = roadWidth;
+        width = roadData.roadWidth;
         Vector2Int[] chosenSegments = ChooseStartpoints(regionsSegmentMarks);
 
-        voronoiTexture = GenerateRoads(extractedRegions, chosenSegments, voronoiTexture);
+        voronoiTexture = GenerateRoads(extractedRegions, chosenSegments, voronoiTexture, roadData);
 
         return voronoiTexture;
     }
@@ -80,18 +80,14 @@ public class SecondaryRoadsGenerator : MonoBehaviour
         return chosenSegments;
     }
 
-    private static Texture2D GenerateRoads(List<List<Vector2Int>> extractedRegions, Vector2Int[] chosenSegments, Texture2D voronoiTexture)
+    private static Texture2D GenerateRoads(List<List<Vector2Int>> extractedRegions, Vector2Int[] chosenSegments, Texture2D voronoiTexture, RoadData roadData)
     {
-        string axiom = "A";
-        float angle = 90f;
-        int segmentLength = 50 + width * 2;
-
         int regionsCount = extractedRegions.Count;
         List<Vector2Int> allPixelsToDraw = new List<Vector2Int>();
 
         Parallel.For(0, regionsCount, i =>
         {
-            List<Vector2Int> pixelsToDraw = LSystem.GenerateLSystem(axiom, angle, segmentLength, extractedRegions[i], chosenSegments[i]);
+            List<Vector2Int> pixelsToDraw = LSystem.GenerateLSystem(roadData.axiom, roadData.angle, roadData.segmentLength, extractedRegions[i], chosenSegments[i]);
             lock (allPixelsToDraw)
             {
                 allPixelsToDraw.AddRange(pixelsToDraw);

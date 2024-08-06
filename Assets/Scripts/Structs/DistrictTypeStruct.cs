@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public struct DistrictType
 {
-    [NonSerialized] public int id;
+    [HideInInspector] public int id;
     public string name;
     public Color color;
     [Range(0, 10)] public float distanceFromCenter;

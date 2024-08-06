@@ -10,11 +10,13 @@ public class DistrictData
 
     public List<DistrictType> districtTypes = new List<DistrictType>();
     public List<District> generatedDistricts = new List<District>();
+    [HideInInspector] public IDictionary<int, District> districtsDictionary;
+
     [Min(0)] public int numberOfDistricts;
     [HideInInspector] public int minNumberOfDistricts;
     [HideInInspector] public int maxNumberOfDistricts;
-
-    [HideInInspector] public IDictionary<int, District> districtsDictionary;
-    [HideInInspector] public bool initialized = false;
+    
     [HideInInspector] public Dictionary<int, List<List<Vector2Int>>> regionLots;
+
+    [HideInInspector] public bool initialized = false;
 }
