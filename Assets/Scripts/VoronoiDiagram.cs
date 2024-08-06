@@ -177,51 +177,110 @@ public class VoronoiDiagram : MonoBehaviour
 
         if (borders)
         {
-            pixelColors = GenerateBorders(size, closestRegionIds, pixelColors, cityCenter, cityRadius, regions);
+            pixelColors = GenerateBorders(size, closestRegionIds, pixelColors, cityCenter, cityRadius, regions, borderWidth);
         }
 
         return (pixelColors, regions);
     }
 
-    public static Color[] GenerateBorders(int size, int[] closestRegionIds, Color[] pixelColors, Vector2Int cityCenter, float cityRadius, Dictionary<int, Region> regions)
+    public static Color[] GenerateBorders(int size, int[] closestRegionIds, Color[] pixelColors, Vector2Int cityCenter, float cityRadius, Dictionary<int, Region> regions, int width)
     {
-        Parallel.For(0, size * size, index =>
+        // Berechne die Anzahl der Offsets
+        int totalOffsets = (2 * width + 1) * (2 * width + 1) - 1;
+        int[] xOffsets = new int[totalOffsets];
+        int[] yOffsets = new int[totalOffsets];
+        int index = 0;
+
+        // Offsets berechnen
+        for (int dx = -width; dx <= width; dx++)
         {
-            int x = index % size;
-            int y = index / size;
-            int currentRegionIndex = closestRegionIds[index];
-            bool isBorder = false;
+            for (int dy = -width; dy <= width; dy++)
+            {
+                if (dx != 0 || dy != 0)
+                {
+                    xOffsets[index] = dx;
+                    yOffsets[index] = dy;
+                    index++;
+                }
+            }
+        }
 
-            if (currentRegionIndex != -1) 
-            { 
-                if (index - 1 >= 0 && index - 1 < pixelColors.Length && x > 0 && closestRegionIds[index - 1] != currentRegionIndex)
-                {
-                    isBorder = true;
-                }
-                if (index + 1 >= 0 && index + 1 < pixelColors.Length && x < size - 1 && closestRegionIds[index + 1] != currentRegionIndex)
-                {
-                    isBorder = true;
-                }
-                if (index - size >= 0 && index - size < pixelColors.Length && y > 0 && closestRegionIds[index - size] != currentRegionIndex)
-                {
-                    isBorder = true;
-                }
-                if (index + size >= 0 && index + size < pixelColors.Length && y < size - 1 && closestRegionIds[index + size] != currentRegionIndex)
-                {
-                    isBorder = true;
-                }
+        Parallel.ForEach(Partitioner.Create(0, size * size), range =>
+        {
+            for (int i = range.Item1; i < range.Item2; i++)
+            {
+                int x = i % size;
+                int y = i / size;
+                int currentRegionIndex = closestRegionIds[i];
+                bool isBorder = false;
 
-                if (isBorder)
+                if (currentRegionIndex != -1)
                 {
-                    pixelColors[index] = Color.black;
-
-                    lock (regions)
+                    for (int j = 0; j < xOffsets.Length; j++)
                     {
-                        regions[closestRegionIds[index]].Pixels.Remove(new Vector2Int(x, y));
+                        int neighborX = x + xOffsets[j];
+                        int neighborY = y + yOffsets[j];
+                        int neighborIndex = neighborY * size + neighborX;
+
+                        if (neighborX >= 0 && neighborX < size && neighborY >= 0 && neighborY < size &&
+                            neighborIndex >= 0 && neighborIndex < pixelColors.Length &&
+                            closestRegionIds[neighborIndex] != currentRegionIndex)
+                        {
+                            isBorder = true;
+                            break;
+                        }
+                    }
+
+                    if (isBorder)
+                    {
+                        pixelColors[i] = Color.black;
+                        lock (regions)
+                        {
+                            regions[closestRegionIds[i]].Pixels.Remove(new Vector2Int(x, y));
+                        }
                     }
                 }
             }
         });
+
+
+        //Parallel.For(0, size * size, index =>
+        //{
+        //    int x = index % size;
+        //    int y = index / size;
+        //    int currentRegionIndex = closestRegionIds[index];
+        //    bool isBorder = false;
+
+        //    if (currentRegionIndex != -1) 
+        //    { 
+        //        if (index - 1 >= 0 && index - 1 < pixelColors.Length && x > 0 && closestRegionIds[index - 1] != currentRegionIndex)
+        //        {
+        //            isBorder = true;
+        //        }
+        //        if (index + 1 >= 0 && index + 1 < pixelColors.Length && x < size - 1 && closestRegionIds[index + 1] != currentRegionIndex)
+        //        {
+        //            isBorder = true;
+        //        }
+        //        if (index - size >= 0 && index - size < pixelColors.Length && y > 0 && closestRegionIds[index - size] != currentRegionIndex)
+        //        {
+        //            isBorder = true;
+        //        }
+        //        if (index + size >= 0 && index + size < pixelColors.Length && y < size - 1 && closestRegionIds[index + size] != currentRegionIndex)
+        //        {
+        //            isBorder = true;
+        //        }
+
+        //        if (isBorder)
+        //        {
+        //            pixelColors[index] = Color.black;
+
+        //            lock (regions)
+        //            {
+        //                regions[closestRegionIds[index]].Pixels.Remove(new Vector2Int(x, y));
+        //            }
+        //        }
+        //    }
+        //});
 
         return pixelColors;
     }
