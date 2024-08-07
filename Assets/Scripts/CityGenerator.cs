@@ -139,7 +139,7 @@ public class CityGenerator : MonoBehaviour
     {
         for (int i = 0; i < districtData.districtTypes.Count; i++)
         {
-            var districtType = districtData.districtTypes[i];
+            DistrictType districtType = districtData.districtTypes[i];
             districtType.id = i;
             districtType.relations.Clear();
 
@@ -147,7 +147,7 @@ public class CityGenerator : MonoBehaviour
             {
                 if (i == j) continue;
 
-                var relatedDistrictType = districtData.districtTypes[j];
+                DistrictType relatedDistrictType = districtData.districtTypes[j];
                 districtType.relations.Add(new DistrictRelation
                 {
                     districtTypeId = relatedDistrictType.id,
@@ -240,7 +240,7 @@ public class CityGenerator : MonoBehaviour
         int minNumberOfDistricts = 0;
         int maxNumberOfDistricts = 0;
 
-        foreach (var districtType in districtData.districtTypes)
+        foreach (DistrictType districtType in districtData.districtTypes)
         {
             minNumberOfDistricts += districtType.minNumberOfPlacements;
             maxNumberOfDistricts += districtType.maxNumberOfPlacements;
@@ -258,7 +258,7 @@ public class CityGenerator : MonoBehaviour
     /// </summary>
     private void GenerateCandidatePositions()
     {
-        var allPoints = PoissonDiskSampling.GenerateDistrictPoints(
+        List<Vector3> allPoints = PoissonDiskSampling.GenerateDistrictPoints(
             districtData.numberOfDistricts,
             districtData.minNumberOfDistricts,
             districtData.maxNumberOfDistricts,
@@ -283,7 +283,7 @@ public class CityGenerator : MonoBehaviour
     private void ApplyTexture()
     {
         voronoiData.voronoiTexture.Apply();
-        var renderer = voronoiData.voronoiDiagram.GetComponent<Renderer>();
+        Renderer renderer = voronoiData.voronoiDiagram.GetComponent<Renderer>();
         if (renderer != null)
         {
             renderer.sharedMaterial.mainTexture = voronoiData.voronoiTexture;
