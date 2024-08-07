@@ -28,7 +28,7 @@ public class BorderPreparationOrg : MonoBehaviour
 
 
         /// for secondary Roads:
-        List<List<Vector2Int>> extractedRegions = DistrictExtractor.ExtractRegions(voronoiTexture, 0);
+        List<List<Vector2Int>> extractedRegions = RegionExtractor.ExtractRegions(voronoiTexture, 0);
         List<List<Vector2Int>> segments = PrepareSegments(extractedRegions);
         // voronoiTexture = SecondaryRoadsGenerator.GenerateSecondaryRoads(extractedRegions, segments, voronoiTexture, 0);
 

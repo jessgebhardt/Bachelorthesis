@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DistrictExtractor : MonoBehaviour
+public class RegionExtractor : MonoBehaviour
 {
     /// <summary>
     /// Extracts regions from the given texture.

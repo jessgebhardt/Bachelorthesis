@@ -17,7 +17,7 @@ public class SecondaryRoadsGenerator : MonoBehaviour
     {
         width = roadData.roadWidth;
 
-        List<List<Vector2Int>> extractedRegions = DistrictExtractor.ExtractRegions(voronoiTexture, 0);
+        List<List<Vector2Int>> extractedRegions = RegionExtractor.ExtractRegions(voronoiTexture, 0);
 
         List<List<Vector2Int>> regionsSegmentMarks = PrepareSegments(extractedRegions);
 

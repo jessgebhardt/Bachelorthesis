@@ -19,7 +19,7 @@ public class CustomInspector : Editor
 
         if (GUILayout.Button("Generate Districts and Primary Roads"))
         {
-            cityGenerator.GenerateDistricts();
+            cityGenerator.GenerateDistrictsAndPrimaryRoads();
         }
 
         EditorGUILayout.Space();

@@ -228,7 +228,7 @@ public class VoronoiDiagram : MonoBehaviour
 
         if (borders)
         {
-            pixelColors = GenerateBorders(size, closestRegionIds, pixelColors, regions, borderWidth);
+            pixelColors = GeneratePrimaryRoads(size, closestRegionIds, pixelColors, regions, borderWidth);
         }
 
         return (pixelColors, regions);
@@ -277,7 +277,7 @@ public class VoronoiDiagram : MonoBehaviour
     }
 
     /// <summary>
-    /// Generates borders around regions in the Voronoi diagram.
+    /// Generates primary roads around regions in the Voronoi diagram.
     /// <para>
     /// Uses offsets to determine whether a pixel lies on a border and colors it accordingly.
     /// </para>
@@ -286,9 +286,9 @@ public class VoronoiDiagram : MonoBehaviour
     /// <param name="closestRegionIds">Array of region IDs for each pixel.</param>
     /// <param name="pixelColors">Array of colors for each pixel.</param>
     /// <param name="regions">Dictionary of regions with their pixel lists.</param>
-    /// <param name="width">Width of the border to generate.</param>
+    /// <param name="width">Width of the road to generate.</param>
     /// <returns>An array of pixel colors with borders applied.</returns>
-    private static Color[] GenerateBorders(int size, int[] closestRegionIds, Color[] pixelColors, Dictionary<int, Region> regions, int width)
+    private static Color[] GeneratePrimaryRoads(int size, int[] closestRegionIds, Color[] pixelColors, Dictionary<int, Region> regions, int width)
     {
         int totalOffsets = (2 * width + 1) * (2 * width + 1) - 1;
         int[] xOffsets = new int[totalOffsets];

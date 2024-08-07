@@ -33,7 +33,7 @@ public class CityGenerator : MonoBehaviour
     #endregion
 
 
-    #region Unity Methods
+    #region Initialization and Validation Methods
 
     /// <summary>
     /// Called when the script is loaded or a value is changed in the inspector.
@@ -44,8 +44,6 @@ public class CityGenerator : MonoBehaviour
     /// </summary>
     private void OnValidate()
     {
-        ValidateDistrictColors();
-
         if (constantDistrictTypes != districtData.districtTypes.Count)
         {
             InitializeRelationsAndIDs();
@@ -57,6 +55,8 @@ public class CityGenerator : MonoBehaviour
             SetMaterialToTransparent();
             districtData.initialized = true;
         }
+
+        ValidateDistrictColors();
     }
 
     /// <summary>
@@ -69,10 +69,26 @@ public class CityGenerator : MonoBehaviour
     {
         CityBoundaries.UpdateBoundaries(boundariesData);
     }
-    #endregion
 
-
-    #region Validation Methods
+    /// <summary>
+    /// Sets the material of the Voronoi diagram to be transparent, so that transparent pixels
+    /// appear transparent.
+    /// </summary>
+    private void SetMaterialToTransparent()
+    {
+        var material = voronoiData.voronoiDiagram.GetComponent<MeshRenderer>().sharedMaterial;
+        if (material != null)
+        {
+            material.SetFloat("_Mode", 3);
+            material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            material.SetInt("_ZWrite", 0);
+            material.DisableKeyword("_ALPHATEST_ON");
+            material.EnableKeyword("_ALPHABLEND_ON");
+            material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+            material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+        }
+    }
 
     /// <summary>
     /// Ensures that none of the district types have the color black assigned.
@@ -108,10 +124,6 @@ public class CityGenerator : MonoBehaviour
     {
         return new Color(color.r + 0.1f, color.g + 0.1f, color.b + 0.1f, color.a);
     }
-    #endregion
-
-
-    #region Initialization Methods
 
     /// <summary>
     /// Initializes the relations and IDs for all district types.
@@ -168,7 +180,7 @@ public class CityGenerator : MonoBehaviour
     /// selects district positions from the candidate positions, and lastly generates a Voronoi diagram to represent the districts and primary roads.
     /// </para>
     /// </summary>
-    public void GenerateDistricts()
+    public void GenerateDistrictsAndPrimaryRoads()
     {
         boundariesData.center = transform.position;
         CalculateMinAndMaxDistricts();
@@ -271,26 +283,6 @@ public class CityGenerator : MonoBehaviour
         if (renderer != null)
         {
             renderer.sharedMaterial.mainTexture = voronoiData.voronoiTexture;
-        }
-    }
-
-    /// <summary>
-    /// Sets the material of the Voronoi diagram to be transparent, so that transparent pixels
-    /// appear transparent.
-    /// </summary>
-    private void SetMaterialToTransparent()
-    {
-        var material = voronoiData.voronoiDiagram.GetComponent<MeshRenderer>().sharedMaterial;
-        if (material != null)
-        {
-            material.SetFloat("_Mode", 3);
-            material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-            material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-            material.SetInt("_ZWrite", 0);
-            material.DisableKeyword("_ALPHATEST_ON");
-            material.EnableKeyword("_ALPHABLEND_ON");
-            material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-            material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
         }
     }
     #endregion

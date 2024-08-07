@@ -18,7 +18,7 @@ public class LotGenerator : MonoBehaviour
     /// <returns>Dictionary of region IDs and their corresponding lists of lots.</returns>
     public static Dictionary<int, List<List<Vector2Int>>> GenerateLots(Texture2D voronoiTexture, Dictionary<int, Region> regions, IDictionary<int, District> districtsDictionary, int roadWidth)
     {
-        List<List<Vector2Int>> areas = DistrictExtractor.ExtractRegions(voronoiTexture, 0);
+        List<List<Vector2Int>> areas = RegionExtractor.ExtractRegions(voronoiTexture, 0);
 
         var regionAreas = InitializeRegionAreas(regions);
         var regionPixelSets = InitializeRegionPixelSets(regions);
