@@ -80,7 +80,7 @@ public class CityGenerator : MonoBehaviour
     /// </summary>
     private void SetMaterialToTransparent()
     {
-        var material = voronoiData.voronoiDiagram.GetComponent<MeshRenderer>().sharedMaterial;
+        Material material = voronoiData.voronoiDiagram.GetComponent<MeshRenderer>().sharedMaterial;
         if (material != null)
         {
             material.SetFloat("_Mode", 3);

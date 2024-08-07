@@ -28,7 +28,7 @@ public class VoronoiDiagram : MonoBehaviour
     {
         Initialize(districtData, voronoiData, boundariesData);
 
-        var regionColors = GetRegionColors(districtData, out var ids);
+        Color[] regionColors = GetRegionColors(districtData, out int[] ids);
 
         var (pixelColors, regions) = GenerateDistortedVoronoi(size, districtData.districtsDictionary.Count, regionColors, ids, voronoiData.distictCellDistortion, roadData.roadWidth);
         voronoiData.regions = regions;
@@ -69,9 +69,9 @@ public class VoronoiDiagram : MonoBehaviour
         Color[] regionColors = new Color[regionCount];
         ids = new int[regionCount];
 
-        foreach (var kvp in districtData.districtsDictionary)
+        foreach (KeyValuePair<int, District> kvp in districtData.districtsDictionary)
         {
-            var district = kvp.Value;
+            District district = kvp.Value;
             districtPoints[kvp.Key] = new Vector2Int((int)district.position.x, (int)district.position.z);
             regionColors[kvp.Key] = new Color(district.type.color.r, district.type.color.g, district.type.color.b, 0.2f);
             ids[kvp.Key] = kvp.Key;
@@ -90,7 +90,7 @@ public class VoronoiDiagram : MonoBehaviour
     /// <returns>The generated Texture2D.</returns>
     private static Texture2D CreateTexture(Color[] pixelColors)
     {
-        var voronoiTexture = new Texture2D(size, size, TextureFormat.RGBA32, false)
+        Texture2D voronoiTexture = new Texture2D(size, size, TextureFormat.RGBA32, false)
         {
             filterMode = FilterMode.Point
         };
@@ -188,10 +188,10 @@ public class VoronoiDiagram : MonoBehaviour
     /// <returns>A tuple containing pixel colors and the regions dictionary.</returns>
     private static (Color[], Dictionary<int, Region>) GenerateVoronoi(int size, int regionAmount, Vector2Int[] points, Color[] regionColors, int[] ids, bool borders, int borderWidth)
     {
-        var regions = new Dictionary<int, Region>();
-        var pixelColors = new Color[size * size];
-        var pixelPositions = new Vector2Int[size * size];
-        var closestRegionIds = new int[size * size];
+        Dictionary<int, Region> regions = new Dictionary<int, Region>();
+        Color[] pixelColors = new Color[size * size];
+        Vector2Int[] pixelPositions = new Vector2Int[size * size];
+        int[] closestRegionIds = new int[size * size];
 
         for (int y = 0; y < size; y++)
         {
