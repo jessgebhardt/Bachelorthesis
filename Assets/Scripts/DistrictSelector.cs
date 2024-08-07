@@ -238,6 +238,7 @@ public class DistrictSelector : MonoBehaviour
     {
         float distanceFromCenter = Vector3.Distance(location, center);
         float scaledDistance = ScaleDistance(distanceFromCenter);
+
         return GetSuitability(scaledDistance, type.distanceFromCenter);
     }
 

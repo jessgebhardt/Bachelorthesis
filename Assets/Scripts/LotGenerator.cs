@@ -245,21 +245,25 @@ public class LotGenerator : MonoBehaviour
     /// Filters out lots that do not meet the minimum size requirements or are not connected to streets.
     /// </para>
     /// </summary>
-    /// <param name="lots">List of lots to be validated.</param>
-    /// <param name="minLotSize">Minimum lot size in pixels.</param>
-    /// <param name="regionEdges">Set of edge pixels for the region.</param>
-    /// <returns>List of valid lots.</returns>
-    private static List<List<Vector2Int>> RemoveInvalidLots(List<List<Vector2Int>> lots, int minLotSize, HashSet<Vector2Int> regionEdges)
+    /// <param name="lots">List of lots to be validated, where each lot is a list of points (Vector2Int).</param>
+    /// <param name="minLotSize">Minimum lot size required for a lot to be considered valid.</param>
+    /// <param name="regionsEdge">Set of edge pixels representing the boundary of the region.</param>
+    /// <returns>List of valid lots that meet the size and connectivity requirements.</returns>
+    private static List<List<Vector2Int>> RemoveInvalidLots(List<List<Vector2Int>> lots, int minLotSize, HashSet<Vector2Int> regionsEdge)
     {
-        var validLots = new List<List<Vector2Int>>();
-        var processedPoints = new HashSet<Vector2Int>();
+        List<List<Vector2Int>> validLots = new List<List<Vector2Int>>();
+        HashSet<Vector2Int> processedPoints = new HashSet<Vector2Int>();
 
         foreach (var lot in lots)
         {
-            if (HasStreetConnection(lot, regionEdges) && IsValidLot(lot, minLotSize, processedPoints))
+            if (!IsValidLot(lot, minLotSize, regionsEdge, processedPoints))
+            {
+                ProcessInvalidLot(lot, minLotSize, validLots, processedPoints, lots, regionsEdge);
+            }
+            else
             {
                 validLots.Add(lot);
-                processedPoints.UnionWith(lot);
+                AddPointsToProcessed(lot, processedPoints);
             }
         }
 
@@ -267,19 +271,85 @@ public class LotGenerator : MonoBehaviour
     }
 
     /// <summary>
-    /// Checks if a lot is valid based on its size and whether it overlaps with previously processed lots.
+    /// Determines whether a given lot is valid based on its size, street connectivity, and whether its points have been processed.
     /// <para>
-    /// A lot is considered valid if it meets the minimum size requirements and does not overlap
-    /// with previously processed lots.
+    /// A lot is considered valid if it meets the minimum size requirement, is connected to streets, and has not been processed yet.
     /// </para>
     /// </summary>
-    /// <param name="lot">List of pixels representing the lot.</param>
-    /// <param name="minLotSize">Minimum lot size in pixels.</param>
-    /// <param name="processedPoints">Set of points from already processed lots.</param>
+    /// <param name="lot">List of points (Vector2Int) representing the lot to be validated.</param>
+    /// <param name="minLotSize">Minimum lot size required for a lot to be considered valid.</param>
+    /// <param name="regionsEdge">Set of edge pixels representing the boundary of the region.</param>
+    /// <param name="processedPoints">Set of points that have already been processed.</param>
     /// <returns>True if the lot is valid; otherwise, false.</returns>
-    private static bool IsValidLot(List<Vector2Int> lot, int minLotSize, HashSet<Vector2Int> processedPoints)
+    private static bool IsValidLot(List<Vector2Int> lot, int minLotSize, HashSet<Vector2Int> regionsEdge, HashSet<Vector2Int> processedPoints)
     {
-        return lot.Count >= minLotSize && IsWideEnough(lot, minLotSize) && !processedPoints.Overlaps(lot);
+        return HasStreetConnection(lot, regionsEdge)
+               && lot.Count >= minLotSize
+               && IsWideEnough(lot, minLotSize)
+               && !processedPoints.Overlaps(lot);
+    }
+
+    /// <summary>
+    /// Processes lots that are initially invalid by attempting to combine them with neighboring lots to form a valid lot.
+    /// <para>
+    /// This method tries to combine the invalid lot with its neighboring lots to meet the size and connectivity requirements.
+    /// </para>
+    /// </summary>
+    /// <param name="lot">List of points (Vector2Int) representing the invalid lot to be processed.</param>
+    /// <param name="minLotSize">Minimum lot size required for a lot to be considered valid.</param>
+    /// <param name="validLots">List of currently validated lots where valid lots are added or removed.</param>
+    /// <param name="processedPoints">Set of points that have already been processed.</param>
+    /// <param name="lots">List of all lots to find neighbors and potential combinations.</param>
+    /// <param name="regionsEdge">Set of edge pixels representing the boundary of the region.</param>
+    private static void ProcessInvalidLot(List<Vector2Int> lot, int minLotSize, List<List<Vector2Int>> validLots, HashSet<Vector2Int> processedPoints, List<List<Vector2Int>> lots, HashSet<Vector2Int> regionsEdge)
+    {
+        var neighborLots = GetNeighborLots(lot, lots);
+
+        foreach (var neighborLot in neighborLots)
+        {
+            if (processedPoints.Overlaps(neighborLot))
+            {
+                continue;
+            }
+
+            var combinedLot = CombineLots(lot, neighborLot);
+
+            if (IsValidLot(combinedLot, minLotSize, regionsEdge, processedPoints))
+            {
+                validLots.Remove(neighborLot);
+                validLots.Add(combinedLot);
+                AddPointsToProcessed(neighborLot, processedPoints);
+                AddPointsToProcessed(lot, processedPoints);
+                break;
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// Combines two lots and sorts their points
+    /// </summary>
+    /// <param name="lot1">Lot to combine with lot2.</param>
+    /// <param name="lot2">Lot to combine with lot1.</param>
+    /// <returns>Combined Lot.</returns>
+    private static List<Vector2Int> CombineLots(List<Vector2Int> lot1, List<Vector2Int> lot2)
+    {
+        var combinedLot = new HashSet<Vector2Int>(lot1);
+        combinedLot.UnionWith(lot2);
+        return combinedLot.OrderBy(p => p.x).ThenBy(p => p.y).ToList();
+    }
+
+    /// <summary>
+    /// Adds the points of lots to a HashSet.
+    /// </summary>
+    /// <param name="lot">Lots to be added.</param>
+    /// <param name="processedPoints">HashSet to add lot points to.</param>
+    private static void AddPointsToProcessed(IEnumerable<Vector2Int> lot, HashSet<Vector2Int> processedPoints)
+    {
+        foreach (var point in lot)
+        {
+            processedPoints.Add(point);
+        }
     }
 
     /// <summary>
