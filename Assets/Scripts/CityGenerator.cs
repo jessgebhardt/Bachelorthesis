@@ -217,7 +217,7 @@ public class CityGenerator : MonoBehaviour
     public void GenerateLotsAndBuildings()
     {
         districtData.regionLots = LotGenerator.GenerateLots(voronoiData.voronoiTexture, voronoiData.regions, districtData.districtsDictionary, roadData.roadWidth);
-        // BuildingGenerator.GenerateBuildings(districtData.regionLots, districtData.districtsDictionary);
+        BuildingGenerator.GenerateBuildings(districtData.regionLots, districtData.districtsDictionary);
     }
 
     /// <summary>
