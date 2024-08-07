@@ -67,6 +67,10 @@ public class CityGenerator : MonoBehaviour
     /// </summary>
     private void Update()
     {
+        if (boundariesData.center != gameObject.transform.position)
+        {
+            boundariesData.center = gameObject.transform.position;
+        }
         CityBoundaries.UpdateBoundaries(boundariesData);
     }
 
@@ -182,7 +186,7 @@ public class CityGenerator : MonoBehaviour
     /// </summary>
     public void GenerateDistrictsAndPrimaryRoads()
     {
-        boundariesData.center = transform.position;
+        boundariesData.center = gameObject.transform.position;
         CalculateMinAndMaxDistricts();
         GenerateCandidatePositions();
 
