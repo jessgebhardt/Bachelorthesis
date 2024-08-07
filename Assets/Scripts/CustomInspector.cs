@@ -9,13 +9,21 @@ public class CustomInspector : Editor
         DrawDefaultInspector();
 
         CityGenerator cityGenerator = (CityGenerator)target;
+        if (cityGenerator == null)
+        {
+            return;
+        }
 
-        if (GUILayout.Button("Generate Districts"))
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("District and Primary Road Generation", EditorStyles.boldLabel);
+
+        if (GUILayout.Button("Generate Districts and Primary Roads"))
         {
             cityGenerator.GenerateDistricts();
         }
 
         EditorGUILayout.Space();
+        EditorGUILayout.LabelField("Secondary Road Generation", EditorStyles.boldLabel);
 
         if (GUILayout.Button("Generate Secondary Roads"))
         {
@@ -23,11 +31,13 @@ public class CustomInspector : Editor
         }
 
         EditorGUILayout.Space();
+        EditorGUILayout.LabelField("Lot and Building Generation", EditorStyles.boldLabel);
 
         if (GUILayout.Button("Generate Lots and Buildings"))
         {
             cityGenerator.GenerateLotsAndBuildings();
         }
+
         if (GUILayout.Button("Remove Buildings"))
         {
             cityGenerator.RemoveBuildings();

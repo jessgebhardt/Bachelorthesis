@@ -13,7 +13,17 @@ public class VoronoiDiagram : MonoBehaviour
     private static Vector2Int[] allPoints;
     private static Color[] allPointColors;
 
-
+    /// <summary>
+    /// Generates a Voronoi diagram texture based on district data, Voronoi settings, boundaries, and road data.
+    /// <para>
+    /// Initializes necessary parameters, calculates Voronoi regions, and creates a texture.
+    /// </para>
+    /// </summary>
+    /// <param name="districtData">Data related to districts and their properties.</param>
+    /// <param name="voronoiData">Settings for generating the Voronoi diagram.</param>
+    /// <param name="boundariesData">City boundaries and center information.</param>
+    /// <param name="roadData">Data related to road width for distortion purposes.</param>
+    /// <returns>The generated Voronoi diagram as a Texture2D.</returns>
     public static Texture2D GenerateVoronoiDiagram(DistrictData districtData, VoronoiData voronoiData, BoundariesData boundariesData, RoadData roadData)
     {
         Initialize(districtData, voronoiData, boundariesData);
@@ -26,6 +36,15 @@ public class VoronoiDiagram : MonoBehaviour
         return CreateTexture(pixelColors);
     }
 
+    /// <summary>
+    /// Initializes parameters for the Voronoi diagram generation.
+    /// <para>
+    /// Sets the size of the diagram, city center, city radius, and district points.
+    /// </para>
+    /// </summary>
+    /// <param name="districtData">Data related to districts.</param>
+    /// <param name="voronoiData">Voronoi diagram settings.</param>
+    /// <param name="boundariesData">City boundaries and center data.</param>
     private static void Initialize(DistrictData districtData, VoronoiData voronoiData, BoundariesData boundariesData)
     {
         size = (int)voronoiData.voronoiDiagram.transform.localScale.x * 10;
@@ -35,6 +54,15 @@ public class VoronoiDiagram : MonoBehaviour
         districtPoints = new Vector2Int[districtData.districtsDictionary.Count];
     }
 
+    /// <summary>
+    /// Retrieves the colors and IDs for each region based on the district data.
+    /// <para>
+    /// Sets up an array of colors and IDs representing each district.
+    /// </para>
+    /// </summary>
+    /// <param name="districtData">Data containing district information.</param>
+    /// <param name="ids">Output array of district IDs.</param>
+    /// <returns>An array of colors corresponding to each district.</returns>
     private static Color[] GetRegionColors(DistrictData districtData, out int[] ids)
     {
         int regionCount = districtData.districtsDictionary.Count;
@@ -52,6 +80,14 @@ public class VoronoiDiagram : MonoBehaviour
         return regionColors;
     }
 
+    /// <summary>
+    /// Creates a texture from the array of pixel colors.
+    /// <para>
+    /// Sets the pixel colors of the texture and applies it.
+    /// </para>
+    /// </summary>
+    /// <param name="pixelColors">Array of colors for each pixel in the texture.</param>
+    /// <returns>The generated Texture2D.</returns>
     private static Texture2D CreateTexture(Color[] pixelColors)
     {
         var voronoiTexture = new Texture2D(size, size, TextureFormat.RGBA32, false)
@@ -64,6 +100,20 @@ public class VoronoiDiagram : MonoBehaviour
         return voronoiTexture;
     }
 
+    /// <summary>
+    /// Generates the Voronoi diagram with optional distortion and border generation.
+    /// <para>
+    /// First creates a Voronoi diagram without distortion, then adds distortion if needed,
+    /// and generates borders based on the road width parameter.
+    /// </para>
+    /// </summary>
+    /// <param name="size">Size of the Voronoi diagram.</param>
+    /// <param name="regionCount">Number of regions (districts).</param>
+    /// <param name="regionColors">Colors for each region.</param>
+    /// <param name="ids">IDs of the regions.</param>
+    /// <param name="randomPointCount">Number of random points for distortion.</param>
+    /// <param name="borderWidth">Width of the border around regions.</param>
+    /// <returns>A tuple containing the pixel colors and the regions dictionary.</returns>
     private static (Color[], Dictionary<int, Region>) GenerateDistortedVoronoi(int size, int regionCount, Color[] regionColors, int[] ids, int randomPointCount, int borderWidth)
     {
         bool borders = randomPointCount <= 0;
@@ -82,6 +132,17 @@ public class VoronoiDiagram : MonoBehaviour
         return (finalVoronoi, finalRegions);
     }
 
+    /// <summary>
+    /// Initializes the list of all points, including random points for Voronoi distortion.
+    /// <para>
+    /// Adds random points within the city and assigns them colors based on the closest original district points.
+    /// </para>
+    /// </summary>
+    /// <param name="regionCount">Number of original regions (districts).</param>
+    /// <param name="randomPointCount">Number of random points to add for distortion.</param>
+    /// <param name="regionColors">Colors of each region.</param>
+    /// <param name="ids">IDs of each region.</param>
+    /// <param name="initialVoronoi">Colors of pixels in the initial Voronoi diagram.</param>
     private static void InitializeAllPoints(int regionCount, int randomPointCount, Color[] regionColors, int[] ids, Color[] initialVoronoi)
     {
         int totalPoints = randomPointCount + regionCount;
@@ -111,6 +172,20 @@ public class VoronoiDiagram : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Generates a Voronoi diagram based on the given points, colors, and other parameters.
+    /// <para>
+    /// Computes the closest region for each pixel and assigns colors accordingly.
+    /// </para>
+    /// </summary>
+    /// <param name="size">Size of the Voronoi diagram.</param>
+    /// <param name="regionAmount">Number of regions (districts).</param>
+    /// <param name="points">Points representing the centers of regions.</param>
+    /// <param name="regionColors">Colors for each region.</param>
+    /// <param name="ids">IDs of the regions.</param>
+    /// <param name="borders">Flag indicating whether to generate borders.</param>
+    /// <param name="borderWidth">Width of the borders around regions.</param>
+    /// <returns>A tuple containing pixel colors and the regions dictionary.</returns>
     private static (Color[], Dictionary<int, Region>) GenerateVoronoi(int size, int regionAmount, Vector2Int[] points, Color[] regionColors, int[] ids, bool borders, int borderWidth)
     {
         var regions = new Dictionary<int, Region>();
@@ -159,6 +234,17 @@ public class VoronoiDiagram : MonoBehaviour
         return (pixelColors, regions);
     }
 
+    /// <summary>
+    /// Finds the closest region for a given pixel position.
+    /// <para>
+    /// Determines the closest region and its associated color by calculating distances.
+    /// </para>
+    /// </summary>
+    /// <param name="points">Points representing the centers of regions.</param>
+    /// <param name="regionColors">Colors for each region.</param>
+    /// <param name="ids">IDs of the regions.</param>
+    /// <param name="pixelPosition">Position of the pixel being evaluated.</param>
+    /// <returns>A tuple containing the ID of the closest region and its color.</returns>
     private static (int, Color) FindClosestRegion(Vector2Int[] points, Color[] regionColors, int[] ids, Vector2Int pixelPosition)
     {
         float minDistance = float.MaxValue;
@@ -190,6 +276,18 @@ public class VoronoiDiagram : MonoBehaviour
         return (ids[closestRegionId], regionColors[closestRegionId]);
     }
 
+    /// <summary>
+    /// Generates borders around regions in the Voronoi diagram.
+    /// <para>
+    /// Uses offsets to determine whether a pixel lies on a border and colors it accordingly.
+    /// </para>
+    /// </summary>
+    /// <param name="size">Size of the Voronoi diagram.</param>
+    /// <param name="closestRegionIds">Array of region IDs for each pixel.</param>
+    /// <param name="pixelColors">Array of colors for each pixel.</param>
+    /// <param name="regions">Dictionary of regions with their pixel lists.</param>
+    /// <param name="width">Width of the border to generate.</param>
+    /// <returns>An array of pixel colors with borders applied.</returns>
     private static Color[] GenerateBorders(int size, int[] closestRegionIds, Color[] pixelColors, Dictionary<int, Region> regions, int width)
     {
         int totalOffsets = (2 * width + 1) * (2 * width + 1) - 1;

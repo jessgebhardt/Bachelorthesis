@@ -34,6 +34,14 @@ public class CityGenerator : MonoBehaviour
 
 
     #region Unity Methods
+
+    /// <summary>
+    /// Called when the script is loaded or a value is changed in the inspector.
+    /// <para>
+    /// Validates district colors, initializes relations and IDs if the district types count changes.
+    /// Also initializes boundaries if not already done.
+    /// </para>
+    /// </summary>
     private void OnValidate()
     {
         ValidateDistrictColors();
@@ -51,6 +59,12 @@ public class CityGenerator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called once per frame.
+    /// <para>
+    /// Updates the city boundaries.
+    /// </para>
+    /// </summary>
     private void Update()
     {
         CityBoundaries.UpdateBoundaries(boundariesData);
@@ -59,6 +73,13 @@ public class CityGenerator : MonoBehaviour
 
 
     #region Validation Methods
+
+    /// <summary>
+    /// Ensures that none of the district types have the color black assigned.
+    /// <para>
+    /// Adjusts any district type color that is black to a slightly lighter shade of black.
+    /// </para>
+    /// </summary>
     private void ValidateDistrictColors()
     {
         if (districtData.districtTypes.Count > 0)
@@ -75,6 +96,14 @@ public class CityGenerator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Adjusts the color slightly.
+    /// <para>
+    /// Increases the red, green, and blue components of the color.
+    /// </para>
+    /// </summary>
+    /// <param name="color">The original color to adjust.</param>
+    /// <returns>The adjusted color.</returns>
     private Color AdjustBlackColor(Color color)
     {
         return new Color(color.r + 0.1f, color.g + 0.1f, color.b + 0.1f, color.a);
@@ -83,6 +112,13 @@ public class CityGenerator : MonoBehaviour
 
 
     #region Initialization Methods
+
+    /// <summary>
+    /// Initializes the relations and IDs for all district types.
+    /// <para>
+    /// Sets up relationships between district types and assigns IDs based on their index.
+    /// </para>
+    /// </summary>
     private void InitializeRelationsAndIDs()
     {
         for (int i = 0; i < districtData.districtTypes.Count; i++)
@@ -109,6 +145,12 @@ public class CityGenerator : MonoBehaviour
         constantDistrictTypes = districtData.districtTypes.Count;
     }
 
+    /// <summary>
+    /// Initializes the LineRenderer and the boundaries for the city.
+    /// <para>
+    /// Sets up the LineRenderer component and initializes city boundaries.
+    /// </para>
+    /// </summary>
     private void InitializeBoundaries()
     {
         boundariesData.lineRenderer = gameObject.GetComponent<LineRenderer>();
@@ -118,6 +160,14 @@ public class CityGenerator : MonoBehaviour
 
 
     #region Generation Methods
+
+    /// <summary>
+    /// Generates the city's districts based on the provided data.
+    /// <para>
+    /// Calculates the minimum and maximum number of districts, generates candidate positions for the districts, 
+    /// selects district positions from the candidate positions, and lastly generates a Voronoi diagram to represent the districts and primary roads.
+    /// </para>
+    /// </summary>
     public void GenerateDistricts()
     {
         boundariesData.center = transform.position;
@@ -130,18 +180,33 @@ public class CityGenerator : MonoBehaviour
         ApplyTexture();
     }
 
+    /// <summary>
+    /// Generates secondary roads for the city.
+    /// <para>
+    /// Updates the Voronoi texture with secondary roads and applies the updated texture.
+    /// </para>
+    /// </summary>
     public void GenerateSecondaryRoads()
     {
         voronoiData.voronoiTexture = SecondaryRoadsGenerator.GenerateSecondaryRoads(voronoiData.voronoiTexture, roadData);
         ApplyTexture();
     }
 
+    /// <summary>
+    /// Generates lots and buildings based on the current city layout.
+    /// <para>
+    /// Generates lots for each district and creates buildings within those lots.
+    /// </para>
+    /// </summary>
     public void GenerateLotsAndBuildings()
     {
         districtData.regionLots = LotGenerator.GenerateLots(voronoiData.voronoiTexture, voronoiData.regions, districtData.districtsDictionary, roadData.roadWidth);
         BuildingGenerator.GenerateBuildings(districtData.regionLots, districtData.districtsDictionary);
     }
 
+    /// <summary>
+    /// Removes all buildings from the city.
+    /// </summary>
     public void RemoveBuildings()
     {
         BuildingGenerator.RemoveOldBuildings();
@@ -150,6 +215,10 @@ public class CityGenerator : MonoBehaviour
 
 
     #region Helper Methods
+
+    /// <summary>
+    /// Calculates the minimum and maximum number of districts based on the district type data.
+    /// </summary>
     private void CalculateMinAndMaxDistricts()
     {
         int minNumberOfDistricts = 0;
@@ -165,6 +234,12 @@ public class CityGenerator : MonoBehaviour
         districtData.maxNumberOfDistricts = maxNumberOfDistricts;
     }
 
+    /// <summary>
+    /// Generates candidate positions for districts using Poisson disk sampling.
+    /// <para>
+    /// Validates and sets the candidate points for later district selection.
+    /// </para>
+    /// </summary>
     private void GenerateCandidatePositions()
     {
         var allPoints = PoissonDiskSampling.GenerateDistrictPoints(
@@ -183,6 +258,12 @@ public class CityGenerator : MonoBehaviour
         poissonData.candidatePoints = allPoints;
     }
 
+    /// <summary>
+    /// Applies the generated Voronoi texture.
+    /// <para>
+    /// Updates the material of the Voronoi diagram with the new texture.
+    /// </para>
+    /// </summary>
     private void ApplyTexture()
     {
         voronoiData.voronoiTexture.Apply();
@@ -193,6 +274,10 @@ public class CityGenerator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sets the material of the Voronoi diagram to be transparent, so that transparent pixels
+    /// appear transparent.
+    /// </summary>
     private void SetMaterialToTransparent()
     {
         var material = voronoiData.voronoiDiagram.GetComponent<MeshRenderer>().sharedMaterial;
