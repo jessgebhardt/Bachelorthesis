@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,18 +18,8 @@ public class DistrictSelector : MonoBehaviour
             Debug.LogError("No candidate points available for district generation.");
             return;
         }
-        counter = -1;
 
-        districtTypes = districtData.districtTypes;
-        importanceOfNeighbours = districtData.importanceOfNeighbours;
-        importanceOfCityCenterDistance = districtData.importanceOfCityCenterDistance;
-        generatedDistricts = districtData.generatedDistricts;
-        center = boundariesData.center;
-        outerBoundaryRadius = boundariesData.outerBoundaryRadius;
-
-
-        districtData.generatedDistricts.Clear();
-        districtData.districtsDictionary = new Dictionary<int, District>();
+        InitializeDistrictData(districtData, boundariesData);
 
         List<Vector3> locations = new List<Vector3>(poissonData.candidatePoints);
         List<Vector3> pointsToRemove = new List<Vector3>();
@@ -40,35 +29,50 @@ public class DistrictSelector : MonoBehaviour
 
         foreach (Vector3 location in locations)
         {
-            List<DistrictType> districtTypesToPlace = minDistrictTypes;
-
-            if (minDistrictTypes.Count == 0)
-            {
-                districtTypesToPlace = restDistrictTypes;
-            }
+            List<DistrictType> districtTypesToPlace = minDistrictTypes.Count > 0 ? minDistrictTypes : restDistrictTypes;
             DistrictType bestDistrictType = CalculateBestDistrictForLocation(location, districtTypesToPlace);
 
-            if (minDistrictTypes.Count == 0)
-            {
+            if (minDistrictTypes.Count > 0)
+                minDistrictTypes.Remove(bestDistrictType);
+            else
                 restDistrictTypes.Remove(bestDistrictType);
 
-            }
-            else
-            {
-                minDistrictTypes.Remove(bestDistrictType);
-            }
-
-            District newDistrict = new District
-            {
-                name = bestDistrictType.name,
-                position = location,
-                type = bestDistrictType
-            };
-            districtData.generatedDistricts.Add(newDistrict);
-            districtData.districtsDictionary.Add(GenerateUniqueID(), newDistrict);
+            AddDistrict(districtData, location, bestDistrictType);
             pointsToRemove.Add(location);
         }
 
+        RemoveUsedPoints(poissonData, pointsToRemove);
+    }
+
+    private static void InitializeDistrictData(DistrictData districtData, BoundariesData boundariesData)
+    {
+        counter = -1;
+
+        districtTypes = districtData.districtTypes;
+        importanceOfNeighbours = districtData.importanceOfNeighbours;
+        importanceOfCityCenterDistance = districtData.importanceOfCityCenterDistance;
+        generatedDistricts = districtData.generatedDistricts;
+        center = boundariesData.center;
+        outerBoundaryRadius = boundariesData.outerBoundaryRadius;
+
+        districtData.generatedDistricts.Clear();
+        districtData.districtsDictionary = new Dictionary<int, District>();
+    }
+
+    private static void AddDistrict(DistrictData districtData, Vector3 location, DistrictType bestDistrictType)
+    {
+        District newDistrict = new District
+        {
+            name = bestDistrictType.name,
+            position = location,
+            type = bestDistrictType
+        };
+        districtData.generatedDistricts.Add(newDistrict);
+        districtData.districtsDictionary.Add(GenerateUniqueID(), newDistrict);
+    }
+
+    private static void RemoveUsedPoints(PoissonData poissonData, List<Vector3> pointsToRemove)
+    {
         foreach (Vector3 point in pointsToRemove)
         {
             poissonData.candidatePoints.Remove(point);
@@ -80,16 +84,13 @@ public class DistrictSelector : MonoBehaviour
         DistrictType bestDistrictType = districtTypesToPlace[0];
         float bestSuitability = float.MinValue;
 
-        foreach (DistrictType type in districtTypes)
+        foreach (DistrictType type in districtTypesToPlace)
         {
-            if (districtTypesToPlace.Contains(type))
+            float suitability = CalculateSuitability(type, location);
+            if (suitability > bestSuitability)
             {
-                float suitability = CalculateSuitability(type, location);
-                if (suitability > bestSuitability)
-                {
-                    bestSuitability = suitability;
-                    bestDistrictType = type;
-                }
+                bestSuitability = suitability;
+                bestDistrictType = type;
             }
         }
 
@@ -102,8 +103,7 @@ public class DistrictSelector : MonoBehaviour
 
         foreach (DistrictType type in districtTypes)
         {
-            int minPlacements = type.minNumberOfPlacements;
-            for (int i = 0; i < minPlacements; i++)
+            for (int i = 0; i < type.minNumberOfPlacements; i++)
             {
                 minDistrictTypes.Add(type);
             }
@@ -118,8 +118,7 @@ public class DistrictSelector : MonoBehaviour
 
         foreach (DistrictType type in districtTypes)
         {
-            int restPlacements = type.maxNumberOfPlacements - type.minNumberOfPlacements;
-            for (int i = 0; i < restPlacements; i++)
+            for (int i = 0; i < type.maxNumberOfPlacements - type.minNumberOfPlacements; i++)
             {
                 restDistrictTypes.Add(type);
             }
@@ -133,8 +132,7 @@ public class DistrictSelector : MonoBehaviour
         float Sd = CalculateSuitabilityBasedOnNeighbors(type, location);
         float Sa = CalculateSuitabilityBasedOnPosition(type, location);
 
-        float S = importanceOfNeighbours * Sd + importanceOfCityCenterDistance * Sa;
-        return S;
+        return importanceOfNeighbours * Sd + importanceOfCityCenterDistance * Sa;
     }
 
     private static float CalculateSuitabilityBasedOnNeighbors(DistrictType type, Vector3 location)
@@ -156,18 +154,13 @@ public class DistrictSelector : MonoBehaviour
         float distanceFromCenter = Vector3.Distance(location, center);
         float scaledDistance = ScaleDistance(distanceFromCenter);
 
-        //float Sa = 10 - CalculateAverage(scaledDistance, type.distanceFromCenter);
-        float Sa = GetSuitability(scaledDistance, type.distanceFromCenter);
-
-        return Sa;
+        return GetSuitability(scaledDistance, type.distanceFromCenter);
     }
 
     private static float ScaleDistance(float value)
     {
-        float originalMax = outerBoundaryRadius;
-        float normalizedVal = (value - 0) / (originalMax - 0);
-        float scaledVal = normalizedVal * (10 - 0) + 0;
-        return scaledVal;
+        float normalizedVal = value / outerBoundaryRadius;
+        return normalizedVal * 10f;
     }
 
     private static float GetAttraction(DistrictType currentType, DistrictType otherType)
@@ -181,6 +174,7 @@ public class DistrictSelector : MonoBehaviour
         }
         return 0f;
     }
+
     private static float GetRepulsion(DistrictType currentType, DistrictType otherType)
     {
         foreach (DistrictRelation relation in currentType.relations)
@@ -193,29 +187,14 @@ public class DistrictSelector : MonoBehaviour
         return 0f;
     }
 
-    private static float CalculateAverage(float a, float b)
-    {
-        return (a + b) / 2.0f;
-    }
-
     private static float GetSuitability(float calculatedValue, float specifiedValue)
     {
         if (Mathf.Approximately(calculatedValue, specifiedValue))
-        {
             return 10f;
-        }
         else if (calculatedValue < specifiedValue)
-        {
             return 5f;
-        }
-        else if (calculatedValue > specifiedValue)
-        {
-            return 0f;
-        }
         else
-        {
-            return -5f;
-        }
+            return 0f;
     }
 
     private static int GenerateUniqueID()

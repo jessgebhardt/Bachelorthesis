@@ -1,7 +1,7 @@
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System;
 using UnityEngine;
 
 public class VoronoiDiagram : MonoBehaviour
@@ -13,40 +13,54 @@ public class VoronoiDiagram : MonoBehaviour
     private static Vector2Int[] allPoints;
     private static Color[] allPointColors;
 
+
     public static Texture2D GenerateVoronoiDiagram(DistrictData districtData, VoronoiData voronoiData, BoundariesData boundariesData, RoadData roadData)
     {
-        size = (int)voronoiData.voronoiDiagram.transform.localScale.x * 10;
+        Initialize(districtData, voronoiData, boundariesData);
 
+        var regionColors = GetRegionColors(districtData, out var ids);
+
+        var (pixelColors, regions) = GenerateDistortedVoronoi(size, districtData.districtsDictionary.Count, regionColors, ids, voronoiData.distictCellDistortion, roadData.roadWidth);
+        voronoiData.regions = regions;
+
+        return CreateTexture(pixelColors);
+    }
+
+    private static void Initialize(DistrictData districtData, VoronoiData voronoiData, BoundariesData boundariesData)
+    {
+        size = (int)voronoiData.voronoiDiagram.transform.localScale.x * 10;
         cityCenter = new Vector2Int((int)boundariesData.center.x, (int)boundariesData.center.z);
         cityRadius = boundariesData.outerBoundaryRadius;
 
-        int regionCount = districtData.districtsDictionary.Count;
-        districtPoints = new Vector2Int[regionCount];
-        Color[] regionColors = new Color[regionCount];
-        int[] ids = new int[regionCount];
+        districtPoints = new Vector2Int[districtData.districtsDictionary.Count];
+    }
 
-        foreach (KeyValuePair<int, District> kvp in districtData.districtsDictionary)
+    private static Color[] GetRegionColors(DistrictData districtData, out int[] ids)
+    {
+        int regionCount = districtData.districtsDictionary.Count;
+        Color[] regionColors = new Color[regionCount];
+        ids = new int[regionCount];
+
+        foreach (var kvp in districtData.districtsDictionary)
         {
-            District district = kvp.Value;
+            var district = kvp.Value;
             districtPoints[kvp.Key] = new Vector2Int((int)district.position.x, (int)district.position.z);
-            Color regionColor = district.type.color;
-            regionColor.a = 0.2f;
-            regionColors[kvp.Key] = regionColor;
+            regionColors[kvp.Key] = new Color(district.type.color.r, district.type.color.g, district.type.color.b, 0.2f);
             ids[kvp.Key] = kvp.Key;
         }
 
+        return regionColors;
+    }
 
-        (Color[] pixelColors, Dictionary<int, Region> regions) = GenerateDistortedVoronoi(size, regionCount, regionColors, ids, voronoiData.distictCellDistortion, roadData.roadWidth);
-        voronoiData.regions = regions;
-
-        Texture2D voronoiTexture = new Texture2D(size, size, TextureFormat.RGBA32, false)
+    private static Texture2D CreateTexture(Color[] pixelColors)
+    {
+        var voronoiTexture = new Texture2D(size, size, TextureFormat.RGBA32, false)
         {
             filterMode = FilterMode.Point
         };
 
         voronoiTexture.SetPixels(pixelColors);
         voronoiTexture.Apply();
-
         return voronoiTexture;
     }
 
@@ -54,7 +68,7 @@ public class VoronoiDiagram : MonoBehaviour
     {
         bool borders = randomPointCount <= 0;
 
-        (Color[] initialVoronoi, Dictionary<int, Region> initialRegions) = GenerateVoronoi(size, regionCount, districtPoints, regionColors, ids, borders, borderWidth);
+        var (initialVoronoi, initialRegions) = GenerateVoronoi(size, regionCount, districtPoints, regionColors, ids, borders, borderWidth);
 
         if (borders)
         {
@@ -62,6 +76,14 @@ public class VoronoiDiagram : MonoBehaviour
             return (initialVoronoi, initialRegions);
         }
 
+        InitializeAllPoints(regionCount, randomPointCount, regionColors, ids, initialVoronoi);
+
+        var (finalVoronoi, finalRegions) = GenerateVoronoi(size, allPoints.Length, allPoints, allPointColors, ids, true, borderWidth);
+        return (finalVoronoi, finalRegions);
+    }
+
+    private static void InitializeAllPoints(int regionCount, int randomPointCount, Color[] regionColors, int[] ids, Color[] initialVoronoi)
+    {
         int totalPoints = randomPointCount + regionCount;
         allPoints = new Vector2Int[totalPoints];
         allPointColors = new Color[totalPoints];
@@ -78,8 +100,7 @@ public class VoronoiDiagram : MonoBehaviour
         {
             Vector2 randomOffset = UnityEngine.Random.insideUnitCircle * cityRadius;
             Vector2Int randomPosition = cityCenter + Vector2Int.RoundToInt(randomOffset);
-
-            int pixelIndex = Mathf.Clamp((int)randomPosition.x + (int)randomPosition.y * size, 0, initialVoronoi.Length - 1);
+            int pixelIndex = Mathf.Clamp(randomPosition.x + randomPosition.y * size, 0, initialVoronoi.Length - 1);
             Color closestColor = initialVoronoi[pixelIndex];
 
             allPoints[i + regionCount] = randomPosition;
@@ -88,18 +109,14 @@ public class VoronoiDiagram : MonoBehaviour
             int closestOriginalId = Array.FindIndex(regionColors, color => color == closestColor);
             allIds[i + regionCount] = closestOriginalId >= 0 ? ids[closestOriginalId] : -1;
         }
-
-        (Color[] finalVoronoi, Dictionary<int, Region> finalRegions) = GenerateVoronoi(size, totalPoints, allPoints, allPointColors, allIds, true, borderWidth);
-        return (finalVoronoi, finalRegions);
     }
 
     private static (Color[], Dictionary<int, Region>) GenerateVoronoi(int size, int regionAmount, Vector2Int[] points, Color[] regionColors, int[] ids, bool borders, int borderWidth)
     {
-        Dictionary<int, Region> regions = new Dictionary<int, Region>();
-        Color[] pixelColors = new Color[size * size];
-        Vector2Int[] pixelPositions = new Vector2Int[size * size];
-        int[] closestRegionIds = new int[size * size];
-
+        var regions = new Dictionary<int, Region>();
+        var pixelColors = new Color[size * size];
+        var pixelPositions = new Vector2Int[size * size];
+        var closestRegionIds = new int[size * size];
 
         for (int y = 0; y < size; y++)
         {
@@ -112,46 +129,19 @@ public class VoronoiDiagram : MonoBehaviour
         Parallel.For(0, size * size, index =>
         {
             Vector2Int pixelPosition = pixelPositions[index];
-            float centerDistance = Vector2.Distance(new Vector2(pixelPosition.x, pixelPosition.y), cityCenter);
-
-            if (centerDistance < cityRadius)
+            if (Vector2.Distance(pixelPosition, cityCenter) < cityRadius)
             {
-                float minDistance = float.MaxValue;
-                Vector2 closestPoint = new Vector2();
-                int closestRegionId = 0;
-
-                for (int i = 0; i < points.Length; i++)
-                {
-                    float distance = Vector2.Distance(pixelPosition, points[i]);
-                    if (distance < minDistance)
-                    {
-                        minDistance = distance;
-                        closestPoint = points[i];
-                    }
-                }
-
-                float minOriginalPointDistance = float.MaxValue;
-
-                for (int i = 0; i < districtPoints.Length; i++)
-                {
-                    float distance = Vector2.Distance(closestPoint, districtPoints[i]);
-                    if (distance < minOriginalPointDistance)
-                    {
-                        minOriginalPointDistance = distance;
-                        closestRegionId = i;
-                    }
-                }   
-                    
-                closestRegionIds[index] = ids[closestRegionId];
-                pixelColors[index] = regionColors[closestRegionId];
+                (int closestRegionId, Color color) = FindClosestRegion(points, regionColors, ids, pixelPosition);
+                closestRegionIds[index] = closestRegionId;
+                pixelColors[index] = color;
 
                 lock (regions)
                 {
-                    if (!regions.ContainsKey(ids[closestRegionId]))
+                    if (!regions.ContainsKey(closestRegionId))
                     {
-                        regions[ids[closestRegionId]] = new Region { Id = ids[closestRegionId] };
+                        regions[closestRegionId] = new Region { Id = closestRegionId };
                     }
-                    regions[ids[closestRegionId]].Pixels.Add(pixelPosition);
+                    regions[closestRegionId].Pixels.Add(pixelPosition);
                 }
             }
             else
@@ -163,13 +153,44 @@ public class VoronoiDiagram : MonoBehaviour
 
         if (borders)
         {
-            pixelColors = GenerateBorders(size, closestRegionIds, pixelColors, cityCenter, cityRadius, regions, borderWidth);
+            pixelColors = GenerateBorders(size, closestRegionIds, pixelColors, regions, borderWidth);
         }
 
         return (pixelColors, regions);
     }
 
-    public static Color[] GenerateBorders(int size, int[] closestRegionIds, Color[] pixelColors, Vector2Int cityCenter, float cityRadius, Dictionary<int, Region> regions, int width)
+    private static (int, Color) FindClosestRegion(Vector2Int[] points, Color[] regionColors, int[] ids, Vector2Int pixelPosition)
+    {
+        float minDistance = float.MaxValue;
+        Vector2 closestPoint = new Vector2();
+        int closestRegionId = 0;
+
+        for (int i = 0; i < points.Length; i++)
+        {
+            float distance = Vector2.Distance(pixelPosition, points[i]);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closestPoint = points[i];
+            }
+        }
+
+        float minOriginalPointDistance = float.MaxValue;
+
+        for (int i = 0; i < districtPoints.Length; i++)
+        {
+            float distance = Vector2.Distance(closestPoint, districtPoints[i]);
+            if (distance < minOriginalPointDistance)
+            {
+                minOriginalPointDistance = distance;
+                closestRegionId = i;
+            }
+        }
+
+        return (ids[closestRegionId], regionColors[closestRegionId]);
+    }
+
+    private static Color[] GenerateBorders(int size, int[] closestRegionIds, Color[] pixelColors, Dictionary<int, Region> regions, int width)
     {
         int totalOffsets = (2 * width + 1) * (2 * width + 1) - 1;
         int[] xOffsets = new int[totalOffsets];

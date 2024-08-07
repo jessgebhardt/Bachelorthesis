@@ -5,6 +5,7 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class CityGenerator : MonoBehaviour
 {
+    #region Serialized Fields
     [SerializeField]
     private DistrictData districtData = new DistrictData();
     public DistrictData DistrictData => districtData;
@@ -24,9 +25,15 @@ public class CityGenerator : MonoBehaviour
     [SerializeField]
     private RoadData roadData = new RoadData();
     public RoadData RoadData => roadData;
+    #endregion
 
+
+    #region Private Fields
     private static int constantDistrictTypes;
+    #endregion
 
+
+    #region Unity Methods
     private void OnValidate()
     {
         ValidateDistrictColors();
@@ -36,10 +43,9 @@ public class CityGenerator : MonoBehaviour
             InitializeRelationsAndIDs();
         }
 
-        if(!districtData.initialized)
+        if (!districtData.initialized)
         {
-            boundariesData.lineRenderer = gameObject.GetComponent<LineRenderer>();
-            CityBoundaries.InitializeBoundaries(boundariesData);
+            InitializeBoundaries();
             SetMaterialToTransparent();
             districtData.initialized = true;
         }
@@ -49,7 +55,10 @@ public class CityGenerator : MonoBehaviour
     {
         CityBoundaries.UpdateBoundaries(boundariesData);
     }
+    #endregion
 
+
+    #region Validation Methods
     private void ValidateDistrictColors()
     {
         if (districtData.districtTypes.Count > 0)
@@ -70,40 +79,48 @@ public class CityGenerator : MonoBehaviour
     {
         return new Color(color.r + 0.1f, color.g + 0.1f, color.b + 0.1f, color.a);
     }
+    #endregion
 
+
+    #region Initialization Methods
     private void InitializeRelationsAndIDs()
     {
-        if (districtData.districtTypes.Count > 0)
+        for (int i = 0; i < districtData.districtTypes.Count; i++)
         {
-            for (int i = 0; i < districtData.districtTypes.Count; i++)
+            var districtType = districtData.districtTypes[i];
+            districtType.id = i;
+            districtType.relations.Clear();
+
+            for (int j = 0; j < districtData.districtTypes.Count; j++)
             {
-                DistrictType districtType = districtData.districtTypes[i];
-                districtType.id = i;
-                districtType.relations.Clear();
+                if (i == j) continue;
 
-                for (int j = 0; j < districtData.districtTypes.Count; j++)
+                var relatedDistrictType = districtData.districtTypes[j];
+                districtType.relations.Add(new DistrictRelation
                 {
-                    if (i == j) { continue; }
-
-                    DistrictType relatedDistrictType = districtData.districtTypes[j];
-                    districtType.relations.Add(new DistrictRelation
-                    {
-                        districtTypeId = relatedDistrictType.id,
-                        _name = relatedDistrictType.name,
-                        attraction = 0,
-                        repulsion = 0
-                    });
-                }
-                districtData.districtTypes[i] = districtType;
+                    districtTypeId = relatedDistrictType.id,
+                    _name = relatedDistrictType.name,
+                    attraction = 0,
+                    repulsion = 0
+                });
             }
-            constantDistrictTypes = districtData.districtTypes.Count;
         }
+
+        constantDistrictTypes = districtData.districtTypes.Count;
     }
 
+    private void InitializeBoundaries()
+    {
+        boundariesData.lineRenderer = gameObject.GetComponent<LineRenderer>();
+        CityBoundaries.InitializeBoundaries(boundariesData);
+    }
+    #endregion
+
+
+    #region Generation Methods
     public void GenerateDistricts()
     {
         boundariesData.center = transform.position;
-
         CalculateMinAndMaxDistricts();
         GenerateCandidatePositions();
 
@@ -113,13 +130,11 @@ public class CityGenerator : MonoBehaviour
         ApplyTexture();
     }
 
-
     public void GenerateSecondaryRoads()
     {
         voronoiData.voronoiTexture = SecondaryRoadsGenerator.GenerateSecondaryRoads(voronoiData.voronoiTexture, roadData);
         ApplyTexture();
     }
-
 
     public void GenerateLotsAndBuildings()
     {
@@ -131,31 +146,47 @@ public class CityGenerator : MonoBehaviour
     {
         BuildingGenerator.RemoveOldBuildings();
     }
+    #endregion
 
+
+    #region Helper Methods
     private void CalculateMinAndMaxDistricts()
     {
         int minNumberOfDistricts = 0;
         int maxNumberOfDistricts = 0;
-        foreach (DistrictType districtType in districtData.districtTypes)
+
+        foreach (var districtType in districtData.districtTypes)
         {
             minNumberOfDistricts += districtType.minNumberOfPlacements;
             maxNumberOfDistricts += districtType.maxNumberOfPlacements;
         }
+
         districtData.minNumberOfDistricts = minNumberOfDistricts;
         districtData.maxNumberOfDistricts = maxNumberOfDistricts;
     }
 
     private void GenerateCandidatePositions()
     {
-        List<Vector3> allPoints = PoissonDiskSampling.GenerateDistrictPoints(districtData.numberOfDistricts, districtData.minNumberOfDistricts, districtData.maxNumberOfDistricts, boundariesData.outerBoundaryRadius, boundariesData.center, poissonData.rejectionSamples);
-        districtData.numberOfDistricts = PoissonDiskSampling.ValidateNumberOfDistricts(districtData.numberOfDistricts, districtData.minNumberOfDistricts, districtData.maxNumberOfDistricts, false);
+        var allPoints = PoissonDiskSampling.GenerateDistrictPoints(
+            districtData.numberOfDistricts,
+            districtData.minNumberOfDistricts,
+            districtData.maxNumberOfDistricts,
+            boundariesData.outerBoundaryRadius,
+            boundariesData.center,
+            poissonData.rejectionSamples);
+
+        districtData.numberOfDistricts = PoissonDiskSampling.ValidateNumberOfDistricts(
+            districtData.numberOfDistricts,
+            districtData.minNumberOfDistricts,
+            districtData.maxNumberOfDistricts);
+
         poissonData.candidatePoints = allPoints;
     }
 
     private void ApplyTexture()
     {
         voronoiData.voronoiTexture.Apply();
-        Renderer renderer = voronoiData.voronoiDiagram.GetComponent<Renderer>();
+        var renderer = voronoiData.voronoiDiagram.GetComponent<Renderer>();
         if (renderer != null)
         {
             renderer.sharedMaterial.mainTexture = voronoiData.voronoiTexture;
@@ -164,7 +195,7 @@ public class CityGenerator : MonoBehaviour
 
     private void SetMaterialToTransparent()
     {
-        Material material = voronoiData.voronoiDiagram.GetComponent<MeshRenderer>().sharedMaterial;
+        var material = voronoiData.voronoiDiagram.GetComponent<MeshRenderer>().sharedMaterial;
         if (material != null)
         {
             material.SetFloat("_Mode", 3);
@@ -177,4 +208,5 @@ public class CityGenerator : MonoBehaviour
             material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
         }
     }
+    #endregion
 }

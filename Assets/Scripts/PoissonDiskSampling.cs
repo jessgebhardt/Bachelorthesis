@@ -5,10 +5,8 @@ public class PoissonDiskSampling : MonoBehaviour
 {
     public static List<Vector3> GenerateDistrictPoints(int numberOfDistricts, int minNumberOfDistricts, int maxNumberOfDistricts, float cityRadius, Vector3 cityCenter, int numSampleBeforeRejection = 30)
     {
-        int districts = ValidateNumberOfDistricts(numberOfDistricts, minNumberOfDistricts, maxNumberOfDistricts, true);
-
+        int districts = ValidateNumberOfDistricts(numberOfDistricts, minNumberOfDistricts, maxNumberOfDistricts);
         float districtRadius = CalculateDistrictRadius(districts, cityRadius);
-
         float cellSize = districtRadius / Mathf.Sqrt(2);
         int gridSize = Mathf.CeilToInt((cityRadius * 2) / cellSize);
         int[,] grid = new int[gridSize, gridSize];
@@ -17,36 +15,50 @@ public class PoissonDiskSampling : MonoBehaviour
 
         while (spawnPoints.Count > 0 && points.Count < districts)
         {
-            int spawnIndex = Random.Range(0, spawnPoints.Count);
-            Vector3 spawnCentre = spawnPoints[spawnIndex];
-            bool candidateAccepted = false;
-
-            for (int i = 0; i < numSampleBeforeRejection; i++)
-            {
-                float angle = Random.value * Mathf.PI * 2;
-                Vector3 dir = new Vector3(Mathf.Sin(angle), 1, Mathf.Cos(angle));
-                float rand = Random.Range(districtRadius, 2 * districtRadius);
-                Vector3 candidate = new Vector3(spawnCentre.x + dir.x * rand, 1, spawnCentre.z + dir.z * rand);
-
-                if (IsValid(candidate, cityCenter, cityRadius, cellSize, districtRadius, points, grid) &&
-                    Vector3.Distance(candidate, cityCenter) <= cityRadius)
-                {
-                    points.Add(candidate);
-                    spawnPoints.Add(candidate);
-                    int gridX = Mathf.FloorToInt((candidate.x - (cityCenter.x - cityRadius)) / cellSize);
-                    int gridZ = Mathf.FloorToInt((candidate.z - (cityCenter.z - cityRadius)) / cellSize);
-                    grid[gridX, gridZ] = points.Count;
-                    candidateAccepted = true;
-                    break;
-                }
-            }
-            if (!candidateAccepted)
-            {
-                spawnPoints.RemoveAt(spawnIndex);
-            }
+            GeneratePoints(cityCenter, cityRadius, districtRadius, cellSize, points, spawnPoints, grid, numSampleBeforeRejection);
         }
 
         return points;
+    }
+
+    private static void GeneratePoints(Vector3 cityCenter, float cityRadius, float districtRadius, float cellSize, List<Vector3> points, List<Vector3> spawnPoints, int[,] grid, int numSampleBeforeRejection)
+    {
+        int spawnIndex = Random.Range(0, spawnPoints.Count);
+        Vector3 spawnCentre = spawnPoints[spawnIndex];
+        bool candidateAccepted = false;
+
+        for (int i = 0; i < numSampleBeforeRejection; i++)
+        {
+            Vector3 candidate = GenerateCandidate(spawnCentre, districtRadius);
+            if (IsValid(candidate, cityCenter, cityRadius, cellSize, districtRadius, points, grid))
+            {
+                AddPoint(candidate, cityCenter, cityRadius, cellSize, points, spawnPoints, grid);
+                candidateAccepted = true;
+                break;
+            }
+        }
+
+        if (!candidateAccepted)
+        {
+            spawnPoints.RemoveAt(spawnIndex);
+        }
+    }
+
+    private static Vector3 GenerateCandidate(Vector3 spawnCentre, float districtRadius)
+    {
+        float angle = Random.value * Mathf.PI * 2;
+        Vector3 dir = new Vector3(Mathf.Sin(angle), 1, Mathf.Cos(angle));
+        float rand = Random.Range(districtRadius, 2 * districtRadius);
+        return new Vector3(spawnCentre.x + dir.x * rand, 1, spawnCentre.z + dir.z * rand);
+    }
+
+    private static void AddPoint(Vector3 candidate, Vector3 cityCenter, float cityRadius, float cellSize, List<Vector3> points, List<Vector3> spawnPoints, int[,] grid)
+    {
+        points.Add(candidate);
+        spawnPoints.Add(candidate);
+        int gridX = Mathf.FloorToInt((candidate.x - (cityCenter.x - cityRadius)) / cellSize);
+        int gridZ = Mathf.FloorToInt((candidate.z - (cityCenter.z - cityRadius)) / cellSize);
+        grid[gridX, gridZ] = points.Count;
     }
 
     private static bool IsValid(Vector3 candidate, Vector3 cityCenter, float cityRadius, float cellSize, float radius, List<Vector3> points, int[,] grid)
@@ -65,13 +77,9 @@ public class PoissonDiskSampling : MonoBehaviour
                 for (int z = searchStartZ; z <= searchEndZ; z++)
                 {
                     int pointIndex = grid[x, z] - 1;
-                    if (pointIndex != -1)
+                    if (pointIndex != -1 && (candidate - points[pointIndex]).sqrMagnitude < radius * radius)
                     {
-                        float sqrDst = (candidate - points[pointIndex]).sqrMagnitude;
-                        if (sqrDst < radius * radius)
-                        {
-                            return false;
-                        }
+                        return false;
                     }
                 }
             }
@@ -84,23 +92,21 @@ public class PoissonDiskSampling : MonoBehaviour
     {
         float cityArea = Mathf.PI * cityRadius * cityRadius;
         float areaPerDistrict = cityArea / numberOfDistricts * 2;
-        float adjustedDistrictRadius = Mathf.Sqrt(areaPerDistrict / Mathf.PI);
-        return adjustedDistrictRadius;
+        return Mathf.Sqrt(areaPerDistrict / Mathf.PI);
     }
 
-    public static int ValidateNumberOfDistricts(int setNumber, int minNumber, int maxNumber, bool warning)
+    public static int ValidateNumberOfDistricts(int setNumber, int minNumber, int maxNumber)
     {
-        int districts = setNumber;
         if (setNumber < minNumber)
         {
-            districts = minNumber;
-            if (warning) Debug.LogWarning("numberOfDistricts was too low and has been set to the minimum number of provided districts");
+            Debug.LogWarning("numberOfDistricts was too low and has been set to the minimum number of provided districts");
+            return minNumber;
         }
         else if (setNumber > maxNumber)
         {
-            districts = maxNumber;
-            if (warning) Debug.LogWarning("numberOfDistricts was too high and has been set to the maximum number of provided districts");
+            Debug.LogWarning("numberOfDistricts was too high and has been set to the maximum number of provided districts");
+            return maxNumber;
         }
-        return districts;
+        return setNumber;
     }
 }

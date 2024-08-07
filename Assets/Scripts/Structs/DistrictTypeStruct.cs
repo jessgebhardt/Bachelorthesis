@@ -5,8 +5,8 @@ using UnityEngine;
 [System.Serializable]
 public struct DistrictType
 {
-    [HideInInspector] public int id;
     public string name;
+    [HideInInspector] public int id;
     public Color color;
     [Range(0, 10)] public float distanceFromCenter;
     [Min(1)] public int minNumberOfPlacements;
