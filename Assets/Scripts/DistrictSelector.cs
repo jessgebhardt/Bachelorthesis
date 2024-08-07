@@ -238,7 +238,6 @@ public class DistrictSelector : MonoBehaviour
     {
         float distanceFromCenter = Vector3.Distance(location, center);
         float scaledDistance = ScaleDistance(distanceFromCenter);
-
         return GetSuitability(scaledDistance, type.distanceFromCenter);
     }
 
@@ -309,12 +308,13 @@ public class DistrictSelector : MonoBehaviour
     /// <returns>The suitability score based on the comparison.</returns>
     private static float GetSuitability(float calculatedValue, float specifiedValue)
     {
-        if (Mathf.Approximately(calculatedValue, specifiedValue))
-            return 10f;
-        else if (calculatedValue < specifiedValue)
-            return 5f;
-        else
-            return 0f;
+        float maxDifference = 10.0f; // maximale Distanz, die wir berücksichtigen
+        float difference = Mathf.Abs(calculatedValue - specifiedValue);
+
+        // Skalierung in den Bereich 0 bis 10, wobei kleinere Unterschiede höhere Werte ergeben
+        float suitability = Mathf.Max(0, 10 - (difference / maxDifference) * 10);
+
+        return suitability;
     }
 
     /// <summary>
