@@ -122,7 +122,8 @@ public class BuildingGenerator : MonoBehaviour
     {
         Bounds lotBounds = CalculateLotBounds(lot);
         Bounds prefabBounds = CalculatePrefabBounds(prefab);
-
+        Debug.Log("lotbounds: "+lotBounds);
+        Debug.Log("prefabBounds: " + prefabBounds);
         bool fits = lotBounds.extents.x > prefabBounds.extents.x && lotBounds.extents.z > prefabBounds.extents.z;
         return fits;
     }
